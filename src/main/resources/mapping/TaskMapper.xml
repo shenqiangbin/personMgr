@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sqber.personMgr.dal.TaskMapper" >
+  <resultMap id="BaseResultMap" type="com.sqber.personMgr.entity.Task" >
+    <id column="TaskId" property="taskid" jdbcType="INTEGER" />
+    <result column="Title" property="title" jdbcType="VARCHAR" />
+    <result column="TaskType" property="tasktype" jdbcType="INTEGER" />
+    <result column="TaskStatus" property="taskstatus" jdbcType="INTEGER" />
+    <result column="ProjectCode" property="projectcode" jdbcType="VARCHAR" />
+    <result column="ModuleId" property="moduleid" jdbcType="INTEGER" />
+    <result column="Demandor" property="demandor" jdbcType="VARCHAR" />
+    <result column="AssignTo" property="assignto" jdbcType="VARCHAR" />
+    <result column="Solver" property="solver" jdbcType="VARCHAR" />
+    <result column="Content" property="content" jdbcType="VARCHAR" />
+    <result column="PutTime" property="puttime" jdbcType="TIMESTAMP" />
+    <result column="ScheduledStart" property="scheduledstart" jdbcType="TIMESTAMP" />
+    <result column="ScheduledEnd" property="scheduledend" jdbcType="TIMESTAMP" />
+    <result column="Status" property="status" jdbcType="INTEGER" />
+    <result column="CreateUser" property="createuser" jdbcType="VARCHAR" />
+    <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="ModifyUser" property="modifyuser" jdbcType="VARCHAR" />
+    <result column="ModifyTime" property="modifytime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from task
+    where TaskId = #{taskid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.sqber.personMgr.entity.Task" >
+    insert into task (TaskId, Title, TaskType, 
+      TaskStatus, ProjectCode, ModuleId, 
+      Demandor, AssignTo, Solver, 
+      Content, PutTime, ScheduledStart, 
+      ScheduledEnd, Status, CreateUser, 
+      CreateTime, ModifyUser, ModifyTime
+      )
+    values (#{taskid,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{tasktype,jdbcType=INTEGER}, 
+      #{taskstatus,jdbcType=INTEGER}, #{projectcode,jdbcType=VARCHAR}, #{moduleid,jdbcType=INTEGER}, 
+      #{demandor,jdbcType=VARCHAR}, #{assignto,jdbcType=VARCHAR}, #{solver,jdbcType=VARCHAR}, 
+      #{content,jdbcType=VARCHAR}, #{puttime,jdbcType=TIMESTAMP}, #{scheduledstart,jdbcType=TIMESTAMP}, 
+      #{scheduledend,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, #{createuser,jdbcType=VARCHAR}, 
+      #{createtime,jdbcType=TIMESTAMP}, #{modifyuser,jdbcType=VARCHAR}, #{modifytime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.sqber.personMgr.entity.Task" >
+    update task
+    set Title = #{title,jdbcType=VARCHAR},
+      TaskType = #{tasktype,jdbcType=INTEGER},
+      TaskStatus = #{taskstatus,jdbcType=INTEGER},
+      ProjectCode = #{projectcode,jdbcType=VARCHAR},
+      ModuleId = #{moduleid,jdbcType=INTEGER},
+      Demandor = #{demandor,jdbcType=VARCHAR},
+      AssignTo = #{assignto,jdbcType=VARCHAR},
+      Solver = #{solver,jdbcType=VARCHAR},
+      Content = #{content,jdbcType=VARCHAR},
+      PutTime = #{puttime,jdbcType=TIMESTAMP},
+      ScheduledStart = #{scheduledstart,jdbcType=TIMESTAMP},
+      ScheduledEnd = #{scheduledend,jdbcType=TIMESTAMP},
+      Status = #{status,jdbcType=INTEGER},
+      CreateUser = #{createuser,jdbcType=VARCHAR},
+      CreateTime = #{createtime,jdbcType=TIMESTAMP},
+      ModifyUser = #{modifyuser,jdbcType=VARCHAR},
+      ModifyTime = #{modifytime,jdbcType=TIMESTAMP}
+    where TaskId = #{taskid,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select TaskId, Title, TaskType, TaskStatus, ProjectCode, ModuleId, Demandor, AssignTo, 
+    Solver, Content, PutTime, ScheduledStart, ScheduledEnd, Status, CreateUser, CreateTime, 
+    ModifyUser, ModifyTime
+    from task
+    where TaskId = #{taskid,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select TaskId, Title, TaskType, TaskStatus, ProjectCode, ModuleId, Demandor, AssignTo, 
+    Solver, Content, PutTime, ScheduledStart, ScheduledEnd, Status, CreateUser, CreateTime, 
+    ModifyUser, ModifyTime
+    from task
+  </select>
+</mapper>

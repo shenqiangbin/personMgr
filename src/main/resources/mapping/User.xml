@@ -3,14 +3,10 @@
 <mapper namespace="com.sqber.personMgr.dal.IUserRepository">
 	<resultMap id="BaseResultMap" type="com.sqber.personMgr.entity.User">
 		<id column="userId" property="userId" jdbcType="INTEGER" />
-		<result column="userCode" property="userCode"
-			jdbcType="VARCHAR" />
-		<result column="userName" property="userName"
-			jdbcType="VARCHAR" />
-		<result column="password" property="password"
-			jdbcType="VARCHAR" />
+		<result column="userCode" property="userCode" jdbcType="VARCHAR" />
+		<result column="userName" property="userName" jdbcType="VARCHAR" />
+		<result column="password" property="password" jdbcType="VARCHAR" />
 		<result column="Status" property="status" jdbcType="INTEGER" />
-		<result column="CustomerID" property="customerID" jdbcType="INTEGER" />
 	    <result column="CreateUser" property="createUser" jdbcType="VARCHAR" />
 	    <result column="CreateTime" property="createTime" jdbcType="TIMESTAMP" />
 	    <result column="ModifyUser" property="modifyUser" jdbcType="VARCHAR" />
@@ -18,7 +14,7 @@
 	</resultMap>
 
 	<sql id="Base_Column_List">
-		userId, userCode, userName, password, Status, CreateUser, CreateTime, ModifyUser, ModifyTime, CustomerID
+		userId, userCode, userName, password, Status, CreateUser, CreateTime, ModifyUser, ModifyTime
 	</sql>
 
 	<select id="getAll" resultMap="BaseResultMap">

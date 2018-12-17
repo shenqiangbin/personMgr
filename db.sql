@@ -143,6 +143,7 @@ CREATE TABLE `role` (
 
 -- ----------------------------
 -- Records of role
+INSERT INTO `role` (`RoleID`, `RoleCode`, `RoleName`, `ModifyTime`, `Status`, `CreateUser`, `CreateTime`, `ModifyUser`) VALUES ('3', 'User', '客户', '2018-12-12 00:00:00', '1', 'Admin', '2018-12-12 00:00:00', 'Admin');
 -- ----------------------------
 
 -- ----------------------------
@@ -257,7 +258,6 @@ CREATE TABLE `userrole` (
   PRIMARY KEY (`UserRoleID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4;
 
--- ----------------------------
--- Records of userrole
--- ----------------------------
-nnoDB DEFAULT CHARSET=utf8 COMMENT='任务表';
+
+
+INSERT INTO `personmgr`.`userrole` (`RoleID`, `UserID`, `Status`, `CreateUser`, `CreateTime`) VALUES ('3', '17', '1', 'sqb', '2018/12/17');

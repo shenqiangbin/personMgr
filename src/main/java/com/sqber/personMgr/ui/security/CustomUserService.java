@@ -65,6 +65,9 @@ public class CustomUserService implements UserDetailsService {
 			user.setUserID(userinfo.getUserId());
 			user.setUserCode(userinfo.getUserCode());
 			/*user.setSsoUserID(userinfo.getSsoUserID());*/
+			if(userRoleList.size()==0)
+				throw new ValidateCodeException("没有角色权限");
+
 			user.setRoleId(userRoleList.get(0).getRoleID());
 			user.setCustomerId(userRepository.getByID(user.getUserID()).getCustomerID());
 			return user;
