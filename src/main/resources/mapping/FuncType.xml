@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.sqber.personMgr.dal.IBdFuncTypeRepository">
+	<resultMap id="BaseResultMap" type="com.sqber.personMgr.entity.FuncType">
+	    <id column="FuncTypeID" property="funcTypeID" jdbcType="INTEGER" />
+	    <result column="FuncTypeName" property="funcTypeName" jdbcType="VARCHAR" />
+	    <result column="FuncTypeCode" property="funcTypeCode" jdbcType="VARCHAR" />
+	    <result column="Status" property="status" jdbcType="INTEGER" />
+	    <result column="CreateUser" property="createUser" jdbcType="VARCHAR" />
+	    <result column="CreateTime" property="createTime" jdbcType="TIMESTAMP" />
+	    <result column="ModifyUser" property="modifyUser" jdbcType="VARCHAR" />
+	    <result column="ModifyTime" property="modifyTime" jdbcType="TIMESTAMP" />
+  	</resultMap>
+
+	<sql id="Base_Column_List">
+		FuncTypeID, FuncTypeName, FuncTypeCode, Status, CreateUser, CreateTime, ModifyUser, ModifyTime
+	</sql>
+	
+
+	<select id="getListAll" resultMap="BaseResultMap" parameterType="com.sqber.personMgr.entity.FuncType">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM functype 
+    	order by CreateTime desc  	
+	</select>
+	
+	<select id="getById" resultMap="BaseResultMap" parameterType="com.sqber.personMgr.entity.FuncType">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM function where FuncTypeID = #{funcTypeID}
+	</select>
+</mapper>

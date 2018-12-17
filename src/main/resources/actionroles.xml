@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Roles>
+	<Role url="/images/**">ALL</Role>
+	<Role url="/css/**">ALL</Role>
+	<Role url="/js/**">ALL</Role>
+	<Role url="/scripts/**">ALL</Role>
+	<Role url="/contents/**">ALL</Role>
+	<Role url="/login">ALL</Role>
+	<Role url="/logout">ALL</Role>
+	<Role url="/home/captcha">ALL</Role>
+	<Role url="/**">LoginUser</Role>
+</Roles>

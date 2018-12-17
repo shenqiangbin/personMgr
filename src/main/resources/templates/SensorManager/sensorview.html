@@ -1,0 +1,58 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorator="share/managerlayout">
+
+<head>
+    <title>测点管理</title>
+</head>
+<body>
+
+<div layout:fragment="mangercontent">
+    <div class="con-box">
+
+        <div class="table-ht">客户名称：
+            <el-input id="roleType" style="display: none;" th:value="${RoleType}"></el-input>
+            <el-input id="customerID" style="display: none;" th:value="${customerID}"></el-input>
+            <el-input id="baseMapID" style="display: none;" th:value="${baseMapID}"></el-input>
+            <el-input id="sensorID" style="display: none;" th:value="${sensorID}"></el-input>
+            <el-select v-model="query.customerID" placeholder="请选择" @change="fetchData">
+                <el-option v-for="item in customerList.list"  :key="item.customerID" :label="item.customerName"  :value="item.customerID"> </el-option>
+            </el-select>
+        </div>
+        <div class="tr-a"><el-button type="primary"><a th:href="@{/BaseMap/BaseMapList}" href="/BaseMap/BaseMapList" class="n-s-a">管理底图</a></el-button></div>
+        <el-tabs v-model="query.activeBaseMap" type="card" class="line-tab" @tab-click="tabClick">
+            <el-tab-pane
+                    :key="item.name"
+                    v-for="(item, index) in baseMaps"
+                    :label="item.baseMapName"
+                    :name="item.baseMapIDStr"
+            >
+                <div class="bz-tab-h">
+                    <div class="bz-l">
+                        <h2 class="bz-ht">测试列表</h2>
+                        <el-scrollbar class="bz-ul-hide">
+                            <ul class="bz-ul" id="sensorlis">
+                                <li v-for="(sensor, index) in sensors" :class="{cur:sensor.sensorID==query.activeSensor}">
+                                    <a href="javascript:void(0);" @click="clickSensor(sensor)">{{sensor.sensorName}}:{{sensor.sensorCode}}</a>
+                                </li>
+                            </ul>
+                        </el-scrollbar>
+                    </div>
+                    <el-scrollbar class="bz-r">
+                        <div id='box' style="position: relative;">
+                        <img id='imgEle' :src="'/file/get?type=&fileName='+item.filePath">
+                        </div>
+                    </el-scrollbar>
+                </div>
+            </el-tab-pane>
+        </el-tabs>
+    </div>
+</div>
+
+<div layout:fragment="jscontent">
+    <!-- 关系管理相关js -->
+    <script th:src="@{/js/sensor/sensorview.js}" src="js/sensor/sensorview.js"></script>
+</div>
+</body>
+</html>
+
+

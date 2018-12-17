@@ -1,0 +1,100 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		
+		<style>
+			#container {width:100%; height: 480px; } 
+			.custom-content-marker {
+	            position: relative;
+	            width: 20px;
+	            height: 34px;
+	        }
+
+	        .custom-content-marker img {
+	            width: 100%;
+	            height: 100%;
+	        }
+
+	        .custom-content-marker .close-btn {
+	            position: absolute;
+	            top: -6px;
+	            right: -8px;
+	            width: 15px;
+	            height: 15px;
+	            font-size: 12px;
+	            background: #ccc;
+	            border-radius: 50%;
+	            color: #fff;
+	            text-align: center;
+	            line-height: 15px;
+	            box-shadow: -1px 1px 1px rgba(10, 10, 10, .2);
+	        }
+
+	        .custom-content-marker .close-btn:hover{
+	            background: #666;
+	        }
+
+	        .amap-logo,.amap-copyright{display: none !important;}
+		</style>
+	</head>
+	<body>
+		
+		<div id="container"></div>
+		<div>
+			 经度：<input id="lngTxt"/>
+			 纬度：<input id="latTxt"/>
+		</div>
+
+		<script src="https://webapi.amap.com/maps?v=1.4.8&key=2a5072bcb1b308fb0a64020a0f868016&plugin=AMap.ControlBar,AMap.Autocomplete,AMap.PlaceSearch"></script>
+		<script type="text/javascript" src="https://cache.amap.com/lbs/static/PlaceSearchRender.js"></script>
+		<script type="text/javascript" src="https://cache.amap.com/lbs/static/addToolbar.js"></script>
+		<script>
+			var map = new AMap.Map('container',{
+		        //zoom:11,//级别
+		        //center: [116.397428, 39.90923],//中心点坐标
+		        //viewMode:'3D'//使用3D视图
+		    });
+
+		    //创建右键菜单
+    		var contextMenu = new AMap.ContextMenu();
+
+			var marker = null;
+
+    		//右键添加Marker标记
+		    contextMenu.addItem("标注", function (e) {
+		  
+		  		if(marker)
+		  			map.remove(marker);
+
+		        marker = new AMap.Marker({
+		        	draggable: true,
+		            position: contextMenuPositon //基点位置
+		        });
+
+		        getVal();
+
+			    AMap.event.addListener(marker, 'dragend', function () {
+			       getVal();
+			    });
+
+		        map.add(marker);
+		    }, 3);
+
+	        //地图绑定鼠标右击事件——弹出右键菜单
+		    map.on('rightclick', function (e) {
+		        contextMenu.open(map, e.lnglat);
+		        contextMenuPositon = e.lnglat;
+		    });
+
+		    function getVal(){
+		    	document.getElementById('lngTxt').value = marker.getPosition().getLng();
+		    	document.getElementById('latTxt').value = marker.getPosition().getLat();
+		    }
+		   
+			
+		    
+		</script>
+	</body>
+</html>

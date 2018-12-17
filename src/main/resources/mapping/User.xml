@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sqber.personMgr.dal.IUserRepository">
+	<resultMap id="BaseResultMap" type="com.sqber.personMgr.entity.User">
+		<id column="userId" property="userId" jdbcType="INTEGER" />
+		<result column="userCode" property="userCode"
+			jdbcType="VARCHAR" />
+		<result column="userName" property="userName"
+			jdbcType="VARCHAR" />
+		<result column="password" property="password"
+			jdbcType="VARCHAR" />
+		<result column="Status" property="status" jdbcType="INTEGER" />
+		<result column="CustomerID" property="customerID" jdbcType="INTEGER" />
+	    <result column="CreateUser" property="createUser" jdbcType="VARCHAR" />
+	    <result column="CreateTime" property="createTime" jdbcType="TIMESTAMP" />
+	    <result column="ModifyUser" property="modifyUser" jdbcType="VARCHAR" />
+	    <result column="ModifyTime" property="modifyTime" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		userId, userCode, userName, password, Status, CreateUser, CreateTime, ModifyUser, ModifyTime, CustomerID
+	</sql>
+
+	<select id="getAll" resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM user
+	</select>
+	<select id="getByID" resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM user where userId=#{userId}
+	</select>
+	<select id="getByName" resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM user where userCode=#{userCode}
+	</select>
+	<select id="getByUserName" resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM user where userName=#{userName}
+	</select>
+	<insert id="insertUser" parameterType="com.sqber.personMgr.entity.User" >
+	    insert into user (UserCode,UserName,Password,SSOUserID)
+	    values (#{userCode},#{userName},#{password},#{ssoUserID})
+    </insert>
+  
+    <update id="updateUserInfo" parameterType="com.sqber.personMgr.entity.User">
+		update user set nickName=#{nickName},phone=#{phone},company=#{company},department=#{department} where userCode = #{userCode}
+	</update>
+	
+	<update id="updateImagePath" parameterType="com.sqber.personMgr.entity.User">
+		update user set imagePath=#{imagePath} where userCode = #{userCode}
+	</update>
+	
+	<select id="getImagePath" parameterType="String" resultType="String">
+		SELECT imagePath
+		FROM user where userCode=#{userCode}
+	</select>
+	
+	<select id="getUserList" resultMap="BaseResultMap" parameterType="com.sqber.personMgr.entity.User">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM user where Status = 1 
+		<if test="userName != null and userName != ''">
+		   and userName like '%${userName}%'	
+		</if> 
+		order by createTime desc
+	</select>
+	
+	<insert id="addUser" parameterType="com.sqber.personMgr.entity.User" useGeneratedKeys="true" keyProperty="userId" keyColumn="userId">
+	    insert into user (UserCode,UserName,Password,Status,CreateUser, CustomerID,
+	      CreateTime, ModifyUser, ModifyTime)
+	    values (#{userCode},#{userName},#{password},1,#{createUser}, #{customerID},
+	      #{createTime},#{modifyUser},#{modifyTime})
+    </insert>
+    
+    <update id="updateUser" parameterType="com.sqber.personMgr.entity.User">
+		update user set UserCode=#{userCode},UserName=#{userName},Password=#{password},ModifyUser=#{modifyUser},ModifyTime=#{modifyTime},CustomerID=#{customerID} where UserID = #{userId} 
+	</update>
+	
+	<update id="deleteUser" parameterType="com.sqber.personMgr.entity.User">
+		update user set Status = 0 ,ModifyUser=#{modifyUser},ModifyTime=#{modifyTime} where UserID = #{userId} 
+	</update>
+	
+	<update id="restartUserPassword" parameterType="com.sqber.personMgr.entity.User">
+		update user set Password = #{password},ModifyUser=#{modifyUser},ModifyTime=#{modifyTime} where UserID = #{userId} 
+	</update>
+	
+	
+</mapper>

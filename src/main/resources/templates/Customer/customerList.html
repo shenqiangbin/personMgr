@@ -1,0 +1,325 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorator="share/layout">
+
+<head>
+    <style>
+        .itemCur{border:1px solid #cae5f7;}
+        #container{
+            position: absolute;
+            top: 70px;
+            right: 3px;
+            bottom: 2px;
+            left: 362px;
+            border: 1px solid #e7f5fc;
+        }
+        .markerinfo{
+            background-color: white;
+            border-radius: 2px;
+            border: 1px solid #ebeff3;
+            box-shadow: 0 2px 6px 0 rgba(114, 124, 245, .5);
+            padding: 8px;
+        }
+        .amap-marker-label{
+            border:0 !important;
+        }
+    </style>
+</head>
+<body>
+
+<div layout:fragment="content">
+    <div class="box-wrap">
+        <div class="map-l">
+            <div class="map-lt">
+                <div class="clearfix">
+                    <!--<el-select class="fl"  placeholder="用户名">-->
+                        <!--<el-option>-->
+                        <!--</el-option>-->
+                    <!--</el-select>-->
+                    <!--<el-select class="fr" placeholder="用户名">-->
+                        <!--<el-option>-->
+                        <!--</el-option>-->
+                    <!--</el-select>-->
+                </div>
+                <div class="search">
+                    <a href="#" class="s-btn" v-on:click="query">
+                        <svg class="icon" aria-hidden="true">
+                            <use xlink:href="#icon-sousuo"></use>
+                        </svg>
+                    </a>
+                    <el-input placeholder="用户单位检索" v-model="searchName" @keyup.enter.native="query"></el-input>
+                </div>
+            </div>
+            <div class="btn-box">
+                <el-button type="primary" size="mini" v-on:click="goMgr">管理</el-button>
+            </div>
+            <el-scrollbar class="map-l-hide">
+                <ul>
+
+                    <li class="map-s" v-for="item in pageModel.list" v-on:click='selectModel(item)' :class="{itemCur:item.customerID == curItemId}" >
+                        <div class="map-ht">
+                            <a href="#" class="map-t"><i class="t-logo"><img v-bind:src="item.model.img ? item.model.img : '/images/t-logo.png'" alt="" :onerror="errorImg" /></i>{{item.model.customerName}}</a>
+                            <!--<a href="#" class="tr-set">-->
+                                <!--<svg class="icon" aria-hidden="true">-->
+                                    <!--<use xlink:href="#icon-set"></use>-->
+                                <!--</svg>-->
+                            <!--</a>-->
+                        </div>
+                        <div class="map-bottom clearfix">
+                            <div class="fl"><span class="cg6">测点数量：</span>{{item.sensorNum}}个</div>
+                            <div class="fr"><span class="cg6">安全等级：</span>{{item.model.securityLevel}}级</div>
+                        </div>
+                    </li>
+                </ul>
+            </el-scrollbar>
+            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
+                           :page-sizes="[10]"
+                           :current-page="pageModel.currentPage" :page-size="pageModel.pageSize" layout="total,prev, pager, next"
+                           :total="pageModel.totalCount"></el-pagination>
+        </div>
+
+        <div id="container"></div>
+    </div>
+</div>
+
+<div layout:fragment="jscontent">
+    <script src="https://webapi.amap.com/maps?v=1.4.8&key=2a5072bcb1b308fb0a64020a0f868016&plugin=AMap.ControlBar"></script>
+
+    <script>
+
+        var loadData = function () {
+
+            $.ajax({
+                type: "get",
+                url: contextRoot + "Customer/GetListItems",
+                data: {currentPage: app.currentPage, name: app.searchName},
+                async: true,
+                success: function (result) {
+                    console.log(result);
+                    if (result.code == 200) {
+                        app.pageModel = result.data;
+
+                        var ids = [];
+                        clearMarkers();
+
+                        for(var m=0;m<app.pageModel.list.length; m++){
+                            var mitem =  app.pageModel.list[m];
+                            ids.push(mitem.model.customerID);
+                        }
+                        var alerts = loadAlertModels(ids);
+
+                        for(var m=0;m<app.pageModel.list.length; m++){
+                            var mitem =  app.pageModel.list[m];
+                            mitem.alerts = [];
+
+                            alerts.forEach(function (item) {
+                                if(item.customerID == mitem.model.customerID){
+                                    mitem.alerts.push(item);
+                                }
+                            })
+
+                            addMarker(mitem);
+                        }
+
+                    }else if(result.code == 403){
+                        window.location.href = contextRoot + "login?return=" + "/models";
+                    }else {
+                        showError(result.msg);
+                    }
+                },
+                error: function () {
+                    showMsg("信息获取失败");
+                }
+            });
+        };
+
+        var loadAlertModels = function (ids) {
+            var result1 = [];
+            $.ajax({
+                type: "get",
+                url: contextRoot + "SensorManager/GetAlerts",
+                data: {ids:ids.join(",")},
+                async: false,
+                success: function (result) {
+                    console.log(result);
+                    if (result.code == 200) {
+                        result1 = result.data;
+                    }else {
+                        showError(result.msg);
+                    }
+                },
+                error: function () {
+                    showMsg("警报信息获取失败");
+                }
+            });
+
+            if(!result1)
+                result1 = [];
+
+            return result1;
+        }
+
+        var query = function () {
+            app.currentPage = 1;
+            loadData();
+        }
+
+        var marker = null;
+        var markerArr = [];
+
+        var clearMarkers = function () {
+            markerArr.forEach(function (item) {
+                map.remove(item);
+            });
+            markerArr = [];
+        }
+
+        var addMarker = function (m) {
+            var item = m.model;
+
+            console.log(item);
+            var customerName = "";
+            if(item && item.customerName)
+                customerName = item.customerName;
+
+            var lng = item.lng;
+            var lat = item.lat;
+
+            if(lat == 0 && lng == 0){
+                return;
+            }
+            console.log("lnglat:"+lng+","+lat);
+            marker = new AMap.Marker({
+                position: [lng,lat],   // 经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
+                title: customerName,
+                //content: "研究所"
+                label:{
+                    offset: new AMap.Pixel(-30, -40),
+                    content:"<div class='markerinfo'>" + customerName + "</div>"
+                }
+            });
+
+            var iconUrl = "http://a.amap.com/jsapi_demos/static/demo-center/icons/poi-marker-default.png";
+
+            if( m.alerts.length>0)
+               iconUrl = "http://a.amap.com/jsapi_demos/static/demo-center/icons/poi-marker-red.png";
+
+            var startIcon = new AMap.Icon({
+                // 图标尺寸
+                size: new AMap.Size(25, 34),
+                image: iconUrl,
+                // 图标所用图片大小
+                imageSize: new AMap.Size(25, 34),
+            });
+            marker.setIcon(startIcon);
+            marker.c_model = m;
+
+            if( m.alerts.length>0){
+                AMap.event.addListener(marker, 'click', function () {
+                    console.log(this.c_model);
+
+                    //value.sensorID
+                    //value.customerID
+                    //value.baseMapID
+
+                    var str2 = "<h3>越值报警</h3>";
+                    var str3 = "<h3>空值报警</h3>";
+                    this.c_model.alerts.forEach(function (value) {
+                        if(value.alertStatus == 2 || value.opnAlertStatus == 2){
+                            str2 += ("<p><a href='{0}' style='color:blue'>"+value.sensorName+"</a></p>").replace("{0}","/monitorManager/monitor?cid="+value.customerID);
+                        }
+                        if(value.alertStatus == 3 || value.opnAlertStatus == 3){
+                            str3 += ("<p><a href='{0}' style='color:blue'>"+value.sensorName+"</a></p>").replace("{0}","/monitorManager/monitor?cid="+value.customerID);
+                        }
+                    });
+                    var strSum = str2+str3;
+
+                    var content = "<div><p><strong>省份</strong>:{1}</p><p><strong>备注</strong>:{2}</p>{3}</div>";
+                    content = content.replace("{1}",this.c_model.regionDesc)
+                        .replace("{2}",this.c_model.model.note?this.c_model.model.note:"")
+                        .replace("{3}",strSum);
+
+                    app.$alert(content, this.c_model.model.customerName, {
+                        dangerouslyUseHTMLString: true
+                    });
+                });
+            }else{
+                AMap.event.addListener(marker, 'click', function () {
+                    console.log(this.c_model);
+
+                    var content = "<div><p><strong>省份</strong>:{1}</p><p><strong>备注</strong>:{2}</p></div>";
+                    content = content.replace("{1}",this.c_model.regionDesc)
+                        .replace("{2}",this.c_model.model.note?this.c_model.model.note:"");
+
+                    app.$alert(content, this.c_model.model.customerName, {
+                        dangerouslyUseHTMLString: true
+                    });
+                });
+            }
+
+
+            map.add(marker);
+            markerArr.push(marker);
+
+            map.setFitView();
+        }
+
+        var selectModel = function (m) {
+            var item = m.model;
+            app.curItemId = item.customerID;
+
+            console.log(item);
+
+            var lng = item.lng;
+            var lat = item.lat;
+
+            if(lat == 0 && lng == 0){
+                showError("没有设置经纬度，无法定位");
+                return;
+            }
+
+            map.setZoom(13);
+            map.setCenter([lng,lat]);
+        }
+
+        var app = new Vue({
+            el: '#app',
+            data: {
+                pageModel:[],
+                searchName:'', /*查询参数：用户单位名称*/
+                currentPage:1,
+                curItemId:null,
+                errorImg: 'this.src="../images/t-logo.png"',
+            },
+            methods: {
+                loadData: loadData,
+                selectModel: selectModel,
+                query:query,
+                handleSizeChange(val) {
+
+                },
+                handleCurrentChange(val){
+                    app.currentPage = val;
+                    app.loadData();
+                },
+                goMgr(){
+                    window.location.href= contextRoot +"menu/first";
+                }
+            }
+        })
+
+        app.loadData();
+
+        var map = new AMap.Map('container',{
+            //zoom:11,//级别
+            //center: [116.397428, 39.90923],//中心点坐标
+            //viewMode:'3D'//使用3D视图
+        });
+
+    </script>
+</div>
+
+
+</body>
+</html>
+
+

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.sqber.personMgr.dal.IBdRoleRepository">
+	<resultMap id="BaseResultMap" type="com.sqber.personMgr.entity.Role">
+	    <id column="RoleID" property="roleID" jdbcType="INTEGER" />
+	    <result column="RoleCode" property="roleCode" jdbcType="VARCHAR" />
+	    <result column="RoleName" property="roleName" jdbcType="VARCHAR" />
+	    <result column="Status" property="status" jdbcType="INTEGER" />
+	    <result column="CreateUser" property="createUser" jdbcType="VARCHAR" />
+	    <result column="CreateTime" property="createTime" jdbcType="TIMESTAMP" />
+	    <result column="ModifyUser" property="modifyUser" jdbcType="VARCHAR" />
+	    <result column="ModifyTime" property="modifyTime" jdbcType="TIMESTAMP" />
+  	</resultMap>
+
+	<sql id="Base_Column_List">
+		RoleID, RoleCode, RoleName, Status, CreateUser, CreateTime, ModifyUser, ModifyTime
+	</sql>
+	
+	<sql id="Where_Clause" >
+	    <where >	 
+	      status = 1    
+	      <if test="dataTableName">
+	      	and RoleName like '%${RoleName}%'	      	
+	      </if>
+	    </where>
+	  </sql>
+
+	<select id="getListAll" resultMap="BaseResultMap" parameterType="com.sqber.personMgr.entity.Role">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM role where Status = 1
+    	order by CreateTime desc  	
+	</select>
+	
+	<select id="getList" resultMap="BaseResultMap" parameterType="com.sqber.personMgr.entity.Role">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM role where Status = 1
+		<if test="roleName != null and roleName != ''">
+		   and RoleName like '%${roleName}%'	
+		</if> 
+    	order by CreateTime desc  	
+	</select>
+	
+	<select id="existRole" resultMap="BaseResultMap" parameterType="com.sqber.personMgr.entity.Role">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM role where Status = 1
+		<if test="roleName != null and roleName != ''">
+		   and RoleName like '%${roleName}%'	
+		</if>
+		<if test="roleCode != null and roleCode != ''">
+		   and RoleCode like '%${roleCode}%'	
+		</if>
+	</select>
+	
+	<select id="getRoleByName" resultMap="BaseResultMap" parameterType="com.sqber.personMgr.entity.Role">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM role where roleName = #{roleName} and Status = 1
+	</select>
+	
+	<select id="getRoleById" resultMap="BaseResultMap" parameterType="com.sqber.personMgr.entity.Role">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM role where RoleID = #{roleID} and Status = 1
+	</select>
+	
+	<insert id="addRole" parameterType="com.sqber.personMgr.entity.Role" useGeneratedKeys="true" keyProperty="roleId" keyColumn="RoleId">
+	    insert into role (RoleCode,RoleName,Status,CreateUser, 
+	      CreateTime, ModifyUser, ModifyTime)
+	    values (#{roleCode},#{roleName},1,#{createUser},
+	      #{createTime},#{modifyUser},#{modifyTime})
+    </insert>
+    
+    <update id="updateRole" parameterType="com.sqber.personMgr.entity.Role">
+		update role set RoleCode=#{roleCode},RoleName=#{roleName},ModifyUser=#{modifyUser},ModifyTime=#{modifyTime} where RoleID = #{roleID} 
+	</update>
+	
+	<update id="delRole" parameterType="com.sqber.personMgr.entity.Role">
+		update role set Status = #{status},ModifyUser=#{modifyUser},ModifyTime=#{modifyTime} where RoleID = #{roleID} 
+	</update>
+</mapper>

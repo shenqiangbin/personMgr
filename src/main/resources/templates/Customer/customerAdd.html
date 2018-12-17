@@ -1,0 +1,311 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorator="share/managerlayout">
+
+<head>
+    <style>
+
+    </style>
+</head>
+<body>
+
+<div layout:fragment="mangercontent">
+    <el-scrollbar  class="contain">
+        <div class="con-box">
+            <h2 v-if="isEdit">编辑客户</h2>
+            <h2 v-if="!isEdit">新增客户</h2>
+            <el-form :model="ruleForm" label-position="left" :rules="rules" ref="ruleForm" label-width="80px" class="demo-ruleForm">
+                <el-form-item label="名称" prop="CustomerName">
+                    <el-input v-model="ruleForm.CustomerName"></el-input>
+                </el-form-item>
+                <el-form-item label="LOGO">
+                    <img v-bind:src="ruleForm.Img ? ruleForm.Img:'/images/t-logo.png'"  style="display:inline-block; width: 34px;height:22px;margin-right: 20px;">
+                    <el-button type="primary" onclick='$("#filename").click();'>选择文件</el-button>
+                    <span id="msg"></span>
+                    <div style='display:none;'>
+                        <form action='/file/upload' enctype='multipart/form-data' method='post' id="fileUpload">
+                            <input type="hidden" name="type" value="logo" />
+                            <input type='file' id='filename' name='file' onchange="fileChange(this)"/>
+                            <input type='submit' value='上传' />
+                        </form>
+                    </div>
+                </el-form-item>
+                <el-form-item label="省份" prop="region">
+                    <el-select v-model="ruleForm.region" placeholder="省份">
+                        <el-option v-for="item in address" v-bind:label="item.name" v-bind:value="item.regionCode"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="精度" prop="Lng">
+                    <el-input v-model="ruleForm.Lng"></el-input>
+                </el-form-item>
+                <el-form-item label="纬度" prop="Lat">
+                    <el-input v-model="ruleForm.Lat"></el-input>
+                    <el-button @click="dialogVisible = true">经纬度选取</el-button>
+                </el-form-item>
+                <el-form-item label="安全等级" prop="SecurityLevel">
+                    <el-input v-model="ruleForm.SecurityLevel"></el-input>
+                </el-form-item>
+                <el-form-item label="最大应力值" prop="MaxVal">
+                    <el-input v-model="ruleForm.MaxVal"></el-input>
+                </el-form-item>
+                <el-form-item label="备注" prop="note">
+                    <el-input type="textarea" v-model="ruleForm.note"></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
+                </el-form-item>
+            </el-form>
+        </div>
+</el-scrollbar>
+
+    <el-dialog
+            title="选取经纬度"
+            :visible.sync="dialogVisible"
+            width="98%"
+            :fullscreen="true"
+            >
+
+        <iframe id="iframe1" src="/lnglat.html"
+                frameborder="0" style="width:100%;height: 520px;"></iframe>
+
+        <span slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="handleClose">确 定</el-button>
+        </span>
+    </el-dialog>
+
+</div>
+
+<div layout:fragment="jscontent">
+
+    <script>
+        var save = function () {
+
+            $.ajax({
+                type: "post",
+                url: contextRoot + "Customer/saveCustomer",
+                data: app.ruleForm,
+                async: true,
+                success: function (result) {
+                    console.log(result);
+                    if (result.code == 200) {
+                        if(app.isEdit){
+                            showMsg("保存成功");
+                        }else{
+                            showMsg("保存成功");
+                            app.$refs['ruleForm'].resetFields();
+                        }
+                    }else {
+                        showError(result.msg);
+                    }
+                },
+                error: function () {
+                    showMsg("保存失败");
+                }
+            });
+        }
+
+        var getAddress = function(){
+            $.ajax({
+                type:'get',
+                url: contextRoot + "address/getByParent?code",
+                success:function(result){
+                    if(result.code == 200)
+                        app.address = result.data;
+                    else
+                        showError("地址信息获取失败");
+                },
+                error:function(){
+                    showError("地址信息获取失败");
+                }
+            });
+        }
+        
+        var handleClose = function () {
+            var lng = $("#iframe1").contents().find("#lngTxt").val();
+            var lat = $("#iframe1").contents().find("#latTxt").val();
+            app.ruleForm.Lng = lng;
+            app.ruleForm.Lat = lat;
+            app.dialogVisible = false;
+        }
+        
+        var app = new Vue({
+            el: '#app',
+            data: {
+                isEdit: false,
+                address: [],
+                ruleForm:{
+                    customerID: '',
+                    CustomerName:'',
+                    Img:'',
+                    region:'',
+                    SecurityLevel:'',
+                    MaxVal:'',
+                    note:'',
+                    Lng:'',
+                    Lat:'',
+                },
+                dialogVisible:false,
+                rules:{
+                    CustomerName: [
+                        { required: true, message: '请输入名称', trigger: 'blur' },
+                        { min: 1, max: 50, message: '长度请在 1 到 50 个字符', trigger: 'blur' }
+                    ],
+                    note:[
+                        { max: 500, message: '请不要超过500字符', trigger: 'blur' }
+                    ]
+                }
+            },
+            methods: {
+                handleCurrentChange(val){
+                    app.currentPage = val;
+                    app.loadData();
+                },
+                submitForm(formName) {
+                    this.$refs[formName].validate((valid) => {
+                        if (valid) {
+                            save();
+                        }else{
+                            return false;
+                        }
+                    });
+                },
+                getAddress: getAddress,
+                handleClose: handleClose,
+            }
+        })
+
+        app.getAddress();
+
+        var id = GetQueryString("id");
+        app.isEdit = false;
+        if(id){
+            app.isEdit = true;
+
+            $.ajax({
+                type: "get",
+                url: contextRoot + "Customer/GetById",
+                data: { id:id },
+                async: true,
+                success: function (result) {
+                    console.log("getInfo");
+                    console.log(result);
+                    if (result.code == 200) {
+                        app.ruleForm = {
+                            customerID: result.data.customerID,
+                            CustomerName: result.data.customerName,
+                            Img:result.data.img,
+                            region: result.data.region,
+                            SecurityLevel: result.data.securityLevel,
+                            MaxVal: result.data.maxVal,
+                            note: result.data.note,
+                            Lng: result.data.lng,
+                            Lat: result.data.lat,
+                        };
+                    }else {
+                        showError(result.msg);
+                    }
+                },
+                error: function () {
+                    showMsg("编辑获取信息失败");
+                }
+            });
+        }
+
+
+        /*图片上传部分*/
+        var fileChange = function(target){
+            if (target.files && target.files.length != 0) {
+                if (checkFileType(target) && checkFileSize(target)) {
+                    var form = document.getElementById("fileUpload");
+                    var postData = new FormData(form);
+                    $("#msg").html("处理中...");
+                    $.ajax({
+                        url: contextRoot + 'file/upload',
+                        type: "POST",
+                        data: postData,
+                        contentType: false,
+                        processData: false,
+                        success: function (data) {
+                            if(data.indexOf("ok")>-1){
+                                app.ruleForm.Img  = data.replace("ok","");
+                                showMsg("上传成功");
+                                $("#msg").html("");
+                            }
+                            else if(data == "extError"){
+                                showError("请上传 jpg 或 png 类型的文件");
+                            }
+                            else{
+                                showError("上传失败");
+                                $("#msg").html("");
+                            }
+
+                        },
+                        error: function () {
+                            showError("上传失败！");
+                            $("#msg").html("");
+                        }
+                    });
+                }
+            }
+
+        }
+
+        function checkFileType(target) {
+            var fileType = getFileType(target);
+            var fileTypes = [".jpg", ".png"];
+            if (fileTypes.indexOf(fileType) == -1) {
+                showError("文件类型不对,请上传 .jpg 或 .png 类型的文件");
+                return false;
+            }
+            return true;
+        }
+
+        function getFileType(target) {
+
+            if (isSomeIE()) {
+                var filePath = target.value;
+                var fileSystem = new ActiveXObject("Scripting.FileSystemObject");
+                var file = fileSystem.GetFile(filePath);
+                return file.Type;
+            } else {
+                var filename = target.files[0].name;
+                return filename.substr(filename.lastIndexOf(".")).toLowerCase();
+            }
+        }
+
+        function isSomeIE() {
+            var isIE = /msie/i.test(navigator.userAgent) && !window.opera;
+            return isIE && (navigator.userAgent.toLowerCase().match(/msie [\d.]+;/gi) + "").replace(/[^0-9.]/ig, "") != '10.0';
+        }
+
+        function checkFileSize(target) {
+            var fileSize = getFileSize(target);
+            if (fileSize > 5) {
+                showError("文件大小请小于5M");
+                return false;
+            }
+
+            return true;
+        }
+
+        function getFileSize(target) {
+            var fileSize = 0;
+
+            if (isSomeIE()) {
+                var filePath = target.value;
+                var fileSystem = new ActiveXObject("Scripting.FileSystemObject");
+                var file = fileSystem.GetFile(filePath);
+                fileSize = file.Size;
+            } else {
+                fileSize = target.files[0].size;
+            }
+
+            return fileSize / 1024 / 1024;
+        }
+    </script>
+</div>
+
+
+</body>
+</html>
+
+

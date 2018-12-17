@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout">
+<head>
+	<script th:src="@{/js/echarts.min.js}"></script>
+    <meta charset="utf-8"/>
+    <title>首页</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <!-- default header name is X-CSRF-TOKEN spring security 避免ajax请求403-->
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <script type="text/javascript">
+        var contextRoot = "[[@{/}]]";
+    </script>
+    <!-- import css -->
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+
+    <style type="text/css">
+        [v-cloak] {
+            display: none !important;
+        }
+        
+        /* 可编辑表格 */
+        .el-table .el-input,
+        .el-table .el-input-number,
+        .el-table .el-select {
+            display: none;
+            width: 100%;
+        }
+
+        .el-table .current-row .el-input,
+        .el-table .current-row .el-input-number,
+        .el-table .current-row .el-select {
+            display: inherit;
+        }
+
+        .el-table .current-row .el-input+span,
+        .el-table .current-row .el-input-number+span,
+        .el-table .current-row .el-select+span {
+            display: none;
+        }
+    </style>
+
+    <script th:src="@{/js/jquery.min.js}"></script>
+    <script th:src="@{/js/iconfont.js}"></script>
+    <script th:src="@{/js/vue.js}"></script>
+    <script th:src="@{/js/index.js}"></script>
+    <script th:src="@{/js/base.js}"></script>
+</head>
+<body>
+<div>
+    <!-- 页头 -->
+    <div id='appheader' th:include="/share/header::header"></div>
+    <!-- 正文内容 -->
+    <div id='app' v-cloak layout:fragment="content"></div>
+    <!-- 页脚 -->
+    <!-- <div th:include="/share/footer::footer"></div> -->
+    <!-- </div> -->
+</div>
+</body>
+<!-- JS内容 -->
+<div layout:fragment="jscontent"></div>
+</html>

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout" layout:decorator="share/managerlayout">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>数据管理</title>
+</head>
+<body>
+<div layout:fragment="mangercontent">
+    <!-- top over--> 
+    <div class="box-wrap">
+      <el-scrollbar  class="contain">
+        <div class="con-box">
+          <div class="top-form clearfix" style="margin-bottom:-2px;">
+            <div class="table-ht dvm">
+              <span>客户名称：</span>
+                <el-input id="customerID" style="display: none;" th:value="${customerID}"></el-input>
+                <el-input id="baseMapID" style="display: none;" th:value="${baseMapID}"></el-input>
+                <el-input id="sensorID" style="display: none;" th:value="${sensorID}"></el-input>
+              <el-select v-model="customerID" placeholder="请选择">
+                <el-option v-for="item in customerList.list"  :key="item.customerID" :label="item.customerName"  :value="item.customerID"> </el-option>
+              </el-select>
+            </div>
+            <div class="table-ht dvm">
+              <span>类型：</span>
+              <el-select v-model="dataType" placeholder="请选择">
+                <el-option v-for="item in options"  :key="item.value" :label="item.label"  :value="item.value"> </el-option>
+              </el-select>
+            </div>
+          </div>  
+          <div class="form-group clearfix">
+            <div class="table-cell">
+              <div class="fg-m">
+                <el-select v-model="selectName" placeholder="请选择">
+                  <el-option v-for="item in options2"  :key="item.value" :label="item.label"  :value="item.value"> </el-option>
+                </el-select>
+                <el-input placeholder="请输入" v-model="selectValue" @keyup.enter.native="fetchData"></el-input>
+              </div>
+              <div class="fg-m">
+               <el-date-picker class="rili-box"
+                  v-model="dateValue"
+                  type="daterange"
+                  format="yyyy-MM-dd"
+                  value-format="yyyy-MM-dd"
+                  range-separator="——"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期">
+                </el-date-picker>
+              <el-button type="primary" @click="fetchData">查找</el-button>
+              <el-button @click="reset">重置</el-button>
+              </div>
+            </div>
+          </div>  
+          <div class="form-group clearfix">
+            <div class="fl">
+              <el-button type="primary" @click="dialogAddVisible = true">新增</el-button>
+              <el-button class="btn-bo" @click="templateDialogVisible = true">
+                                                        下载导入模板
+              </el-button>
+              <el-button class="btn-bo" @click="centerDialogVisible = true">
+                                                      导入
+              </el-button>
+
+            </div>
+            <!-- <div class="fr">
+              <el-button>自动整编</el-button>
+              <span class="line"></span>
+              <span class="cg6">
+                <a href="#" class="cb">原始数据</a>/ 
+                <a href="#">整编数据</a>
+              </span>
+            </div> -->
+          </div>
+          
+           <el-table style="width: 100%" :data="pageModel.list.slice((pageModel.currentPage-1)*pageModel.pagesize,pageModel.currentPage*pageModel.pagesize)" 
+          highlight-current-row class="x-table  table-td0">
+           <!--  <el-table-column  label="序号" width="40" type="selection" @selection-change="changeFun">
+            </el-table-column> -->
+            <el-table-column label="序号"width="100" type="index">
+			<template scope="scope"><span>{{scope.$index+(pageModel.currentPageIndex-1)*pageModel.pagesize + 1}} </span></template>
+		    </el-table-column>
+		    <el-table-column label="测点">
+                <template scope="scope">
+                    <span>{{scope.row.sensorName}}</span>
+                </template>
+            </el-table-column>
+            <el-table-column  label="代号">
+               <template slot-scope="scope" >
+                   <span>{{scope.row.sensorCode}}</span>
+               </template>
+            </el-table-column>
+            <el-table-column  label="时间">
+               <template slot-scope="scope" >
+                   <span>{{scope.row.recordStartDate}}</span>
+               </template>
+            </el-table-column>
+            <el-table-column  label="开合度(mm)">
+               <template slot-scope="scope" >
+                   <el-input size="mini" v-model="scope.row.value1" placeholder="请输入内容" v-if="isShow[scope.$index]"></el-input>
+                   <span v-if="scope.row.value1==''">-</span>
+                   <span v-else>{{scope.row.value1}}</span>
+               </template>
+            </el-table-column>
+            <el-table-column  label="温度(℃)">
+               <template slot-scope="scope" >
+                   <el-input size="mini" v-model="scope.row.value2" placeholder="请输入内容" v-if="isShow[scope.$index]"></el-input>
+                   <span v-if="scope.row.value2==''">-</span>
+                   <span v-else>{{scope.row.value2}}</span>
+               </template>
+            </el-table-column>
+            <el-table-column  label="类型">
+               <template slot-scope="scope" >
+                   <span>{{({0:"原始数据",1:"整编数据"})[scope.row.dataType]}}</span>
+               </template>
+            </el-table-column>
+            <el-table-column  label="操作">
+               <template slot-scope="scope" >
+                  <a href="#" class="svg-a" title="保存" v-if="isShow[scope.$index]" @click="saveSensorData(scope.$index, scope.row)">
+                    <svg class="icon" aria-hidden="true">
+                      <use xlink:href="#icon-baocun"></use>
+                    </svg>
+                  </a>
+                  <a href="#" class="svg-a" title="编辑" v-if="!isShow[scope.$index]" @click="editSensorData(scope.$index, scope.row)">
+                    <svg class="icon" aria-hidden="true">
+                      <use xlink:href="#icon-edtor"></use>
+                    </svg>
+                  </a>
+                  <a href="#" class="svg-a" title="删除"  @click="deleteSensorData(scope.$index, scope.row)">
+                    <svg class="icon" aria-hidden="true">
+                      <use xlink:href="#icon-del"></use>
+                    </svg>
+                  </a>
+                  
+               </template>
+            </el-table-column>
+          </el-table>
+          <el-pagination 
+                  @size-change="handleSizeChange"
+                  @current-change="handleCurrentChange"
+		          layout="total, sizes, prev, pager, next, jumper"
+		          :total="pageModel.totalCount" 
+		          :current-page="pageModel.currentPage" 
+		          :page-sizes="[10,20,30,50]" 
+		          :page-size="pageModel.pagesize"> 
+          </el-pagination>
+        </div>
+      </el-scrollbar>
+      <!-- 新增开始 -->
+      <el-dialog class="dialog-panel pop-sm" title="新增" :visible.sync="dialogAddVisible">
+	    <el-form ref="form"  label-width="124px" class="pop-form form-m0">
+	      <el-form-item label="测点：">
+	        <el-select v-model="addSensorName" placeholder="请选择" style="width:300px;">
+                <el-option v-for="item in sensorList.list"  :key="item.sensorID" :label="item.sensorName"  :value="item.sensorID"> </el-option>
+             </el-select>
+	      </el-form-item>
+	      <el-form-item label="时间：">
+	      <el-date-picker class="rili-box" style="width:300px;"
+	                  v-model="addDate"
+	                  type="datetime"
+	                  format="yyyy-MM-dd HH:mm:ss"
+                      value-format="yyyy-MM-dd HH:mm:ss"
+	                  placeholder="选择日期">
+	      </el-date-picker>
+	      </el-form-item>
+	      <el-form-item label="开合度（mm）：">
+	        <el-input v-model="addValue1"></el-input>
+	      </el-form-item>
+	      <el-form-item label="温度&#8451;：">
+	        <el-input v-model="addValue2"></el-input>
+	      </el-form-item>
+	      <el-form-item label="类型：">
+	        <el-select v-model="addDataType" placeholder="请选择" style="width:300px;">
+                  <el-option v-for="item in options"  :key="item.value" :label="item.label"  :value="item.value"> </el-option>
+             </el-select>
+	      </el-form-item>
+	    </el-form>
+	    <div slot="footer" class="dialog-footer">
+	      <el-button type="primary" @click="addSensorData">确 定</el-button>
+	      <el-button @click="dialogAddVisible = false">取 消</el-button>
+	    </div>
+	  </el-dialog>
+      <!-- 新增结束 -->
+      
+      <!-- 导入开始 -->
+	  <el-dialog class="dialog-panel pop-form" title="导入词条" width="30%" center :visible.sync="centerDialogVisible">
+	   <div>
+	    <div style="text-align: center;"><!--禁用时在upload-m后面追加disable样式名-->
+	      <div>
+	      <form action='ztcb/uploadWord' enctype='multipart/form-data' method='post' id="fileUpload"> 
+	       <el-upload action="ztcb/uploadWord" id="file" name='file' ref="upload" :auto-upload='false'
+	        :on-change='changeUpload' accept=".xls,.xlsx" :limit=limitNum :on-exceed="handleExceed">
+	        <span>点击上传文件</span><br/>
+	        <span class="cg9">支持xls,xlsx格式文件</span>
+	        </el-upload>
+	        </form>
+	      </div>
+	    </div>
+	   </div>
+	    <div slot="footer" class="dialog-footer">
+	      <el-button @click="uploadData" class="btn-line cur">确 定</el-button>
+	      <el-button @click="centerDialogVisible = false" class="btn-line">取 消</el-button>
+	    </div>
+	 </el-dialog>
+     <!-- 导入结束 -->
+
+        <!-- 模板下载开始 -->
+        <el-dialog class="dialog-panel pop-form" title="下载模板" width="30%" center :visible.sync="templateDialogVisible">
+            <div>
+
+                <div style="text-align:center;"><!--禁用时在upload-m后面追加disable样式名-->
+                    <div>
+                        选择客户：
+                        <el-select v-model="templateCustomerId" placeholder="请选择">
+                            <el-option v-for="item in customerList.list"  :key="item.customerID" :label="item.customerName"  :value="item.customerID"> </el-option>
+                        </el-select>
+                    </div>
+                </div>
+            </div>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="downloadTemplate" class="btn-line cur">确 定</el-button>
+                <el-button @click="templateDialogVisible = false" class="btn-line">取 消</el-button>
+            </div>
+        </el-dialog>
+        <!-- 模板下载结束 -->
+
+    </div>
+</div>
+  <div layout:fragment="jscontent">
+  <script th:src="@{/js/dataManager.js}"></script>
+  </div>
+</body>
+</html>

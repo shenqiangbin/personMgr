@@ -1,0 +1,36 @@
+server:
+  port: 7776
+mybatis:
+  typeAliasesPackage: com.sqber.personMgr.entity
+  mapperLocations: classpath*:/mapping/*.xml
+spring:
+  servlet:
+    multipart:
+      max-file-size: 100Mb
+      maxRequestSize: 1000Mb
+  thymeleaf:
+    cache : false
+  cache:
+    type: SIMPLE
+  datasource:
+    mysql:
+      JdbcUrl: jdbc:mysql://127.0.0.1:3306/personMgr?useSSL=false&serverTimezone=UTC #开发
+      DriverClassName: com.mysql.cj.jdbc.Driver
+      Username: root
+      Password: 123456
+      useSSL: false
+      type: com.zaxxer.hikari.HikariDataSource
+      minIdle: 5
+      maxPoolSize: 15
+      isAutoCommit: true
+      idleTimeout: 30000
+      maxLifetime: 1800000
+      connectionTimeout: 30000
+      connectionTestQuery: SELECT 1
+logging:
+    level:
+      cnki:
+        datamonitor:
+                  dal: debug
+fileupload:
+  savePath: D:/datamonitor/upload/

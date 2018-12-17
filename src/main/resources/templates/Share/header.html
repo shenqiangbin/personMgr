@@ -1,0 +1,25 @@
+<!DOCTYPE>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="header">
+    <!-- top -->
+
+    <div class="top clearfix">
+        <h1 class="logo-p"><a href="/Customer/CustomerList">钢结构健康监测平台信息管理系统</a></h1>
+        <div th:if="${session.SPRING_SECURITY_CONTEXT} ne null" class="user-box" >
+            <span>你好，</span>
+            <a href="#" th:text="${session.SPRING_SECURITY_CONTEXT.authentication.principal.username}"></a>
+            <a th:href="@{/logout}">退出</a>
+        </div>
+        <div th:if="${session.SPRING_SECURITY_CONTEXT} eq null" class="user-box">
+            <script>window.location.href="/login"</script>
+            <div class="head-box dvm">
+                <a th:href="@{/login}">登录</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

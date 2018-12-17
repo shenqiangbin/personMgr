@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout" layout:decorator="share/managerlayout">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <!-- 引入样式 -->
+  <title>用户管理</title>
+<!--[if lt IE 9]>
+<![endif]-->
+</head>
+<body>
+<div layout:fragment="mangercontent">
+    <!-- top --> 
+    <!-- top over--> 
+    <div class="box-wrap">
+      <el-scrollbar  class="contain">
+        <div class="con-box">
+          <div class="form-group clearfix">
+            <!-- <a href="#" class="add-btn">
+              <svg class="icon" aria-hidden="true">
+                  <use xlink:href="#icon-add"></use>
+              </svg>
+            </a> -->
+            <div class="table-cell">
+              <div class="fg-m">
+                <el-input placeholder="请输入用户名" v-model="searchUserName"></el-input>
+                <el-button type="primary"  @click="fetchData">查找</el-button>
+              </div>
+            </div>
+          </div>
+          <div class="clearfix">
+            <div class="btn-group fl">
+              <el-button type="primary" @click="add">新增</el-button>
+              <el-button type="primary" @click="deleteUser">删除</el-button>
+              <el-button type="primary" @click="restart">重置密码</el-button>
+            </div>
+            <!-- <div class="btn-group fr">
+              <el-button type="primary">批量导入</el-button>
+            </div> -->
+          </div>
+          <el-table style="width: 100%" :data="pageModel.userList" highlight-current-row  @selection-change="changeFun"  class="p0-table">
+          	<el-table-column  label="序号" width="40" type="selection" @selection-change="changeFun">
+            </el-table-column>
+            <el-table-column  label="序号" width="60" type="index">
+            	<template slot-scope="scope" >{{scope.$index+(pageModel.currentPage-1)*pageModel.pageSize + 1}}</template>
+            </el-table-column>
+            <el-table-column prop="userCode" label="用户编码">
+               <template slot-scope="scope" >{{scope.row.userCode}}</template>
+            </el-table-column>
+            <el-table-column prop="userName" label="用户名">
+               <template slot-scope="scope" >{{scope.row.userName}}</template>
+            </el-table-column>
+            <el-table-column prop="roleType" label="角色类型">
+               <template slot-scope="scope" >{{scope.row.roleType}}</template>
+            </el-table-column>
+            <el-table-column prop="roleType" label="单位">
+               <template slot-scope="scope" >{{scope.row.customerName}}</template>
+            </el-table-column>
+          </el-table>
+          <el-pagination  
+	          @size-change="handleSizeChange"
+	          @current-change="handleCurrentChange" 
+	          :current-page="pageModel.currentPage" 
+	          :page-sizes="[10,20,30,50]" 
+		      :page-size="pageModel.pageSize" 
+	          layout="total,sizes, prev, pager, next,jumper"  
+	          :total="pageModel.totalCount">
+          </el-pagination>
+        </div>
+      </el-scrollbar>
+    </div>
+    <el-dialog class="dialog-panel pop-sm" title="新增" :visible.sync="dialogFormVisible" @close="closeForm">
+    <el-form ref="form"  label-width="85px" class="pop-form">
+      <el-form-item label="用户编码：">
+           <el-input id="userCode" v-model="userCode" ></el-input>
+         </el-form-item>
+         <el-form-item label="用户名：">
+           <el-input id="userName" v-model="userName" ></el-input>
+         </el-form-item>
+         <el-form-item label="角色类型：">
+         	<el-select placeholder="请选择角色类型" v-model='roleType'>
+            	<el-option v-for="item in roleList" :key="item.roleID" :label="item.roleName" :value="item.roleName"></el-option>
+            </el-select>
+         </el-form-item>
+         <el-form-item label="单位：">
+         	<el-select placeholder="请选择单位" v-model='customerID' @change="customChange">
+            	<el-option v-for="item in customerList" :key="item.customerID" :label="item.customerName" :value="item.customerName"></el-option>
+            </el-select>
+         </el-form-item>
+    </el-form>
+    <div slot="footer" class="dialog-footer">
+      <el-button type="primary" @click="addSubmit">确 定</el-button>
+      <el-button @click="dialogFormVisible = false">取 消</el-button>
+    </div>
+
+  </el-dialog>
+</div>
+  <!-- import Vue before Element -->
+<!--   <script th:src="@{/js/vue.js}"></script>
+  <script th:src="@{/js/iconfont.js}"></script>
+  <script th:src="@{/js/index.js}"></script>
+  <script th:src="@{/js/jquery.min.js}"></script> -->
+  <div layout:fragment="jscontent">
+  <script type="text/javascript">
+	var token = $("meta[name='_csrf']").attr("content");
+	var header = $("meta[name='_csrf_header']").attr("content");
+	$(document).ajaxSend(function(e, xhr, options) {
+		xhr.setRequestHeader(header, token);
+	});	
+</script>
+  <script>
+  var dataFuc = function dataFuc(){
+		return {
+			defaultUserId:'',
+			searchUserName:'',
+			roleType:'',
+			customerID:'',
+			defaultCustomerID:'',
+			userId:'',
+			userCode:'',
+			userName:'',
+			multipleSelection:[],
+			password:'',
+			roleList:[{
+				roleID:'',
+				roleName:''}
+			],
+			customerList:[{
+				customerID:'',
+				customerName:''
+			}],
+			dialogFormVisible: false, 
+			menuStyle:{
+				universalDic:true,
+				specialtyDic:false,
+				noumenonManagement:false,
+				domainWordList:false,
+				knowledgeGraph:false,
+			},
+			pageModel: { 
+	               currentPage: 1,
+	               totalCount: 0,
+	               totalPage: 1,
+	               pageSize:10, 
+	               list: []
+	        },
+		}
+	};
+	
+	var addSubmit = function addSubmit(){
+		if('' == app.userCode){
+			  app.$alert('用户编码不能为空', '提示', {
+	 	          	confirmButtonText: '确定',
+	 	          	confirmButtonClass: 'btn-line cur',
+	 	          });
+			 return false;
+		  }
+		if('' == app.userName){
+			  app.$alert('用户名不能为空', '提示', {
+	 	          	confirmButtonText: '确定',
+	 	          	confirmButtonClass: 'btn-line cur',
+	 	          });
+			 return false;
+		  }
+	  var role = app.roleType;
+	  console.log(role);
+	  if('' == role){
+		  app.$alert('请选择角色类型', '提示', {
+ 	          	confirmButtonText: '确定',
+ 	          	confirmButtonClass: 'btn-line cur',
+ 	          });
+		 return false;
+	  }
+	  var cutomer = app.defaultCustomerID;
+	  console.log(cutomer);
+	  if('' == cutomer){
+		  app.$alert('请选择公司', '提示', {
+ 	          	confirmButtonText: '确定',
+ 	          	confirmButtonClass: 'btn-line cur',
+ 	          });
+		 return false;
+	  }
+		
+	  var url = contextRoot+'user/addUser';
+      var data = {
+             currentPage: app.pageModel.currentPage,
+             pageSize: app.pageModel.pageSize,
+             userCode: app.userCode,
+             userName: app.userName,
+             roleType: app.roleType,
+             customerID: app.defaultCustomerID,
+             password: app.password,
+             userId: app.userId
+         }; 
+      $.ajax({
+  	   data: data,
+         type: 'POST',
+         url: url,
+         async: true,
+         success: function (result) {
+             if (result.code == 200) {	
+          	   app.dialogFormVisible = false;
+          	   app.fetchData();
+             } else {
+            	 app.$alert(result.msg, '提示', {
+		 	          	confirmButtonText: '确定',
+		 	          	confirmButtonClass: 'btn-line cur',
+		 	          });
+				 return false;
+             }
+         },
+         error: function (data) {
+         }
+      });
+	}
+	
+	var deleteUser = function deleteUser(){
+		var e = this;
+		   var ids = [];
+		   var dicIdsStr;
+		   if(app.multipleSelection.length>0){
+			   for(var i = 0;i<app.multipleSelection.length;i++){
+				   ids.push(app.multipleSelection[i].userId);
+			   }
+			   dicIdsStr = ids.join(","); 
+		   }else{
+			   e.$alert('请选择要删除的信息!', '提示', {
+	 	          	confirmButtonText: '确定',
+	 	          	confirmButtonClass: 'btn-line cur',
+	 	          });
+			   return false;
+		   }
+		   e.$confirm('此操作将永久删除该用户, 是否继续?', '提示',{
+		        confirmButtonText: '确定',
+		        cancelButtonText: '取消',
+		        cancelButtonClass: 'btn-line',
+		        confirmButtonClass: 'btn-line cur',
+		      }).then(() => {
+		   var ajaxdata = {customerIds:dicIdsStr};
+			$.ajax({
+		           data: ajaxdata,
+		           type: "POST",
+		           url: contextRoot+"user/deleteUser",
+		           async: false,
+		           success: function (result) {
+ 	               if (result.code == 200) {
+ 	            	   app.fetchData();
+ 	               }else{
+ 	            	   _this.$message({
+	            	          showClose: true,
+	            	          message: result.msg,
+	            	          type: 'warning'
+	            	        });
+ 	               }
+ 	           },
+		           error: function (data) {
+		        	   e.$alert('删除失败,请刷新后重试！', '错误', {
+	         	          confirmButtonText: '确定',
+	         	          confirmButtonClass: 'btn-line cur',
+	         	          });
+		           }
+		       });
+	        }).catch(() => {
+		          this.$message({
+		            type: 'info',
+		            message: '已取消删除'
+		          });          
+		        });
+		
+	}
+	
+	var handleSizeChange = function handleSizeChange(val){
+		app.pageModel.pageSize = val;
+	    app.fetchData();
+	}
+	
+	var handleCurrentChange = function handleCurrentChange(val){
+		app.pageModel.currentPage = val;
+		app.fetchData();
+	}
+	
+	var closeForm = function closeForm(){
+		app.dialogFormVisible = false;
+		app.userId = '';
+  		app.roleType = '';
+        app.userCode = '';
+        app.userName = '';
+        app.customerID = '';
+	}
+	
+	var add = function add(){
+		app.dialogFormVisible = true;
+	}
+	
+	var getRoleList = function getRoleList(){
+		$.ajax({
+	           type: "get",
+	           url: contextRoot+'user/getRolelist',
+	           async: false,
+	           success: function (result) {
+	               if (result.code == 200) {
+	            	   app.roleList = result.data;
+	               } else {
+	            	   app.$alert(result.msg, '提示', {
+			 	          	confirmButtonText: '确定',
+			 	          	confirmButtonClass: 'btn-line cur',
+			 	          });
+					   return false;
+	               }
+	           },
+	           error: function (data) {
+	           }
+	       });
+	}
+	
+	var fetchData = function fetchData() {
+     var url = contextRoot+'user/getUserData';
+     var data = {
+             currentPage: app.pageModel.currentPage,
+             pageSize: app.pageModel.pageSize,
+             userName:app.searchUserName,
+         }; 
+     $.ajax({
+  	   data: data,
+         type: 'POST',
+         url: url,
+         async: true,
+         success: function (result) {
+             if (result.code == 200) {	
+             	   app.pageModel = result.data;
+             	   app.pageModel.pageSize = result.data.pageSize;
+             	   app.userId = '';
+             	   app.roleType = '';
+	               app.userCode = '';
+	               app.userName = '';
+	               app.customerID = '';
+             } else {
+            	 app.$alert(result.msg, '提示', {
+		 	          	confirmButtonText: '确定',
+		 	          	confirmButtonClass: 'btn-line cur',
+		 	          });
+				   return false;
+             }
+         },
+         error: function (data) {
+         }
+     });
+    
+ 	}
+	var changeFun = function changeFun(val){
+		app.multipleSelection = val;
+	}
+	
+	var restart = function restart(){
+		var e = this;
+		   var ids = [];
+		   var dicIdsStr;
+		   if(app.multipleSelection.length>0){
+			   for(var i = 0;i<app.multipleSelection.length;i++){
+				   ids.push(app.multipleSelection[i].userId);
+			   }
+			   dicIdsStr = ids.join(","); 
+		   }else{
+			   e.$alert('请选择要重置的信息!', '提示', {
+	 	          	confirmButtonText: '确定',
+	 	          	confirmButtonClass: 'btn-line cur',
+	 	          });
+			   return false;
+		   }
+		   e.$confirm('此操作将重置该用户, 是否继续?', '提示',{
+		        confirmButtonText: '确定',
+		        cancelButtonText: '取消',
+		        cancelButtonClass: 'btn-line',
+		        confirmButtonClass: 'btn-line cur',
+		      }).then(() => {
+		   var ajaxdata = {customerIds:dicIdsStr};
+			$.ajax({
+		           data: ajaxdata,
+		           type: "POST",
+		           url: contextRoot+"user/restart",
+		           async: false,
+		           success: function (result) {
+	               if (result.code == 200) {
+	            	   app.fetchData();
+	               }else{
+	            	   _this.$message({
+	            	          showClose: true,
+	            	          message: result.msg,
+	            	          type: 'warning'
+	            	        });
+	               }
+	           },
+		           error: function (data) {
+		        	   e.$alert('重置失败,请刷新后重试！', '错误', {
+	         	          confirmButtonText: '确定',
+	         	          confirmButtonClass: 'btn-line cur',
+	         	          });
+		           }
+		       });
+	        }).catch(() => {
+		          this.$message({
+		            type: 'info',
+		            message: '已取消重置'
+		          });          
+		        });
+	}
+	var getCustomList = function getCustomList(){
+		$.ajax({
+	           type: "get",
+	           url: contextRoot+'user/getCustomList',
+	           async: false,
+	           success: function (result) {
+	               if (result.code == 200) {
+	            	   app.customerList = result.data;
+	               } else {
+	            	   app.$alert(result.msg, '提示', {
+			 	          	confirmButtonText: '确定',
+			 	          	confirmButtonClass: 'btn-line cur',
+			 	          });
+					   return false;
+	               }
+	           },
+	           error: function (data) {
+	           }
+	       });
+	}
+	
+	var customChange = function customChange(){
+		for (var i = 0; i<app.customerList.length;i++){
+			 if (app.customerList[i].customerName == app.customerID){
+				 app.defaultCustomerID = app.customerList[i].customerID;
+				 return;
+			 }
+		}
+	}
+	var app = new Vue({
+		el : '#app',
+		data : dataFuc,
+		methods : {
+			fetchData:fetchData,
+			addSubmit:addSubmit,
+			deleteUser:deleteUser,
+			handleSizeChange:handleSizeChange,
+			handleCurrentChange:handleCurrentChange,
+			closeForm:closeForm,
+			add:add,
+			getRoleList:getRoleList,
+			restart:restart,
+			changeFun:changeFun,
+			getCustomList:getCustomList,
+			customChange:customChange,
+		},
+	})
+	app.fetchData();
+	app.getRoleList();
+	app.getCustomList();
+  </script>
+  </div>
+</body>
+</html>
+
+

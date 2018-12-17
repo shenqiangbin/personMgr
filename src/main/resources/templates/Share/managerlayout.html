@@ -1,0 +1,87 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorator="share/layout">
+<head>
+    <title>管理页面</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <script type="text/javascript">
+        var url = '[[${#request.getRequestURI()}]]';
+
+        // 左侧菜单点击点亮
+        $(function(){
+
+            $.get(contextRoot + "menu/getList",function (result) {
+                console.log(result);
+                if(result.code == 200){
+
+                    var str =
+                        "<li class='n-s'>" +
+                        "    <svg class='icon' aria-hidden='true'>" +
+                        "        <use xlink:href='{0}'></use>" +
+                        "    </svg>" +
+                        "    <a href='{1}' class='n-s-a'>{2}</a>" +
+                        "</li>";
+                    result.data.forEach(function (item) {
+                        var li = str.replace("{0}",item.icon)
+                            .replace("{1}",item.menuURL)
+                            .replace("{2}",item.menuName);
+                        $('.nav-left ul').append(li);
+                    })
+                    set();
+
+                }else{
+                    showError("导航加载失败");
+                }
+            })
+
+            function set() {
+                $('.nav-left ul li').each(function (index,item) {
+
+                    var href = $(item).find("a").attr("href");
+
+                    if(url.toLowerCase().indexOf(href.toLowerCase()) > -1){
+                        $(item).addClass('cur').siblings('li').removeClass('cur');
+                        return;
+                    }
+
+                    if(href=="/Customer/CustomerMgr" && url =="/Customer/CustomerAdd"){
+                        $(item).addClass('cur').siblings('li').removeClass('cur');
+                        return;
+                    }
+                    if(href=="/SensorManager/SensorList" && url =="/SensorManager/SensorView"){
+                        $(item).addClass('cur').siblings('li').removeClass('cur');
+                        return;
+                    }
+                });
+
+                $('.nav-left ul li').click(function() {
+                    var _this=$(this);
+                    _this.addClass('cur').siblings('li').removeClass('cur');
+
+                    var href = $(this).find("a").attr("href");
+                    window.location.href = href;
+                });
+            }
+        });
+    </script>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="box-wrap">
+        <!-- 左侧  -->
+        <el-scrollbar class="nav-left">
+            <ul>
+
+            </ul>
+        </el-scrollbar>
+        <!--   left over  -->
+        <!--   right   -->
+        <el-scrollbar  class="contain">
+            <div layout:fragment="mangercontent"></div>
+        </el-scrollbar>
+        <!--   right over  -->
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.sqber.personMgr.dal.ICustomerRepository">
+	<resultMap id="BaseResultMap" type="com.sqber.personMgr.entity.Customer">
+	    <id column="CustomerID" property="CustomerID" jdbcType="INTEGER" />
+	    <result column="CustomerName" property="CustomerName" jdbcType="VARCHAR" />
+		<result column="Img" property="Img" jdbcType="VARCHAR" />
+		<result column="Region" property="Region" jdbcType="VARCHAR" />
+	    <result column="Lng" property="Lng" jdbcType="DOUBLE" />
+		<result column="Lat" property="Lat" jdbcType="DOUBLE" />
+		<result column="MaxVal" property="MaxVal" jdbcType="VARCHAR" />
+		<result column="SecurityLevel" property="SecurityLevel" jdbcType="VARCHAR" />
+		<result column="Note" property="Note" jdbcType="VARCHAR" />
+
+	    <result column="Status" property="Status" jdbcType="INTEGER" />
+	    <result column="CreateUser" property="CreateUser" jdbcType="VARCHAR" />
+	    <result column="CreateTime" property="CreateTime" jdbcType="TIMESTAMP" />
+	    <result column="ModifyUser" property="ModifyUser" jdbcType="VARCHAR" />
+	    <result column="ModifyTime" property="ModifyTime" jdbcType="TIMESTAMP" />
+  	</resultMap>
+
+	<sql id="Base_Column_List">
+		CustomerId, CustomerName, Img, Region, Lng, Lat, SecurityLevel,MaxVal, Note, Status, CreateUser, CreateTime, ModifyUser, ModifyTime
+	</sql>
+
+	<insert id="addCustomer" parameterType="com.sqber.personMgr.entity.Customer" useGeneratedKeys="true" keyProperty="CustomerID" keyColumn="CustomerID">
+		insert into Customer(CustomerID,CustomerName,Img,Region,Lng,Lat,SecurityLevel,MaxVal,Note,Status,CreateUser,CreateTime,ModifyUser,ModifyTime)
+		values(
+			#{CustomerID,jdbcType=INTEGER},
+			#{CustomerName,jdbcType=VARCHAR},
+			#{Img,jdbcType=VARCHAR},
+			#{Region,jdbcType=VARCHAR},
+			#{Lng,jdbcType=DOUBLE},
+			#{Lat,jdbcType=DOUBLE},
+			#{SecurityLevel,jdbcType=VARCHAR},
+			#{MaxVal,jdbcType=VARCHAR},
+			#{Note,jdbcType=VARCHAR},
+			#{Status,jdbcType=INTEGER}, #{CreateUser,jdbcType=VARCHAR}, #{CreateTime,jdbcType=TIMESTAMP}, #{ModifyUser,jdbcType=VARCHAR}, #{ModifyTime,jdbcType=TIMESTAMP} )
+	</insert>
+
+	<update id="updateById" parameterType="com.sqber.personMgr.entity.Customer" >
+	    update Customer
+	    set
+	      CustomerName = #{CustomerName,jdbcType=VARCHAR},
+	      Img = #{Img,jdbcType=VARCHAR},
+	      Region = #{Region,jdbcType=VARCHAR},
+	      Lng = #{Lng,jdbcType=DOUBLE},
+	      Lat = #{Lat,jdbcType=DOUBLE},
+	      SecurityLevel = #{SecurityLevel,jdbcType=VARCHAR},
+	      MaxVal = #{MaxVal,jdbcType=VARCHAR},
+		  Note = #{Note,jdbcType=VARCHAR},
+
+	      Status = #{Status,jdbcType=INTEGER},
+	      CreateUser = #{CreateUser,jdbcType=VARCHAR},
+	      CreateTime = #{CreateTime,jdbcType=TIMESTAMP},
+	      ModifyUser = #{ModifyUser,jdbcType=VARCHAR},
+	      ModifyTime = #{ModifyTime,jdbcType=TIMESTAMP}
+
+	    where CustomerID = #{CustomerID,jdbcType=INTEGER}
+	 </update>
+
+	<update id="removeCustomer">
+		update Customer
+		set
+			Status = 0,
+			ModifyUser = #{currentUser},
+	      	ModifyTime = now()
+	    where
+	    	CustomerID in
+		<foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</update>
+
+	<select id="getByID" resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM Customer where CustomerID = #{id} and status = 1
+	</select>
+
+	<select id="getList" resultMap="BaseResultMap" parameterType="com.sqber.personMgr.entity.query.CustomerQuery">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM Customer
+		where status = 1
+			<if test="customerName">
+				and CustomerName like '%${customerName}%'
+			</if>
+			<if test="customerId">
+				and customerId = ${customerId}
+			</if>
+		<choose>
+			<when test="sortStr != null" >
+				order by ${sortStr}
+			</when>
+			<when test="sortStr == null" >
+				order by CreateTime desc,CustomerID desc
+			</when>
+		</choose>
+	</select>
+
+</mapper>

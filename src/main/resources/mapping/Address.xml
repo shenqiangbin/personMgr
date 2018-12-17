@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.sqber.personMgr.dal.IAddressRepository">
+	<resultMap id="BaseResultMap" type="com.sqber.personMgr.entity.Address">
+
+	    <result column="RegionCode" property="RegionCode" jdbcType="VARCHAR" />
+	    <result column="Name" property="Name" jdbcType="VARCHAR" />
+	    <result column="FullName" property="FullName" jdbcType="VARCHAR" />
+	    <result column="RegionLevel" property="RegionLevel" jdbcType="INTEGER" />
+
+  	</resultMap>
+
+	<sql id="Base_Column_List">
+		RegionCode, Name, FullName, RegionLevel
+	</sql>
+
+	<select id="getByParent" resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM Region where ParentRegionCode = #{regionCode}
+	</select>
+
+	<select id="getByCodes" resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM Region where RegionCode in
+		<foreach collection="list" item="code" index="index" open="(" close=")" separator=",">
+			#{code}
+		</foreach>
+	</select>
+
+</mapper>

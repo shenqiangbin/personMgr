@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.sqber.personMgr.dal.IBdRoleFuncRepository">
+	<resultMap id="BaseResultMap" type="com.sqber.personMgr.entity.RoleFunc" >
+	    <id column="RoleFuncID" property="roleFuncID" jdbcType="INTEGER" />
+	    <result column="RoleID" property="roleID" jdbcType="INTEGER" />
+	    <result column="functionID" property="functionID" jdbcType="VARCHAR" />
+	    <result column="Status" property="status" jdbcType="INTEGER" />
+	    <result column="CreateUser" property="createUser" jdbcType="VARCHAR" />
+	    <result column="CreateTime" property="createTime" jdbcType="TIMESTAMP" />
+	    <result column="ModifyUser" property="modifyUser" jdbcType="VARCHAR" />
+	    <result column="ModifyTime" property="modifyTime" jdbcType="TIMESTAMP" />
+  	</resultMap>
+
+	<sql id="Base_Column_List">
+		RoleFuncID, RoleID, functionID, Status, CreateUser, CreateTime, ModifyUser, ModifyTime
+	</sql>
+	
+	  <insert id="add" parameterType="com.sqber.personMgr.entity.RoleFunc"
+	  	useGeneratedKeys="true" keyProperty="RoleFuncID" keyColumn="RoleFuncID">
+	    insert into rolefunc (RoleID, functionID, 
+	    Status,CreateUser, 
+	      CreateTime, ModifyUser, ModifyTime 
+	      )
+	    values (#{roleID,jdbcType=INTEGER},  #{functionID,jdbcType=VARCHAR} , 
+	      0, #{createUser,jdbcType=VARCHAR}, 
+	      #{createTime,jdbcType=TIMESTAMP}, #{modifyUser,jdbcType=VARCHAR}, #{modifyTime,jdbcType=TIMESTAMP}
+	    )
+	  </insert>
+	  
+	  
+	  <select id="getListAll" resultMap="BaseResultMap" parameterType="com.sqber.personMgr.entity.RoleFunc">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM rolefunc
+    	order by CreateTime desc  	
+	  </select>
+	  
+	  <select id="getByRole" resultMap="BaseResultMap" parameterType="com.sqber.personMgr.entity.Role">
+		SELECT 
+		  f.RoleFuncID as roleFuncID,
+		  f.functionID as functionID
+		FROM
+		  `role` r,
+		  `rolefunc` f 
+		WHERE f.roleid = r.roleid 
+		  AND r.rolename = #{roleName} limit 1
+	  </select>
+	  
+	  <select id="getByRoleId" resultMap="BaseResultMap" parameterType="com.sqber.personMgr.entity.Role">
+		SELECT 
+		 <include refid="Base_Column_List" />
+		FROM rolefunc
+		WHERE roleid = #{roleID} limit 1
+	  </select>
+	  
+	  <select id="updateByRole" resultMap="BaseResultMap" parameterType="com.sqber.personMgr.entity.RoleFunc">
+		update rolefunc set functionID = #{functionID}, ModifyUser = #{modifyUser}, ModifyTime = #{modifyTime} where RoleID = #{roleID}
+	  </select>
+	  
+	  <select id="updateById" resultMap="BaseResultMap" parameterType="com.sqber.personMgr.entity.RoleFunc">
+		update rolefunc set functionID = #{functionID}, ModifyUser = #{modifyUser}, ModifyTime = #{modifyTime} where RoleFuncID = #{roleFuncID}
+	  </select>
+	  
+	  <select id="deleteById" resultMap="BaseResultMap" parameterType="com.sqber.personMgr.entity.RoleFunc">
+		delete from  rolefunc where RoleFuncID = #{roleFuncID}
+	  </select>
+</mapper>

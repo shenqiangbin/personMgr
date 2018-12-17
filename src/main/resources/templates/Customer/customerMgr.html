@@ -1,0 +1,246 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorator="share/managerlayout">
+
+<head>
+    <style>
+
+    </style>
+</head>
+<body>
+
+<div layout:fragment="mangercontent">
+    <el-scrollbar  class="contain">
+        <div class="con-box">
+            <div class="form-group clearfix">
+                <!--<a href="#" class="add-btn">-->
+                    <!--<svg class="icon" aria-hidden="true">-->
+                        <!--<use xlink:href="#icon-add"></use>-->
+                    <!--</svg>-->
+                <!--</a>-->
+                <div class="table-cell">
+                    <div class="fg-m">
+                        <!--<el-select v-model="value" placeholder="用户名">-->
+                            <!--<el-option>-->
+                            <!--</el-option>-->
+                        <!--</el-select>-->
+                        <!--<el-input placeholder="" value="视图1"></el-input>-->
+                        <el-input placeholder="用户单位检索" v-model="searchName" @keyup.enter.native="query"></el-input>
+                        <el-button type="primary" v-on:click="query">查找</el-button>
+                    </div>
+                </div>
+            </div>
+            <div class="btn-group">
+                <el-button type="primary" v-on:click="add">新增</el-button>
+                <el-button type="primary" v-on:click="remove">删除</el-button>
+                <!--<el-button type="primary">导入</el-button>-->
+            </div>
+            <el-table ref="multipleTable" style="width: 100%" :data="pageModel.list"  class="p0-table" 
+                      @selection-change="handleSelectionChange">
+
+                <el-table-column  label="序号" width="30" type="selection">
+                </el-table-column>
+                <el-table-column  label="序号" width="60">
+                    <template slot-scope="scope">
+                        {{((pageModel.currentPage-1) * pageModel.pageSize) + scope.$index+1}}
+                    </template>
+                </el-table-column>
+                <el-table-column  label="单位名称">
+                    <template slot-scope="scope" >{{scope.row.model.customerName}}</template>
+                </el-table-column>
+                <el-table-column  label="省份">
+                    <template slot-scope="scope">{{scope.row.regionDesc}}</template>
+                </el-table-column>
+                <el-table-column  label="测点数量">
+                    <template slot-scope="scope">{{scope.row.sensorNum}}</template>
+                </el-table-column>
+                <el-table-column  label="安全等级">
+                    <template slot-scope="scope">{{scope.row.model.securityLevel}}</template>
+                </el-table-column>
+                <el-table-column  label="最大应力值">
+                    <template slot-scope="scope">{{scope.row.model.maxVal}}</template>
+                </el-table-column>
+                <el-table-column  label="备注">
+                    <template slot-scope="scope">{{scope.row.model.note}}</template>
+                </el-table-column>
+                <el-table-column  label="操作" width="100px">
+                    <template slot-scope="scope" >
+                        <a v-bind:href="'/Customer/CustomerAdd?id='+scope.row.model.customerID" class="svg-a" title="编辑">
+                            <svg class="icon" aria-hidden="true">
+                                <use xlink:href="#icon-edtor"></use>
+                            </svg>
+                        </a>
+                        <!--<a href="#" class="svg-a" title="管理">-->
+                            <!--<svg class="icon" aria-hidden="true">-->
+                                <!--<use xlink:href="#icon-set"></use>-->
+                            <!--</svg>-->
+                        <!--</a>-->
+                    </template>
+                </el-table-column>
+            </el-table>
+
+            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
+                :page-sizes="[10]"
+                :current-page="pageModel.currentPage" :page-size="pageModel.pageSize" layout="total,prev, pager, next, jumper"
+                :total="pageModel.totalCount"></el-pagination>
+</div>
+</el-scrollbar>
+</div>
+
+<div layout:fragment="jscontent">
+
+    <script>
+
+        var loadData = function () {
+
+            $.ajax({
+                type: "get",
+                url: contextRoot + "Customer/GetListItems",
+                data: {currentPage: app.currentPage, name: app.searchName},
+                async: true,
+                success: function (result) {
+                    console.log(result);
+                    if (result.code == 200) {
+                        app.pageModel = result.data;
+                    }else if(result.code == 403){
+                        window.location.href = contextRoot + "login?return=" + "/models";
+                    }else {
+                        showError(result.msg);
+                    }
+                },
+                error: function () {
+                    showMsg("信息获取失败");
+                }
+            });
+        };
+
+        var query = function () {
+            app.currentPage = 1;
+            loadData();
+        }
+        
+        var handleSelectionChange = function (val) {
+            debugger
+            var arr = [];
+
+            for(var i=0; i<val.length; i++){
+                arr.push(val[i].customerID);
+            }
+
+            app.selectedItems = arr;
+        }
+
+        var remove = function () {
+
+            if(app.selectedItems.length == 0){
+                showError("请勾选");
+                return;
+            }
+
+            showCofirm(function () {
+
+                $.ajax({
+                    type: "post",
+                    url: contextRoot + "Customer/removeCustomer",
+                    data: { ids : app.selectedItems.join(",") },
+                    async: true,
+                    success: function (result) {
+                        console.log(result);
+                        if (result.code == 200) {
+                            showMsg("删除成功");
+                            app.loadData();
+                        }else {
+                            showError(result.msg);
+                        }
+                    },
+                    error: function () {
+                        showMsg("信息获取失败");
+                    }
+                });
+
+            });
+
+
+
+        }
+
+        var marker = null;
+
+        var selectModel = function (item) {
+            app.curItemId = item.customerID;
+
+            console.log(item);
+            var customerName = "";
+            if(item && item.customerName)
+                customerName = item.customerName;
+            var lng = item.lng;
+            var lat = item.lat;
+
+            if(marker != null){
+                map.remove(marker);
+            }
+
+            if(lat == 0 && lng == 0){
+                showError("没有设置经纬度，无法定位");
+                return;
+            }
+
+            marker = new AMap.Marker({
+                position: [lng,lat],   // 经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
+                title: customerName,
+                //content: "研究所"
+                label:{
+                    offset: new AMap.Pixel(-30, -40),
+                    content:"<div class='markerinfo'>" + customerName + "</div>"
+                }
+            });
+
+            // marker.setLabel({i
+            //     //修改label相对于maker的位置
+            //     offset: new AMap.Pixel(20, 20),
+            //     content: "<div class='info'>我是 marker 的 label 标签</div>"
+            // });
+
+            map.add(marker);
+            map.setZoom(13);
+            map.setCenter([lng,lat]);
+        }
+
+        var app = new Vue({
+            el: '#app',
+            data: {
+                pageModel:[],
+                searchName:'', /*查询参数：用户单位名称*/
+                currentPage:1,
+                selectedItems:[],
+                curItemId:null,
+                errorImg: 'this.src="../images/t-logo.png"',
+            },
+            methods: {
+                loadData: loadData,
+                selectModel: selectModel,
+                query:query,
+                handleSelectionChange:handleSelectionChange,
+                remove:remove,
+                add:function(){
+                  window.location.href= contextRoot +"Customer/CustomerAdd";
+                },
+                handleSizeChange(val) {
+
+                },
+                handleCurrentChange(val){
+                    app.currentPage = val;
+                    app.loadData();
+                }
+            }
+        })
+
+        app.loadData();
+
+    </script>
+</div>
+
+
+</body>
+</html>
+
+

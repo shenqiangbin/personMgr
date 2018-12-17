@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+  <!-- import CSS -->
+  <link rel="stylesheet" href="css/index.css">
+  <link rel="stylesheet" href="css/main.css">
+  <!-- 引入样式 -->
+  <title>地图页</title>
+<!--[if lt IE 9]>
+<![endif]-->
+</head>
+<body>
+<div id="app">
+    <!-- top --> 
+    <div class="top clearfix">
+      <h1 class="logo-p">钢结构健康监测平台信息管理系统</h1>
+      <div class="user-box">
+        <span>你好，</span>
+        <a href="#">管理员</a>
+        <a href="#">退出</a>
+      </div>
+    </div>
+    <!-- top over--> 
+    <div class="box-wrap">
+      <div class="map-l">
+         <div class="map-lt">
+           <div class="clearfix">
+             <el-select class="fl" v-model="value" placeholder="用户名">
+               <el-option>
+               </el-option>
+             </el-select>
+             <el-select class="fr" v-model="value" placeholder="用户名">
+               <el-option>
+               </el-option>
+             </el-select>
+           </div>
+           <div class="search">
+             <a href="#" class="s-btn">
+               <svg class="icon" aria-hidden="true">
+                   <use xlink:href="#icon-sousuo"></use>
+               </svg>
+             </a>
+             <el-input placeholder="用户单位检索" value=""></el-input>
+           </div>
+         </div>
+         <div class="btn-box">
+             <el-button type="primary" size="mini">管理</el-button>
+         </div>
+         <el-scrollbar class="map-l-hide">
+           <ul>
+             <li class="map-s">
+               <div class="map-ht">
+                 <a href="#" class="map-t"><i class="t-logo"><img src="images/t-logo.png" alt=""></i>华电电科院华电电科院华电电科院</a>
+                 <a href="#" class="tr-set">
+                   <svg class="icon" aria-hidden="true">
+                       <use xlink:href="#icon-set"></use>
+                   </svg>
+                 </a>
+               </div>
+               <div class="map-bottom clearfix">
+                 <div class="fl"><span class="cg6">测点数量：</span>6个</div>
+                 <div class="fr"><span class="cg6">安全等级：</span>一级</div>
+               </div>
+             </li>
+             <li class="map-s">
+               <div class="map-ht">
+                 <a href="#" class="map-t"><i class="t-logo"><img src="images/t-logo.png" alt=""></i>华电电科院</a>
+                 <a href="#" class="tr-set">
+                   <svg class="icon" aria-hidden="true">
+                       <use xlink:href="#icon-set"></use>
+                   </svg>
+                 </a>
+               </div>
+               <div class="map-bottom clearfix">
+                 <div class="fl"><span class="cg6">测点数量：</span>6个</div>
+                 <div class="fr"><span class="cg6">安全等级：</span>一级</div>
+               </div>
+             </li>
+             <li class="map-s">
+               <div class="map-ht">
+                 <a href="#" class="map-t"><i class="t-logo"><img src="images/t-logo.png" alt=""></i>华电电科院</a>
+                 <a href="#" class="tr-set">
+                   <svg class="icon" aria-hidden="true">
+                       <use xlink:href="#icon-set"></use>
+                   </svg>
+                 </a>
+               </div>
+               <div class="map-bottom clearfix">
+                 <div class="fl"><span class="cg6">测点数量：</span>6个</div>
+                 <div class="fr"><span class="cg6">安全等级：</span>一级</div>
+               </div>
+             </li>
+             <li class="map-s">
+               <div class="map-ht">
+                 <a href="#" class="map-t"><i class="t-logo"><img src="images/t-logo.png" alt=""></i>华电电科院</a>
+                 <a href="#" class="tr-set">
+                   <svg class="icon" aria-hidden="true">
+                       <use xlink:href="#icon-set"></use>
+                   </svg>
+                 </a>
+               </div>
+               <div class="map-bottom clearfix">
+                 <div class="fl"><span class="cg6">测点数量：</span>6个</div>
+                 <div class="fr"><span class="cg6">安全等级：</span>一级</div>
+               </div>
+             </li>
+             <li class="map-s">
+               <div class="map-ht">
+                 <a href="#" class="map-t"><i class="t-logo"><img src="images/t-logo.png" alt=""></i>华电电科院</a>
+                 <a href="#" class="tr-set">
+                   <svg class="icon" aria-hidden="true">
+                       <use xlink:href="#icon-set"></use>
+                   </svg>
+                 </a>
+               </div>
+               <div class="map-bottom clearfix">
+                 <div class="fl"><span class="cg6">测点数量：</span>6个</div>
+                 <div class="fr"><span class="cg6">安全等级：</span>一级</div>
+               </div>
+             </li>
+             <li class="map-s">
+               <div class="map-ht">
+                 <a href="#" class="map-t"><i class="t-logo"><img src="images/t-logo.png" alt=""></i>华电电科院</a>
+                 <a href="#" class="tr-set">
+                   <svg class="icon" aria-hidden="true">
+                       <use xlink:href="#icon-set"></use>
+                   </svg>
+                 </a>
+               </div>
+               <div class="map-bottom clearfix">
+                 <div class="fl"><span class="cg6">测点数量：</span>6个</div>
+                 <div class="fr"><span class="cg6">安全等级：</span>一级</div>
+               </div>
+             </li>
+             <li class="map-s">
+               <div class="map-ht">
+                 <a href="#" class="map-t"><i class="t-logo"><img src="images/t-logo.png" alt=""></i>华电电科院</a>
+                 <a href="#" class="tr-set">
+                   <svg class="icon" aria-hidden="true">
+                       <use xlink:href="#icon-set"></use>
+                   </svg>
+                 </a>
+               </div>
+               <div class="map-bottom clearfix">
+                 <div class="fl"><span class="cg6">测点数量：</span>6个</div>
+                 <div class="fr"><span class="cg6">安全等级：</span>一级</div>
+               </div>
+             </li>
+             <li class="map-s">
+               <div class="map-ht">
+                 <a href="#" class="map-t"><i class="t-logo"><img src="images/t-logo.png" alt=""></i>华电电科院</a>
+                 <a href="#" class="tr-set">
+                   <svg class="icon" aria-hidden="true">
+                       <use xlink:href="#icon-set"></use>
+                   </svg>
+                 </a>
+               </div>
+               <div class="map-bottom clearfix">
+                 <div class="fl"><span class="cg6">测点数量：</span>6个</div>
+                 <div class="fr"><span class="cg6">安全等级：</span>一级</div>
+               </div>
+             </li>
+             <li class="map-s">
+               <div class="map-ht">
+                 <a href="#" class="map-t"><i class="t-logo"><img src="images/t-logo.png" alt=""></i>华电电科院</a>
+                 <a href="#" class="tr-set">
+                   <svg class="icon" aria-hidden="true">
+                       <use xlink:href="#icon-set"></use>
+                   </svg>
+                 </a>
+               </div>
+               <div class="map-bottom clearfix">
+                 <div class="fl"><span class="cg6">测点数量：</span>6个</div>
+                 <div class="fr"><span class="cg6">安全等级：</span>一级</div>
+               </div>
+             </li>
+           </ul>
+         </el-scrollbar>
+         <el-pagination  @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-size="100" layout="total,prev, pager, next"  :total="400"> </el-pagination>
+      </div>
+      <el-scrollbar  class="full-box">
+        
+        <a href="#" class="a-post" style="position: absolute; top:200px;left:400px"></a>
+
+        <a href="#" class="a-warm" style="position: absolute;top:200px;left:500px">
+          <svg class="icon" aria-hidden="true">
+              <use xlink:href="#icon-biaozhi"></use>
+          </svg>
+        </a>
+          
+        <div class="map-pop warm-mp" style="top:0;left:400px">
+          <div class="mp-top clearfix">警报内容</div>
+          <div class="mp-con">
+            <dl class="mp-dl">
+              <dt>越值报警：</dt>
+              <dd>华电电力科学研究院</dd>
+              <dd>华电电力科学研究院</dd>
+            </dl>
+            <dl class="mp-dl">
+              <dt>漏值报警：</dt>
+              <dd>华电电力科学研究院</dd>
+            </dl>
+          </div>
+        </div>
+        <div class="map-pop" style="top:400px;left:400px">
+          <div class="mp-top clearfix">
+            <i class="t-logo"><img src="images/t-logo.png" alt=""></i>
+            <a href="#" class="xs-btn">
+              <svg class="icon" aria-hidden="true">
+                  <use xlink:href="#icon-add-s"></use>
+              </svg>
+              上传照片
+            </a>
+          </div>
+          <div class="mp-con">
+              <el-form ref="form" label-width="77px">
+                  <el-form-item label="单位名称：">
+                    <el-input></el-input>
+                  </el-form-item>
+                  <el-form-item label="区域：">
+                    <el-input></el-input>
+                  </el-form-item>
+                  <el-form-item label="备注：">
+                    <el-input type="textarea"></el-input>
+                  </el-form-item>
+                </el-form>
+          </div>
+          <div class="mp-bottom clearfix">
+            <a href="#" class="xs-btn">确定</a>
+            <a href="#" class="xs-btn el-button--default">取消</a>
+          </div>
+        </div>
+        <div class="map-pop" style="top:400px;left:900px">
+          <div class="mp-top clearfix">
+            <a href="#" class="xs-btn fr">编辑</a>
+            <i class="t-logo"><img src="images/t-logo.png" alt=""></i>
+            <span class="mp-t">华电电科院</span>
+          </div>
+          <div class="mp-con">
+            <div class="f-form">
+              <div class="f-m">
+                <label class="f-l">单位名称：</label>
+                <div class="f-r">华电电科院</div>
+              </div>
+              <div class="f-m">
+                <label class="f-l">区域：</label>
+                <div class="f-r">浙江省    杭州市</div>
+              </div>
+              <div class="f-m">
+                <label class="f-l">备注：</label>
+                <div class="f-r">华电电力科学研究院是中国华电集团公司直属
+                 科研机构，是电力行业和集团发电及相关技术
+                 的专业研究机构，位于杭州市西湖区。</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="map-pop map-pop-s" style="top:700px;left:400px">
+              <a href="#" class="mpt-btn">查看详情</a>
+          <div class="ovhide">
+              <i class="t-logo"><img src="images/t-logo.png" alt=""></i>
+              <span class="mp-t">华电电科院</span>
+          </div>
+        </div>
+
+        <img src="images/map.jpg" alt="">
+      </el-scrollbar>
+    </div>
+</div>
+  <!-- import Vue before Element -->
+  <script src="js/iconfont.js"></script>
+  <script src="js/vue.js"></script>
+  <!-- import JavaScript -->
+  <script src="js/index.js"></script>
+  <script>
+    new Vue({
+      el: '#app',
+      data: function() {
+        return { 
+        }
+
+      }
+    })
+
+  </script>
+</body>
+</html>
+
+

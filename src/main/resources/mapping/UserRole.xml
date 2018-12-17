@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.sqber.personMgr.dal.IBdUserRoleRepository">
+	<resultMap id="BaseResultMap" type="com.sqber.personMgr.entity.UserRole" >
+	    <id column="UserRoleID" property="userRoleID" jdbcType="INTEGER" />
+	    <result column="RoleID" property="roleID" jdbcType="INTEGER" />
+	    <result column="UserID" property="userID" jdbcType="INTEGER" />
+	    <result column="Status" property="status" jdbcType="INTEGER" />
+	    <result column="CreateUser" property="createUser" jdbcType="VARCHAR" />
+	    <result column="CreateTime" property="createTime" jdbcType="TIMESTAMP" />
+	    <result column="ModifyUser" property="modifyUser" jdbcType="VARCHAR" />
+	    <result column="ModifyTime" property="modifyTime" jdbcType="TIMESTAMP" />
+  	</resultMap>
+
+	<sql id="Base_Column_List">
+		UserRoleID, RoleID, UserID, Status, CreateUser, CreateTime, ModifyUser, ModifyTime
+	</sql>
+	
+	  
+	  <select id="getListAll" resultMap="BaseResultMap" parameterType="com.sqber.personMgr.entity.UserRole">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM role where RoleType = #{roleType}
+    	order by CreateTime desc  	
+	  </select>
+	  
+	  <select id="getByUserId" resultMap="BaseResultMap" parameterType="com.sqber.personMgr.entity.UserRole">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM UserRole where UserId = #{userID} and Status = 1
+	  </select>
+	  
+	  <select id="updateByRole" resultMap="BaseResultMap" parameterType="com.sqber.personMgr.entity.UserRole">
+		update roletable set DataTableID = #{dataTableID}, ModifyUser = #{modifyUser}, ModifyTime = #{modifyTime} where RoleID = #{roleID} and RoleType = #{roleType}
+	  </select>
+	  
+	  
+	  <select id="deleteById" resultMap="BaseResultMap" parameterType="com.sqber.personMgr.entity.UserRole">
+		delete from  roletable where RoleTableID = #{roleTableID} and RoleType = #{roleType}
+	  </select>
+	  
+	  <select id="insert" resultMap="BaseResultMap" parameterType="com.sqber.personMgr.entity.UserRole">
+		 insert into UserRole (RoleID,UserID,Status,CreateUser, 
+	      CreateTime, ModifyUser, ModifyTime)
+	    values (#{roleID},#{userID},1,#{createUser},
+	      #{createTime},#{modifyUser},#{modifyTime})
+	  </select>
+	  
+	  <select id="delete" resultMap="BaseResultMap" parameterType="com.sqber.personMgr.entity.UserRole">
+	    update UserRole set Status = 0 where UserID = #{userID}
+	  </select>
+	  
+	  <select id="update" resultMap="BaseResultMap" parameterType="com.sqber.personMgr.entity.UserRole">
+	    update UserRole set RoleID = #{roleID}, ModifyUser = #{modifyUser}, ModifyTime = #{modifyTime} where UserRoleID = #{userRoleID} and Status = 1
+	  </select>
+	  
+	  <select id="getByUserAndRole" resultMap="BaseResultMap" parameterType="com.sqber.personMgr.entity.UserRole">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM UserRole where UserId = #{userID} and RoleID = #{roleID} and Status = 1
+	  </select>
+</mapper>

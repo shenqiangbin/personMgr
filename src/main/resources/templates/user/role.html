@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout" layout:decorator="share/managerlayout">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <!-- 引入样式 -->
+  <title>角色管理</title>
+<!--[if lt IE 9]>
+<![endif]-->
+</head>
+<body>
+<div layout:fragment="mangercontent">
+  <div class="manager-box">
+    <!-- top --> 
+    <!-- top over--> 
+    <div class="dsource-wrap">
+      <!-- 左侧  -->
+      <div class="dsource-l manager-bjw">
+        <div class="search">
+          <el-button @click="searchRole">
+            <svg class="icon" aria-hidden="true">
+              <use xlink:href="#icon-search"></use>
+            </svg>
+          </el-button>
+          <el-input placeholder="" v-model="roleName"></el-input>
+        </div>
+        <el-scrollbar class="list-hide">
+          <ul class="list" v-for="(item,index) in roleList.list">
+          	<div v-if="item.roleName === defaultRole">
+            <li class="cur" @click="searchRoleLeft(item)">
+              <svg class="icon" aria-hidden="true">
+                <use xlink:href="#icon-yh"></use>
+              </svg>
+              <a href="#">{{item.roleName}}</a>
+              <el-dropdown class="ds-down">
+                <span class="el-dropdown-link">
+                  ...
+                </span>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item>重命名</el-dropdown-item>
+                  <el-dropdown-item>删除</el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+            </li>
+            </div>
+            <div v-else>
+            	 <li @click="searchRoleLeft(item)">
+              <svg class="icon" aria-hidden="true">
+                <use xlink:href="#icon-yh"></use>
+              </svg>
+              <a href="#">{{item.roleName}}</a>
+              <el-dropdown class="ds-down">
+                <span class="el-dropdown-link">
+                  ...
+                </span>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item>重命名</el-dropdown-item>
+                  <el-dropdown-item>删除</el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+            </li>
+            </div>
+          </ul>
+        </el-scrollbar>
+      </div>
+      <!-- 左侧 over -->
+      <!-- 右侧 -->
+      <el-scrollbar class="dsource-r">
+        <div class="ds-table-wrap">
+          <ul class="checkbox-ul" v-for="(item,index) in pageModel">
+            <li class="checkbox">
+              <span class="ch-l">{{item.menuName}}</span>
+              <div class="ch-r">
+	            <el-checkbox v-for="(item1,index1) in item.itemList" v-if="item1.flag === 1" checked :label="item1" @change="changeFun(item1)">{{item1.funcTypeName}}</el-checkbox>
+	            <el-checkbox v-for="(item1,index1) in item.itemList" v-if="item1.flag === 0" :label="item1" @change="changeFun(item1)">{{item1.funcTypeName}}</el-checkbox>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </el-scrollbar>
+      <!-- 右侧 over -->
+    </div>
+  </div>
+</div>
+  <!-- import Vue before Element -->
+<div layout:fragment="jscontent">
+<script type="text/javascript">
+	var token = $("meta[name='_csrf']").attr("content");
+	var header = $("meta[name='_csrf_header']").attr("content");
+	$(document).ajaxSend(function(e, xhr, options) {
+		xhr.setRequestHeader(header, token);
+	});
+</script>
+  <script>
+  var dataFuc = function dataFuc() {
+		return {
+			defaultRole:'',
+			roleName:'',
+			visible : false,
+			loading : false,
+			dialogTableVisible: false,
+			dialogFormVisible: false, 
+			innerVisible: false,
+			centerDialogVisible:false,
+			notCheck:false,
+			isShow:false,
+			checkList: [],
+			menuStyle:{
+				universalDic:true,
+				specialtyDic:false,
+				noumenonManagement:false,
+				domainWordList:false,
+				knowledgeGraph:false,
+			},
+			pageModel: [{ 
+	               menuID: '',
+	               menuName: '',
+	               itemList: [{
+	            	flag: 0,
+	            	funcTypeID: '',
+	            	funcTypeName: '',
+	            	functionID: '',
+		          }]}
+	           ],
+           roleList: { 
+			   list: [{
+				   roleID:'',
+				   roleName:'',
+	          }]
+           },
+		}
+	};
+	
+	var getRoleList = function getRoleList() {
+       var roleList = [];
+       this.loading = true;
+       $.ajax({
+    	   type: "get",
+           url: contextRoot+'user/getRolelist',
+           async: false,
+           success: function (result) {
+               if (result.code == 200) {
+            	   roleList = result.data;
+               } else {
+                   alert(result.msg);
+               }
+           },
+           error: function (data) {
+           }
+       });
+       this.loading = false;
+       app.roleList.list = roleList;
+       app.defaultRole = app.roleList.list[0].roleName;
+   }
+	
+	var getMenuData = function getMenuData(roleName) {
+       this.loading = true;
+       app.pageModel = [{ 
+           menuID: '',
+           menuName: '',
+           itemList: [{
+        	flag: 0,
+        	funcTypeID: '',
+        	funcTypeName: '',
+        	functionID: '',
+          }]}
+       ];
+       if(null ==  roleName){
+    	   roleName = app.defaultRole;
+       }
+       var data={roleName:roleName};
+       $.ajax({
+    	   data:data,
+           type: "post",
+           url: contextRoot+'user/getRoleData',
+           async: false,
+           success: function (result) {
+               if (result.code == 200) {
+            	   app.pageModel = result.data;
+               } else {
+                   alert(result.msg);
+               }
+           },
+           error: function (data) {
+           }
+       });
+       this.loading = false;
+   }
+	var searchRole = function searchRole(){
+		var roleName = app.roleName;
+		app.defaultRole = roleName;
+		app.getMenuData(roleName);
+	}
+	var searchRoleLeft = function searchRoleLeft(item){
+		app.roleName='';
+		var roleName = item.roleName;
+		app.defaultRole = roleName;
+		app.getMenuData(roleName);
+	}
+	
+	var changeFun = function changeFun(item){
+		var roleName = app.defaultRole;
+		var flag = item.flag;
+		if(flag == 0){
+			var type = "1";
+		}else{
+			var type = "0";
+		}
+		 var data={roleName:roleName,type:type,functionID:item.functionID};
+	       $.ajax({
+	    	   data:data,
+	           type: "post",
+	           url: contextRoot+'user/updateRoleMenu',
+	           async: false,
+	           success: function (result) {
+	               if (result.code == 200) {
+	            	   app.getMenuData(roleName);
+	               } else {
+	                   alert(result.msg);
+	               }
+	           },
+	           error: function (data) {
+	           }
+	       });
+	       this.loading = false;
+		console.log(item.flag);
+	}
+	
+	var app = new Vue({
+		el : '#app',
+		data : dataFuc,
+		methods : {
+			getRoleList: getRoleList,
+			getMenuData:getMenuData,
+			searchRoleLeft:searchRoleLeft,
+			changeFun,changeFun,
+			searchRole:searchRole,
+		},
+		
+	});
+	app.getRoleList();
+	app.getMenuData();
+  </script>
+</div>
+</body>
+</html>
+
+
+
+

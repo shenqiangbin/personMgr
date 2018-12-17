@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.sqber.personMgr.dal.IBdFunctionRepository">
+	<resultMap id="BaseResultMap" type="com.sqber.personMgr.entity.Function">
+	    <id column="functionID" property="functionID" jdbcType="INTEGER" />
+	    <result column="menuID" property="menuID" jdbcType="VARCHAR" />
+	    <result column="funcTypeID" property="funcTypeID" jdbcType="VARCHAR" />
+	    <result column="Status" property="status" jdbcType="INTEGER" />
+	    <result column="CreateUser" property="createUser" jdbcType="VARCHAR" />
+	    <result column="CreateTime" property="createTime" jdbcType="TIMESTAMP" />
+	    <result column="ModifyUser" property="modifyUser" jdbcType="VARCHAR" />
+	    <result column="ModifyTime" property="modifyTime" jdbcType="TIMESTAMP" />
+  	</resultMap>
+
+	<sql id="Base_Column_List">
+		functionID, menuID, funcTypeID, Status, CreateUser, CreateTime, ModifyUser, ModifyTime
+	</sql>
+	
+
+	<select id="getListAll" resultMap="BaseResultMap" parameterType="com.sqber.personMgr.entity.Function">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM function 
+    	order by CreateTime desc  	
+	</select>
+	
+	<select id="getRoleByName" resultMap="BaseResultMap" parameterType="com.sqber.personMgr.entity.Function">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM function where functionID = #{functionID} limit 1
+	</select>
+	
+	<select id="getRoleList" resultType="com.sqber.personMgr.entity.query.RoleResponseItem">
+		SELECT 
+		  c.menuID AS menuID,
+		  c.menuName AS menuName,
+		  a.funcTypeID AS funcTypeID,
+		  a.functionID AS functionID,
+		  b.`FuncTypeName` AS funcTypeName
+		FROM
+		  `function` AS a,`functype` b,
+		  menu AS c 
+		WHERE a.menuID = c.menuID AND a.`FuncTypeID` = b.`FuncTypeID`
+	</select>
+</mapper>
