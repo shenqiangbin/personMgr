@@ -124,6 +124,9 @@ CREATE TABLE `project` (
 -- ----------------------------
 -- Records of project
 -- ----------------------------
+INSERT INTO `personmgr`.`project` (`ProjectId`, `Code`, `Name`, `StartTime`, `EndTime`, `Status`, `CreateUser`, `CreateTime`, `ModifyUser`, `ModifyTime`)
+ VALUES ('1', 'law', '司法部', NULL, NULL, '1', 'sqb', '2018-12-19 00:00:00', NULL, NULL);
+
 
 -- ----------------------------
 -- Table structure for role

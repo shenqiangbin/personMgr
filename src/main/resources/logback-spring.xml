@@ -26,7 +26,7 @@
             <pattern>${PATTERN}</pattern>
         </layout>
     </appender>
-    <logger name="com.cnki.datamonitor" level="debug" />
+    <logger name="com.sqber.personMgr" level="debug" />
 
     <root level="info">
         <appender-ref ref="TEST-FILE" />

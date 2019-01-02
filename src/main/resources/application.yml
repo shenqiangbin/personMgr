@@ -29,8 +29,9 @@ spring:
       connectionTestQuery: SELECT 1
 logging:
     level:
-      cnki:
-        datamonitor:
+      com:
+        sqber:
+          personMgr:
                   dal: debug
 fileupload:
   savePath: D:/datamonitor/upload/
