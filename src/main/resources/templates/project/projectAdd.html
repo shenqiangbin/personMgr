@@ -73,7 +73,9 @@
             $.ajax({
                 type: "post",
                 url: contextRoot + "project/saveProject",
-                data: app.ruleForm,
+                data: JSON.stringify(app.ruleForm),
+                contentType: 'application/json',
+
                 async: true,
                 success: function (result) {
                     console.log(result);
@@ -83,7 +85,7 @@
                         }else{
                             showMsg("保存成功");
                             app.$refs['ruleForm'].resetFields();
-                            window.location.href = contextRoot + "project/projectList";
+                            //window.location.href = contextRoot + "project/projectList";
                         }
                     }else {
                         showError(result.msg);

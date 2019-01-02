@@ -1,5 +1,6 @@
 package com.sqber.personMgr.ui.controller;
 
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.github.pagehelper.PageHelper;
@@ -67,9 +69,11 @@ public class ProjectController {
     
     @ResponseBody
     @PostMapping("project/saveProject")
-    public BaseResponse<String> saveProject(Project model){
+    public BaseResponse<String> saveProject(@RequestBody Project model){
 
         BaseResponse<String> result = new BaseResponse<>();
+
+        System.out.println(model.getStarttime());
 
         try{
             System.out.println(model.getProjectid());
@@ -117,5 +121,17 @@ public class ProjectController {
         }
 
         return result;
+    }
+
+    @ResponseBody
+    @GetMapping("project/test")
+    public void test(){
+        Project p = new Project();
+        p.setCode("a");
+        p.setName("a");
+        p.setStarttime(new Date());
+        p.setCreatetime(new Date());
+        projectService.addProject(p);
+
     }
 }

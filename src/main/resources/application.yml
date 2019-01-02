@@ -5,8 +5,8 @@ mybatis:
   mapperLocations: classpath*:/mapping/*.xml
 spring:
   jackson:
-    date-format: yyyy-MM-dd HH:mm:ss
-    time-zone: GMT+0
+   date-format: yyyy-MM-dd HH:mm:ss
+   time-zone: GMT+8
   servlet:
     multipart:
       max-file-size: 100Mb
@@ -17,7 +17,8 @@ spring:
     type: SIMPLE
   datasource:
     mysql:
-      JdbcUrl: jdbc:mysql://127.0.0.1:3306/personMgr?useSSL=false&serverTimezone=UTC #开发
+      #JdbcUrl: jdbc:mysql://127.0.0.1:3306/personMgr?useSSL=false&serverTimezone=UTC #开发
+      JdbcUrl: jdbc:mysql://127.0.0.1:3306/personMgr?useSSL=false&serverTimezone=Asia/Shanghai #开发
       DriverClassName: com.mysql.cj.jdbc.Driver
       Username: root
       Password: 123456

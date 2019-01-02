@@ -244,5 +244,12 @@ public class CustomerController {
         return result;
     }
 
+    @ResponseBody
+    @GetMapping("Customer/test")
+    public void test(){
+        Customer p = new Customer();
+        p.setCustomerName("abc");
+        customerService.addCustomer(p);
+    }
 
 }
