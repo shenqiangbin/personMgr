@@ -1,19 +1,19 @@
 package com.sqber.personMgr.bll;
 
-import com.sqber.personMgr.entity.Customer;
-import com.sqber.personMgr.entity.query.CustomerQuery;
-
 import java.util.List;
+
+import com.sqber.personMgr.entity.Project;
+import com.sqber.personMgr.entity.query.ProjectQuery;
 
 public interface IProjectService {
 
-    int addCustomer(Customer model);
+    int addProject(Project model);
 
-    void updateById(Customer model);
+    void updateById(Project model);
 
-    Customer getByID(int id);
+    Project getByID(int id);
 
-    List<Customer> getList(CustomerQuery query);
+    List<Project> getList(ProjectQuery query);
 
-    void removeCustomer(String ids);
+    void removeProject(String ids);
 }

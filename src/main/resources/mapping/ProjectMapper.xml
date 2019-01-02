@@ -14,10 +14,10 @@
     <result column="ModifyTime" property="modifytime" jdbcType="TIMESTAMP" />
   </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from project
+    update project set status = 0
     where ProjectId = #{projectid,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.sqber.personMgr.entity.Project" >
+  <insert id="insert" parameterType="com.sqber.personMgr.entity.Project"  useGeneratedKeys="true" keyProperty="ProjectId" keyColumn="ProjectId">
     insert into project (ProjectId, Code, Name, 
       StartTime, EndTime, Status, 
       CreateUser, CreateTime, ModifyUser, 
@@ -51,4 +51,23 @@
     ModifyUser, ModifyTime
     from project
   </select>
+  
+  	<select id="getList" resultMap="BaseResultMap" parameterType="com.sqber.personMgr.entity.query.ProjectQuery">
+		SELECT
+		ProjectId, Code, Name, StartTime, EndTime, Status, CreateUser, CreateTime, ModifyUser, ModifyTime
+		FROM Project
+		where status = 1
+			<if test="projectName">
+				and Name like '%${projectName}%'
+			</if>
+		<choose>
+			<when test="sortStr != null" >
+				order by ${sortStr}
+			</when>
+			<when test="sortStr == null" >
+				order by CreateTime desc,ProjectId desc
+			</when>
+		</choose>
+	</select>
+	
 </mapper>

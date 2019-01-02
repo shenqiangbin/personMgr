@@ -1,10 +1,10 @@
 package com.sqber.personMgr.bll.impl;
 
 import com.sqber.personMgr.base.SessionHelper;
-import com.sqber.personMgr.bll.ICustomerService;
-import com.sqber.personMgr.dal.ICustomerRepository;
-import com.sqber.personMgr.entity.Customer;
-import com.sqber.personMgr.entity.query.CustomerQuery;
+import com.sqber.personMgr.bll.IProjectService;
+import com.sqber.personMgr.dal.ProjectMapper;
+import com.sqber.personMgr.entity.Project;
+import com.sqber.personMgr.entity.query.ProjectQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,51 +12,57 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-public class ProjectService implements ICustomerService {
+public class ProjectService implements IProjectService {
 
     @Autowired
-    private ICustomerRepository customerRepository;
+    private ProjectMapper projectRepository;
 
     @Override
-    public int addCustomer(Customer model) {
+    public int addProject(Project model) {
 
         model.setStatus(1);
-        model.setCreateTime(new Date());
-        model.setModifyTime(new Date());
+        model.setCreatetime(new Date());
+        model.setModifytime(new Date());
 
         if (SessionHelper.IsUserInfoExsit()){
-            model.setCreateUser(SessionHelper.GetLoginUserCode());
-            model.setModifyUser(SessionHelper.GetLoginUserCode());
+            model.setCreateuser(SessionHelper.GetLoginUserCode());
+            model.setModifyuser(SessionHelper.GetLoginUserCode());
         }
 
-        return customerRepository.addCustomer(model);
+        return projectRepository.insert(model);
     }
 
     @Override
-    public void updateById(Customer model) {
-        model.setModifyTime(new Date());
+    public void updateById(Project model) {
+        model.setModifytime(new Date());
         if (SessionHelper.IsUserInfoExsit()){
-            model.setModifyUser(SessionHelper.GetLoginUserCode());
+            model.setModifyuser(SessionHelper.GetLoginUserCode());
         }
-        customerRepository.updateById(model);
+        projectRepository.updateByPrimaryKey(model);
     }
 
     @Override
-    public Customer getByID(int id) {
-        return customerRepository.getByID(id);
+    public Project getByID(int id) {
+        return projectRepository.selectByPrimaryKey(id);
     }
 
     @Override
-    public List<Customer> getList(CustomerQuery query) {
-        return customerRepository.getList(query);
+    public List<Project> getList(ProjectQuery query) {
+        return projectRepository.getList(query);
     }
 
-    public void removeCustomer(String ids){
-        String currentUser = "";
-        if (SessionHelper.IsUserInfoExsit()){
-            currentUser = SessionHelper.GetLoginUserCode();
-        }
-        String[] s = ids.split(",");
-        customerRepository.removeCustomer(currentUser,s);
-    }
+	@Override
+	public void removeProject(String ids) {
+		// TODO Auto-generated method stub
+		
+	}
+
+//    public void removeProject(String ids){
+//        String currentUser = "";
+//        if (SessionHelper.IsUserInfoExsit()){
+//            currentUser = SessionHelper.GetLoginUserCode();
+//        }
+//        String[] s = ids.split(",");
+//        projectRepository.removeProject(currentUser,s);
+//    }
 }

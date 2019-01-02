@@ -28,7 +28,7 @@
     </appender>
     <logger name="com.sqber.personMgr" level="debug" />
 
-    <root level="info">
+    <root level="debugger">
         <appender-ref ref="TEST-FILE" />
         <appender-ref ref="CONSOLE" />
 

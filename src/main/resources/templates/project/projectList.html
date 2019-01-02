@@ -1,0 +1,169 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorator="share/managerlayout">
+
+<head>
+    <style>
+
+    </style>
+</head>
+<body>
+
+<div layout:fragment="mangercontent">
+    <el-scrollbar  class="contain">
+        <div class="con-box">
+            <el-input style="width:400px;" placeholder="名称检索" size="small" v-model="searchName" @keyup.enter.native="query"></el-input>
+            <el-button type="primary" size="small" v-on:click="query">查找</el-button>
+
+            <p style="margin:10px 0;"></p>
+
+            <div class="btn-group">
+                <el-button type="primary" size="small" v-on:click="add">新增</el-button>
+                <el-button type="primary" size="small" v-on:click="remove">删除</el-button>
+            </div>
+            <el-table ref="multipleTable" style="width: 100%" :data="pageModel.list"  class="p0-table"
+                      @selection-change="handleSelectionChange">
+
+                <el-table-column  label="序号" width="30" type="selection">
+                </el-table-column>
+                <el-table-column  label="序号" width="60">
+                    <template slot-scope="scope">
+                        {{((pageModel.currentPage-1) * pageModel.pageSize) + scope.$index+1}}
+                    </template>
+                </el-table-column>
+                <el-table-column  label="名称">
+                    <template slot-scope="scope" >{{scope.row.name}}</template>
+                </el-table-column>
+                <el-table-column  label="编码">
+                    <template slot-scope="scope">{{scope.row.code}}</template>
+                </el-table-column>
+                <el-table-column  label="操作" width="100px">
+                    <template slot-scope="scope" >
+                        <a v-bind:href="'/project/projectAdd?id='+scope.row.projectid" class="svg-a" title="编辑">
+                            <svg class="icon" aria-hidden="true">
+                                <use xlink:href="#icon-edtor"></use>
+                            </svg>
+                        </a>
+                    </template>
+                </el-table-column>
+            </el-table>
+
+            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
+                :page-sizes="[10]"
+                :current-page="pageModel.currentPage" :page-size="pageModel.pageSize" layout="total,prev, pager, next, jumper"
+                :total="pageModel.totalCount"></el-pagination>
+</div>
+</el-scrollbar>
+</div>
+
+<div layout:fragment="jscontent">
+
+    <script>
+
+        var loadData = function () {
+
+            $.ajax({
+                type: "get",
+                url: contextRoot + "project/getList",
+                data: {currentPage: app.currentPage, name: app.searchName},
+                async: true,
+                success: function (result) {
+                    console.log(result);
+                    if (result.code == 200) {
+                        app.pageModel = result.data;
+                    }else if(result.code == 403){
+                        window.location.href = contextRoot + "login?return=" + "/models";
+                    }else {
+                        showError(result.msg);
+                    }
+                },
+                error: function () {
+                    showMsg("信息获取失败");
+                }
+            });
+        };
+
+        var query = function () {
+            app.currentPage = 1;
+            loadData();
+        }
+        
+        var handleSelectionChange = function (val) {
+            var arr = [];
+
+            for(var i=0; i<val.length; i++){
+                arr.push(val[i].projectid);
+            }
+
+            app.selectedItems = arr;
+        }
+
+        var remove = function () {
+
+            if(app.selectedItems.length == 0){
+                showError("请勾选");
+                return;
+            }
+
+            showCofirm(function () {
+
+                $.ajax({
+                    type: "post",
+                    url: contextRoot + "Customer/removeCustomer",
+                    data: { ids : app.selectedItems.join(",") },
+                    async: true,
+                    success: function (result) {
+                        console.log(result);
+                        if (result.code == 200) {
+                            showMsg("删除成功");
+                            app.loadData();
+                        }else {
+                            showError(result.msg);
+                        }
+                    },
+                    error: function () {
+                        showMsg("信息获取失败");
+                    }
+                });
+
+            });
+
+
+
+        }
+
+        var app = new Vue({
+            el: '#app',
+            data: {
+                pageModel:[],
+                searchName:'', /*查询参数：用户单位名称*/
+                currentPage:1,
+                selectedItems:[],
+            },
+            methods: {
+                loadData: loadData,
+                query:query,
+                handleSelectionChange:handleSelectionChange,
+                remove:remove,
+                add:function(){
+                  window.location.href= contextRoot +"project/projectAdd";
+                },
+                handleSizeChange(val) {
+
+                },
+                handleCurrentChange(val){
+                    app.currentPage = val;
+                    app.loadData();
+                }
+            }
+        })
+
+        app.loadData();
+
+    </script>
+</div>
+
+
+</body>
+</html>
+
+
