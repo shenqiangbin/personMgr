@@ -79,6 +79,8 @@ public class ProjectController {
                 //编码不能修改
                 //dbModel.setCode();
                 dbModel.setName(model.getName());
+                dbModel.setStarttime(model.getStarttime());
+                dbModel.setEndtime(model.getEndtime());
 
                 projectService.updateById(dbModel);
             }else{

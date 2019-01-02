@@ -29,12 +29,27 @@
                     <el-input v-model="ruleForm.name"></el-input>
                 </el-form-item>
                 <el-form-item label="开始时间" prop="starttime">
-                    <el-input v-model="ruleForm.starttime"></el-input>
+                    <div class="block">
+                        <el-date-picker
+                                v-model="ruleForm.starttime"
+                                type="date"
+                                value-format="yyyy-MM-dd"
+                                placeholder="选择日期">
+                        </el-date-picker>
+                    </div>
                 </el-form-item>
                 <el-form-item label="结束时间" prop="endtime">
-                    <el-input v-model="ruleForm.endtime"></el-input>
+                    <div class="block">
+                        <el-date-picker
+                                v-model="ruleForm.endtime"
+                                type="date"
+                                value-format="yyyy-MM-dd"
+                                placeholder="选择日期">
+                        </el-date-picker>
+                    </div>
                 </el-form-item>
                 <el-form-item>
+                    <el-button type="primary" @click="goback">返回</el-button>
                     <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
                 </el-form-item>
 
@@ -47,6 +62,13 @@
 
     <script>
         var save = function () {
+
+            // if(!app.ruleForm.starttime)
+            //     app.ruleForm.starttime = "";
+            // if(!app.ruleForm.endtime)
+            //     app.ruleForm.endtime = "";
+
+            debugger
 
             $.ajax({
                 type: "post",
@@ -81,8 +103,8 @@
                 ruleForm:{
                     code: '',
                     name:'',
-                    startTime:'',
-                    endTime:''
+                    starttime:'',
+                    endtime:''
                 },
                 rules:{
                     name: [
@@ -96,6 +118,9 @@
                 }
             },
             methods: {
+                goback(){
+                    window.location.href = contextRoot + "project/projectList";
+                },
                 handleCurrentChange(val){
                     app.currentPage = val;
                     app.loadData();

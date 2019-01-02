@@ -1,5 +1,8 @@
 package com.sqber.personMgr.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.util.Date;
 
 public class Project {
@@ -9,18 +12,24 @@ public class Project {
 
     private String name;
 
+    @DateTimeFormat(pattern="yyyy-MM-dd")
+    //@JsonFormat(pattern="yyyy-MM-dd", timezone = "GMT+8")
     private Date starttime;
 
+    @DateTimeFormat(pattern="yyyy-MM-dd")
+    //@JsonFormat(pattern="yyyy-MM-dd", timezone = "GMT+8")
     private Date endtime;
 
     private Integer status;
 
     private String createuser;
 
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date createtime;
 
     private String modifyuser;
 
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date modifytime;
 
     public Integer getProjectid() {
