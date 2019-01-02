@@ -5,6 +5,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
+/*
+* 日期问题涉及到 连接字符串，配置项和接收对象的配置等*/
 public class Project {
     private Integer projectid;
 

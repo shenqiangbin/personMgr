@@ -84,8 +84,8 @@
                             showMsg("保存成功");
                         }else{
                             showMsg("保存成功");
-                            app.$refs['ruleForm'].resetFields();
-                            //window.location.href = contextRoot + "project/projectList";
+                            //app.$refs['ruleForm'].resetFields();
+                            window.location.href = contextRoot + "project/projectList";
                         }
                     }else {
                         showError(result.msg);
