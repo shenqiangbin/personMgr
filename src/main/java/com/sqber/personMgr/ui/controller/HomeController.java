@@ -28,8 +28,12 @@ public class HomeController {
 
     @GetMapping("/")
     public String index() {
-        return "redirect:Customer/CustomerList";
+        return "redirect:menu/first";
     }
+
+    @ResponseBody
+    @GetMapping("nothing")
+    public String nothing(){return "没有权限";}
 
     @GetMapping("login")
     public String login(HttpServletRequest request, HttpServletResponse response, Model model) {

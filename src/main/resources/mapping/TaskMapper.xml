@@ -75,4 +75,38 @@
     ModifyUser, ModifyTime
     from task
   </select>
+
+  <select id="getList" resultMap="BaseResultMap" parameterType="com.sqber.personMgr.entity.query.ProjectQuery">
+    SELECT
+    TaskId, Title, TaskType, TaskStatus, ProjectCode, ModuleId, Demandor, AssignTo,
+    Solver, Content, PutTime, ScheduledStart, ScheduledEnd, Status, CreateUser, CreateTime,
+    ModifyUser, ModifyTime
+    FROM Task
+    where status = 1
+    <if test="Content">
+      and (Title like '%${Content}%' or Content like '%${Content}%')
+    </if>
+    <choose>
+      <when test="sortStr != null" >
+        order by ${sortStr}
+      </when>
+      <when test="sortStr == null" >
+        order by CreateTime desc,TaskId desc
+      </when>
+    </choose>
+  </select>
+
+  <update id="removeTask">
+    update Task
+    set
+    Status = 0,
+    ModifyUser = #{currentUser},
+    ModifyTime = now()
+    where
+    TaskID in
+    <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
+      #{id}
+    </foreach>
+  </update>
+
 </mapper>

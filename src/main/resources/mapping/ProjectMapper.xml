@@ -69,5 +69,18 @@
 			</when>
 		</choose>
 	</select>
+
+    <update id="removeProject">
+        update Project
+        set
+        Status = 0,
+        ModifyUser = #{currentUser},
+        ModifyTime = now()
+        where
+        ProjectID in
+        <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </update>
 	
 </mapper>

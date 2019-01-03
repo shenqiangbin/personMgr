@@ -51,18 +51,12 @@ public class ProjectService implements IProjectService {
         return projectRepository.getList(query);
     }
 
-	@Override
-	public void removeProject(String ids) {
-		// TODO Auto-generated method stub
-		
-	}
-
-//    public void removeProject(String ids){
-//        String currentUser = "";
-//        if (SessionHelper.IsUserInfoExsit()){
-//            currentUser = SessionHelper.GetLoginUserCode();
-//        }
-//        String[] s = ids.split(",");
-//        projectRepository.removeProject(currentUser,s);
-//    }
+    public void removeProject(String ids){
+        String currentUser = "";
+        if (SessionHelper.IsUserInfoExsit()){
+            currentUser = SessionHelper.GetLoginUserCode();
+        }
+        String[] s = ids.split(",");
+        projectRepository.removeProject(currentUser,s);
+    }
 }

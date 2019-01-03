@@ -46,7 +46,7 @@ public class MenuController {
         {
             return "redirect:" + list.get(0).getMenuURL();
         }
-        return "redirect:/BaseMap/BaseMapList";
+        return "redirect:/nothing";
     }
 
 }

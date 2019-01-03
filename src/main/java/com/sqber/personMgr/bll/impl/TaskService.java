@@ -1,10 +1,10 @@
 package com.sqber.personMgr.bll.impl;
 
 import com.sqber.personMgr.base.SessionHelper;
-import com.sqber.personMgr.bll.ICustomerService;
-import com.sqber.personMgr.dal.ICustomerRepository;
-import com.sqber.personMgr.entity.Customer;
-import com.sqber.personMgr.entity.query.CustomerQuery;
+import com.sqber.personMgr.bll.ITaskService;
+import com.sqber.personMgr.dal.TaskMapper;
+import com.sqber.personMgr.entity.Task;
+import com.sqber.personMgr.entity.query.TaskQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,51 +12,51 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-public class TaskService implements ICustomerService {
+public class TaskService implements ITaskService {
 
     @Autowired
-    private ICustomerRepository customerRepository;
+    private TaskMapper taskRepository;
 
     @Override
-    public int addCustomer(Customer model) {
+    public int addTask(Task model) {
 
         model.setStatus(1);
-        model.setCreateTime(new Date());
-        model.setModifyTime(new Date());
+        model.setCreatetime(new Date());
+        model.setModifytime(new Date());
 
         if (SessionHelper.IsUserInfoExsit()){
-            model.setCreateUser(SessionHelper.GetLoginUserCode());
-            model.setModifyUser(SessionHelper.GetLoginUserCode());
+            model.setCreateuser(SessionHelper.GetLoginUserCode());
+            model.setModifyuser(SessionHelper.GetLoginUserCode());
         }
 
-        return customerRepository.addCustomer(model);
+        return taskRepository.insert(model);
     }
 
     @Override
-    public void updateById(Customer model) {
-        model.setModifyTime(new Date());
+    public void updateById(Task model) {
+        model.setModifytime(new Date());
         if (SessionHelper.IsUserInfoExsit()){
-            model.setModifyUser(SessionHelper.GetLoginUserCode());
+            model.setModifyuser(SessionHelper.GetLoginUserCode());
         }
-        customerRepository.updateById(model);
+        taskRepository.updateByPrimaryKey(model);
     }
 
     @Override
-    public Customer getByID(int id) {
-        return customerRepository.getByID(id);
+    public Task getByID(int id) {
+        return taskRepository.selectByPrimaryKey(id);
     }
 
     @Override
-    public List<Customer> getList(CustomerQuery query) {
-        return customerRepository.getList(query);
+    public List<Task> getList(TaskQuery query) {
+        return taskRepository.getList(query);
     }
 
-    public void removeCustomer(String ids){
+    public void removeTask(String ids){
         String currentUser = "";
         if (SessionHelper.IsUserInfoExsit()){
             currentUser = SessionHelper.GetLoginUserCode();
         }
         String[] s = ids.split(",");
-        customerRepository.removeCustomer(currentUser,s);
+        taskRepository.removeTask(currentUser,s);
     }
 }

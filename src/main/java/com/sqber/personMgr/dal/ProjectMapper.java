@@ -17,4 +17,6 @@ public interface ProjectMapper {
     List<Project> getList(ProjectQuery query);
 
     int updateByPrimaryKey(Project record);
+
+    void removeProject(String currentUser, String[] ids);
 }

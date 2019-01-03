@@ -1,19 +1,19 @@
 package com.sqber.personMgr.bll;
 
-import com.sqber.personMgr.entity.Customer;
-import com.sqber.personMgr.entity.query.CustomerQuery;
+import com.sqber.personMgr.entity.Task;
+import com.sqber.personMgr.entity.query.TaskQuery;
 
 import java.util.List;
 
 public interface ITaskService {
 
-    int addCustomer(Customer model);
+    int addTask(Task model);
 
-    void updateById(Customer model);
+    void updateById(Task model);
 
-    Customer getByID(int id);
+    Task getByID(int id);
 
-    List<Customer> getList(CustomerQuery query);
+    List<Task> getList(TaskQuery query);
 
-    void removeCustomer(String ids);
+    void removeTask(String ids);
 }
