@@ -225,6 +225,7 @@ CREATE TABLE `task` (
 -- ----------------------------
 -- Records of task
 -- ----------------------------
+INSERT INTO `personmgr`.`task` (`TaskId`, `Title`, `TaskType`, `TaskStatus`, `ProjectCode`, `ModuleId`, `Demandor`, `AssignTo`, `Solver`, `Content`, `PutTime`, `ScheduledStart`, `ScheduledEnd`, `Status`, `CreateUser`, `CreateTime`) VALUES ('1', '一件格式化', '1', '1', 'law', '1', '谈谈', 'me', 'me', '格式化内容', '2019/1/5', '2019/1/5', '2019/1/5', '1', 'sqb', '2019/1/5');
 
 -- ----------------------------
 -- Table structure for user

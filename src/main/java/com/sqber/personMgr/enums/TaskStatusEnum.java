@@ -1,7 +1,7 @@
 package com.sqber.personMgr.enums;
 
 public enum TaskStatusEnum {
-	None(0),Processing(1),Done(2),NoIdea(3);
+	None("未开始",0),Processing("进行中",1),Done("已完成",2),NoIdea("无法处理",3);
 	
 	private int value;
 	public int getValue() {
@@ -10,13 +10,24 @@ public enum TaskStatusEnum {
 	public void setValue(int value) {
 		this.value = value;
 	}
-	
+
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     //构造方法必须是private或者默认
-    private TaskStatusEnum(int value) {
+    private TaskStatusEnum(String name,int value) {
+        this.name = name;
         this.value = value;
     }
 
-    public TaskStatusEnum valueOf(int value) {
+    public static TaskStatusEnum valueOf(int value) {
         switch (value) {
         case 0:
             return TaskStatusEnum.None;

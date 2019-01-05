@@ -5,6 +5,7 @@ import com.sqber.personMgr.base.BaseResponse;
 import com.sqber.personMgr.base.PagedResponse;
 import com.sqber.personMgr.bll.ITaskService;
 import com.sqber.personMgr.entity.Task;
+import com.sqber.personMgr.entity.TaskListItem;
 import com.sqber.personMgr.entity.query.TaskQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,9 +33,9 @@ public class TaskController {
     
     @ResponseBody
     @GetMapping("task/getList")
-    public BaseResponse<PagedResponse<Task>> getList(int currentPage, String content) {
+    public BaseResponse<PagedResponse<TaskListItem>> getList(int currentPage, String content) {
 
-        BaseResponse<PagedResponse<Task>> result = new BaseResponse<>();
+        BaseResponse<PagedResponse<TaskListItem>> result = new BaseResponse<>();
 
         try {
 
@@ -44,9 +45,9 @@ public class TaskController {
             query.setContent(content);
 
             PageHelper.startPage(currentPage, pageSize);
-            List<Task> list = taskService.getList(query);
+            List<TaskListItem> list = taskService.getItemList(query);
 
-            PagedResponse<Task> pagedResponse = new PagedResponse<>(list,currentPage,pageSize);
+            PagedResponse<TaskListItem> pagedResponse = new PagedResponse<>(list,currentPage,pageSize);
 
             result.setData(pagedResponse);
 
