@@ -62,6 +62,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         // http.csrf().disable();//关闭csrf
         http.addFilterBefore(myFilterSecurityInterceptor, FilterSecurityInterceptor.class);
-        //http.addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class);
     }
 }

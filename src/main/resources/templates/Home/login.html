@@ -10,19 +10,19 @@
     <title>登录</title>
 
     <style>
-        .login-wrap{height: 100vh;background: url("images/login-bj.jpg") no-repeat center;background-size: cover;}
+        .login-wrap{height: 100vh;background: url("images/login-bj1.jpg") no-repeat center;background-size: cover;}
         .login-top{text-align: center;}
         .login{position: absolute;top:50%;bottom:0;left: 0;right: 0;margin:-300px auto 0;}
         .logi-t-p{display: inline-block;vertical-align: middle; font-size: 36px;font-weight: normal; color: #fff;}
-        .login-box {width: 500px;/* height: 444px; */height: 400px;margin: 55px auto 0;background: #f3f6f9;border: 1px solid #e4e4e4;border-radius: 10px;}
+        .login-box {width: 500px;/* height: 444px; */height: 400px;margin: 55px auto 0;background: white;}
         .login-form .el-form-item__label{display:none;}
         .login-form .el-input__inner {padding-left:38px; height: 46px; line-height: 46px;border: 1px solid #e4e4e4;border-radius: 4px;}
-        .login-form button{box-sizing: border-box;display: block; width: 100%;padding: 16px 0;font-size: 16px;color: #fff;background: #2c97de;border-radius:4px;transition: .3s; }
-        .login-form button:hover,.login-btn.cur{color:#fff;background: #156498;border-color: #156498;}
+        .login-form button{box-sizing: border-box;display: block; width: 100%;padding: 16px 0;font-size: 16px;color: #fff;background: #2d8cf0;border-radius:4px;transition: .3s; }
+        .login-form button:hover{background: #1d83ef;}
         .login-wrap .el-tabs__content {padding: 25px 75px;}
         .login-wrap .el-tabs__header{margin:0;}
-        .login-wrap .el-tabs__item{box-sizing: border-box; width: 50%;height: 55px;line-height: 55px;font-size: 22px;color: #999;background: #fafafa;border-bottom: 1px solid #ddd;}
-        .login-wrap .el-tabs__item.is-active{color: #333;background: #f3f6f9;}
+        .login-wrap .el-tabs__item{box-sizing: border-box; width: 50%;height: 55px;line-height: 55px;font-size: 22px;color: #999;background: white;border-bottom: 1px solid #ddd;}
+        .login-wrap .el-tabs__item.is-active{color: #333;background: white;}
         .login-wrap .el-tabs__active-bar {opacity: 0;}
         .login-wrap .el-tabs__nav{float: none;text-align: center;}
         .login-wrap .el-form-item{position: relative; margin-bottom: 18px;}
@@ -43,7 +43,7 @@
     <div class="login-wrap">
         <div class="login">
             <div class="login-top">
-                <p class="logi-t-p">XXX</p>
+                <p class="logi-t-p">任务管理系统</p>
             </div>
             <div class="login-box">
                 <el-tabs v-model="activeName">
@@ -155,7 +155,7 @@
     $("#ImageCatpcha").click(getCaptcha);
 
     $(function () {
-        $("input[name=username]").val('sqb');
+        //$("input[name=username]").val('sqb');
     });
 </script>
 </body>

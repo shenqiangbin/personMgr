@@ -21,7 +21,7 @@ body{min-width:1300px;overflow-x: auto;font:14px/1.45 "\5FAE\8F6F\96C5\9ED1";col
 .user-box{float:right;color:#fff}
 .user-box a+a:before{content:"";display:inline-block;padding:12px 1px 2px;vertical-align:middle;background:#fff;margin:0 11px 0 8px}
 .box-wrap{height:calc(100vh - 70px);overflow:hidden}
-.nav-left{float:left;width:252px;height:100%;background:#f9f9f9}
+.nav-left{float:left;width:183px;height:100%;background:#f9f9f9}
 .n-s{line-height:66px;color:#999;font-size:15px;border-bottom:1px solid #e2e2e1;border-right:1px solid #e2e2e1}
 .n-s{padding:0 5px 0 40px}
 .n-s svg{font-size:22px;vertical-align:middle;margin:-3px 0 0 0}
