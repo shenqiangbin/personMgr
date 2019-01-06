@@ -5,6 +5,9 @@
     <style>
         .el-input{width:70%;}
     </style>
+
+    <link rel="stylesheet" th:href="@{/third/editor.md/css/editormd.min.css}" />
+
 </head>
 <body>
 
@@ -16,7 +19,7 @@
 
             <p style="margin:20px 0;"></p>
 
-            <el-form :model="ruleForm" style="width:690px;"  label-position="left" :rules="rules" 
+            <el-form :model="ruleForm" style="width:100%"  label-position="left" :rules="rules"
             	ref="ruleForm" label-width="100px" class="demo-ruleForm"
                      size="small">
                 <el-form-item label="标题" prop="title">
@@ -77,7 +80,9 @@
                     </div>
                 </el-form-item>
                 <el-form-item label="内容" prop="content">
-                    <el-input type="textarea" :autosize="{ minRows: 5, maxRows: 10}" v-model="ruleForm.content"></el-input>
+                    <div id="test-editormd" style="margin:0;">
+                        <textarea style="display:none;"></textarea>
+                    </div>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="goback">返回</el-button>
@@ -91,6 +96,7 @@
 
 <div layout:fragment="jscontent">
 
+    <script th:src="@{/third/editor.md/editormd.min.js}"></script>
     <script>
     	
     	var loadProjectList = function(val){
@@ -146,15 +152,40 @@
             });
     	}
     	loadTaskStatusList();
-    
+
+        var testEditor;
+        var loadEditor = function(val){
+            testEditor = editormd("test-editormd", {
+                placeholder : "开始编辑...",
+                width   : "90%",
+                height  : 640,
+                syncScrolling : "single",
+                imageUpload: true,//图片上传功能
+                imageFormats : ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
+                imageUploadURL : "../article/uploadImage",
+                path    : "../third/editor.md/lib/",
+                emoji: false,
+                toolbarIcons : function() {
+                    // Or return editormd.toolbarModes[name]; // full, simple, mini
+                    // Using "||" set icons align right.
+                    return ["undo","redo","|","bold","italic","quote","uppercase","lowercase","|","list-ul","list-ol","hr","|","link","image","code","code-block","table","html-entities","|","watch","preview","fullscreen","clear"]
+                },
+                onchange : function() {
+                    app.ruleForm.content = testEditor.getMarkdown();
+                },
+                onload: function () {
+                    if (testEditor)
+                        testEditor.setMarkdown(val);
+                }
+            });
+        }
+
         var save = function () {
 
             // if(!app.ruleForm.starttime)
             //     app.ruleForm.starttime = "";
             // if(!app.ruleForm.endtime)
             //     app.ruleForm.endtime = "";
-
-            debugger
 
             $.ajax({
                 type: "post",
@@ -247,6 +278,9 @@
                     console.log(result);
                     if (result.code == 200) {
                         app.ruleForm = result.data;
+
+                        loadEditor(app.ruleForm.content);
+
                     }else {
                         showError(result.msg);
                     }
@@ -255,7 +289,9 @@
                     showMsg("编辑获取信息失败");
                 }
             });
-        }        
+        }else{
+            loadEditor();
+        }
         
         
 
