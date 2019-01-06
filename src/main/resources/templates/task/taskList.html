@@ -3,8 +3,9 @@
 
 <head>
     <style>
-
+        .el-table__row{cursor: pointer;}
     </style>
+    <link rel="stylesheet" th:href="@{/third/editor.md/css/editormd.preview.min.css}" />
 </head>
 <body>
 
@@ -21,7 +22,7 @@
                 <el-button type="primary" size="small" v-on:click="remove">删除</el-button>
             </div>
             <el-table ref="multipleTable" style="width: 100%" :data="pageModel.list"  class="p0-table"
-                      @selection-change="handleSelectionChange">
+                      @selection-change="handleSelectionChange" @row-click="rowClick">
 
                 <el-table-column  label="序号" width="30" type="selection">
                 </el-table-column>
@@ -58,10 +59,68 @@
                 :current-page="pageModel.currentPage" :page-size="pageModel.pageSize" layout="total,prev, pager, next, jumper"
                 :total="pageModel.totalCount"></el-pagination>
 </div>
+
+        <el-dialog
+                :visible.sync="dialogVisible"
+                width="30%">
+            <div v-if="dialogModel">
+                <el-row>
+                    <el-col :span="24">
+                        <h2>{{dialogModel.model.title}}</h2>
+                    </el-col>
+                </el-row>
+                <el-row style="margin:15px 0;">
+                    <el-col>
+                        <el-tag size="small" >{{dialogModel.tasktypeDesc}}</el-tag>
+                        <el-tag size="small" type="success">{{dialogModel.taskstatusDesc}}</el-tag>
+                    </el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="5">所属项目：</el-col>
+                    <el-col :span="19">{{dialogModel.model.projectcode}}</el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="5">提出人：</el-col>
+                    <el-col :span="7">{{dialogModel.model.demandor}}</el-col>
+                    <el-col :span="5">提出时间：</el-col>
+                    <el-col :span="7">{{dialogModel.model.puttime}}</el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="5">计划开始时间：</el-col>
+                    <el-col :span="7">{{dialogModel.model.scheduledstart}}</el-col>
+                    <el-col :span="5">计划结束时间：</el-col>
+                    <el-col :span="7">{{dialogModel.model.scheduledend}}</el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="24">
+                        <div id="test-editormd-view" style="padding:0;margin-top:20px;">
+                            <textarea style="display:none;" name="test-editormd-markdown-doc">###Hello world!</textarea>
+                        </div>
+                    </el-col>
+                </el-row>
+            </div>
+
+
+            <span slot="footer" class="dialog-footer" />
+        </el-dialog>
+
 </el-scrollbar>
 </div>
 
+
+
 <div layout:fragment="jscontent">
+
+    <script th:src="@{/third/editor.md/lib/marked.min.js}"></script>
+    <script th:src="@{/third/editor.md/lib/prettify.min.js}"></script>
+    <script th:src="@{/third/editor.md/lib/raphael.min.js}"></script>
+    <script th:src="@{/third/editor.md/lib/underscore.min.js}"></script>
+    <script th:src="@{/third/editor.md/lib/sequence-diagram.min.js}"></script>
+    <script th:src="@{/third/editor.md/lib/flowchart.min.js}"></script>
+    <script th:src="@{/third/editor.md/lib/jquery.flowchart.min.js}"></script>
+
+    <script th:src="@{/third/editor.md/jquery.min.js}"></script>
+    <script th:src="@{/third/editor.md/editormd.min.js}"></script>
 
     <script>
 
@@ -101,6 +160,26 @@
             }
 
             app.selectedItems = arr;
+        }
+
+        var rowClick = function(val){
+            app.dialogVisible = true;
+            app.dialogModel = val;
+
+            var markdown = app.dialogModel.model.content;
+            Vue.nextTick(function () {
+                $("#test-editormd-view").html("");
+                var testEditormdView = editormd.markdownToHTML("test-editormd-view", {
+                    markdown: markdown,
+                    htmlDecode: "style,script,iframe",
+                    emoji: false,
+                    taskList: true,
+                    tocm: true,
+                    tex: true,
+                    flowChart: true,
+                    sequenceDiagram: true,
+                });
+            });
         }
 
         var remove = function () {
@@ -144,11 +223,14 @@
                 searchContent:'', /*查询参数：用户单位名称*/
                 currentPage:1,
                 selectedItems:[],
+                dialogVisible:false,
+                dialogModel:null,
             },
             methods: {
                 loadData: loadData,
                 query:query,
                 handleSelectionChange:handleSelectionChange,
+                rowClick:rowClick,
                 remove:remove,
                 add:function(){
                   window.location.href= contextRoot +"task/taskAdd";
