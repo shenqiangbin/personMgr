@@ -267,4 +267,4 @@ CREATE TABLE `userrole` (
 
 
 
-INSERT INTO `personmgr`.`userrole` (`RoleID`, `UserID`, `Status`, `CreateUser`, `CreateTime`) VALUES ('3', '17', '1', 'sqb', '2018/12/17');
+INSERT INTO `personmgr`.`userrole` (`RoleID`, `UserID`, `Status`, `CreateUser`, `CreateTime`) VALUES ('1', '17', '1', 'sqb', '2018/12/17');
