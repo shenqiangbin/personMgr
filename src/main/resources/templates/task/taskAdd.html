@@ -2,9 +2,6 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorator="share/managerlayout">
 
 <head>
-    <style>
-        .el-input{width:70%;}
-    </style>
 
     <link rel="stylesheet" th:href="@{/third/editor.md/css/editormd.min.css}" />
 
@@ -22,63 +19,111 @@
             <el-form :model="ruleForm" style="width:100%"  label-position="left" :rules="rules"
             	ref="ruleForm" label-width="100px" class="demo-ruleForm"
                      size="small">
-                <el-form-item label="标题" prop="title">
-                    <el-input v-model="ruleForm.title"></el-input>
-                </el-form-item>
-                <el-form-item label="项目" prop="projectcode">     
-                    <el-select v-model="ruleForm.projectcode" placeholder="请选择">
-					    <el-option
-					      v-for="item in projectList" :key="item.code" :label="item.name" :value="item.code">
-					    </el-option>
-					</el-select>                   
-                </el-form-item>
-                <el-form-item label="提出人" prop="demandor">
-                    <el-input v-model="ruleForm.demandor"></el-input>
-                </el-form-item>
-                <el-form-item label="类型" prop="tasktype">
-                    <el-select v-model="ruleForm.tasktype" placeholder="请选择">
-					    <el-option
-					      v-for="item in taskTypeList" :key="item.code" :label="item.name" :value="item.code">
-					    </el-option>
-					</el-select> 
-                </el-form-item>
-                <el-form-item label="状态" prop="taskstatus">                    
-                    <el-select v-model="ruleForm.taskstatus" placeholder="请选择">
-					    <el-option
-					      v-for="item in taskStatusList" :key="item.code" :label="item.name" :value="item.code">
-					    </el-option>
-					</el-select> 
-                </el-form-item>
-                <el-form-item label="提出时间" prop="puttime">
-                    <div class="block">
-                        <el-date-picker
-                                v-model="ruleForm.puttime"
-                                type="date"
-                                value-format="yyyy-MM-dd"
-                                placeholder="选择日期">
-                        </el-date-picker>
-                    </div>
-                </el-form-item>
-                <el-form-item label="计划开始时间" prop="scheduledstart">
-                    <div class="block">
-                        <el-date-picker
-                                v-model="ruleForm.scheduledstart"
-                                type="date"
-                                value-format="yyyy-MM-dd"
-                                placeholder="选择日期">
-                        </el-date-picker>
-                    </div>
-                </el-form-item>
-                <el-form-item label="计划结束时间" prop="scheduledend">
-                    <div class="block">
-                        <el-date-picker
-                                v-model="ruleForm.scheduledend"
-                                type="date"
-                                value-format="yyyy-MM-dd"
-                                placeholder="选择日期">
-                        </el-date-picker>
-                    </div>
-                </el-form-item>
+
+                <el-row :gutter="40">
+                    <el-col :span="8">
+
+                        <el-form-item label="标题" prop="title">
+                            <el-input v-model="ruleForm.title"></el-input>
+                        </el-form-item>
+
+                    </el-col>
+                    <el-col :span="8">
+
+                        <el-form-item label="项目" prop="projectcode">
+                            <el-select v-model="ruleForm.projectcode" placeholder="请选择">
+                                <el-option
+                                        v-for="item in projectList" :key="item.code" :label="item.name" :value="item.code">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+
+                    </el-col>
+                </el-row>
+
+                <el-row :gutter="40">
+                    <el-col :span="8">
+
+                        <el-form-item label="提出人" prop="demandor">
+                            <el-input v-model="ruleForm.demandor"></el-input>
+                        </el-form-item>
+
+                    </el-col>
+                    <el-col :span="6">
+
+                        <el-form-item label="类型" prop="tasktype">
+                            <el-select v-model="ruleForm.tasktype" placeholder="请选择">
+                                <el-option
+                                        v-for="item in taskTypeList" :key="item.code" :label="item.name" :value="item.code">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+
+                    </el-col>
+
+                    <el-col :span="4">
+
+                        <el-form-item label="状态" prop="taskstatus">
+                            <el-select v-model="ruleForm.taskstatus" placeholder="请选择">
+                                <el-option
+                                        v-for="item in taskStatusList" :key="item.code" :label="item.name" :value="item.code">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+
+                    </el-col>
+
+                </el-row>
+
+
+                <el-row :gutter="40">
+                    <el-col :span="8">
+
+                        <el-form-item label="提出时间" prop="puttime">
+                            <div class="block">
+                                <el-date-picker
+                                        v-model="ruleForm.puttime"
+                                        type="date"
+                                        value-format="yyyy-MM-dd"
+                                        placeholder="选择日期">
+                                </el-date-picker>
+                            </div>
+                        </el-form-item>
+
+                    </el-col>
+                    <el-col :span="6">
+
+                        <el-form-item label="计划开始时间" prop="scheduledstart">
+                            <div class="block">
+                                <el-date-picker
+                                        v-model="ruleForm.scheduledstart"
+                                        type="date"
+                                        value-format="yyyy-MM-dd"
+                                        placeholder="选择日期">
+                                </el-date-picker>
+                            </div>
+                        </el-form-item>
+
+                    </el-col>
+
+                    <el-col :span="8">
+
+                        <el-form-item label="计划结束时间" prop="scheduledend">
+                            <div class="block">
+                                <el-date-picker
+                                        v-model="ruleForm.scheduledend"
+                                        type="date"
+                                        value-format="yyyy-MM-dd"
+                                        placeholder="选择日期">
+                                </el-date-picker>
+                            </div>
+                        </el-form-item>
+
+                    </el-col>
+
+                </el-row>
+
+
                 <el-form-item label="内容" prop="content">
                     <div id="test-editormd" style="margin:0;">
                         <textarea style="display:none;"></textarea>
