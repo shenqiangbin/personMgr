@@ -4,6 +4,11 @@
 <head>
     <style>
         .el-table__row{cursor: pointer;}
+        .el-table .NoneRow{background:#f0f9eb;}
+        .el-table .ProcessingRow{background:#fde6f9;}
+        .el-table .DoneRow{background:#88d688;}
+        .el-table .NoIdeaRow{background:#afafaf;}
+        .el-table .cell{color:black;}
     </style>
     <link rel="stylesheet" th:href="@{/third/editor.md/css/editormd.preview.min.css}" />
 </head>
@@ -22,7 +27,7 @@
                 <el-button type="primary" size="small" v-on:click="remove">删除</el-button>
             </div>
             <el-table ref="multipleTable" style="width: 100%" :data="pageModel.list"  class="p0-table"
-                      @selection-change="handleSelectionChange" @row-click="rowClick">
+                      @selection-change="handleSelectionChange" @row-click="rowClick" :row-class-name="tableRowClassName">
 
                 <el-table-column  label="序号" width="30" type="selection">
                 </el-table-column>
@@ -81,13 +86,13 @@
                 </el-row>
                 <el-row>
                     <el-col :span="5">提出人：</el-col>
-                    <el-col :span="7">{{dialogModel.model.demandor}}</el-col>
+                    <el-col :span="7">{{dialogModel.model.demandor}}&nbsp;</el-col>
                     <el-col :span="5">提出时间：</el-col>
                     <el-col :span="7">{{dialogModel.model.puttime}}</el-col>
                 </el-row>
                 <el-row>
                     <el-col :span="5">计划开始时间：</el-col>
-                    <el-col :span="7">{{dialogModel.model.scheduledstart}}</el-col>
+                    <el-col :span="7">{{dialogModel.model.scheduledstart}}&nbsp;</el-col>
                     <el-col :span="5">计划结束时间：</el-col>
                     <el-col :span="7">{{dialogModel.model.scheduledend}}</el-col>
                 </el-row>
@@ -181,6 +186,13 @@
                 });
             });
         }
+        
+        var tableRowClassName = function (item) {
+            if(item.row.taskstatusDesc == "未开始") return "NoneRow";
+            if(item.row.taskstatusDesc == "进行中") return "ProcessingRow";
+            if(item.row.taskstatusDesc == "已完成") return "DoneRow";
+            if(item.row.taskstatusDesc == "无法处理") return "NoIdeaRow";
+        }
 
         var remove = function () {
 
@@ -231,6 +243,7 @@
                 query:query,
                 handleSelectionChange:handleSelectionChange,
                 rowClick:rowClick,
+                tableRowClassName:tableRowClassName,
                 remove:remove,
                 add:function(){
                   window.location.href= contextRoot +"task/taskAdd";
