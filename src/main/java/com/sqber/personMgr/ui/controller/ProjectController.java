@@ -154,4 +154,24 @@ public class ProjectController {
         projectService.addProject(p);
 
     }
+    
+    @ResponseBody
+    @PostMapping("project/removeProject")
+    public BaseResponse<Boolean> removeProject(String ids){
+
+        BaseResponse<Boolean> result = new BaseResponse<>();
+
+        try{
+
+            projectService.removeProject(ids);
+
+        }catch (Exception e) {
+            result.setCode(500);
+            result.setMsg("服务器错误");
+
+            log.error(e.getMessage() + e.getStackTrace());
+        }
+
+        return result;
+    }
 }

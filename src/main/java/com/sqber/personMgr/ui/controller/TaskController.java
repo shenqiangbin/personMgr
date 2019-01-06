@@ -160,7 +160,7 @@ public class TaskController {
 
     @ResponseBody
     @PostMapping("task/removeTask")
-    public BaseResponse<Boolean> removeCustomer(String ids){
+    public BaseResponse<Boolean> removeTask(String ids){
 
         BaseResponse<Boolean> result = new BaseResponse<>();
 
