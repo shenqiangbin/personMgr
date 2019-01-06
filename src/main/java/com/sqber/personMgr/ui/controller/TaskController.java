@@ -158,4 +158,23 @@ public class TaskController {
         return result;
     }
 
+    @ResponseBody
+    @PostMapping("task/removeTask")
+    public BaseResponse<Boolean> removeCustomer(String ids){
+
+        BaseResponse<Boolean> result = new BaseResponse<>();
+
+        try{
+
+            taskService.removeTask(ids);
+
+        }catch (Exception e) {
+            result.setCode(500);
+            result.setMsg("服务器错误");
+
+            log.error(e.getMessage() + e.getStackTrace());
+        }
+
+        return result;
+    }	
 }

@@ -97,7 +97,7 @@
             var arr = [];
 
             for(var i=0; i<val.length; i++){
-                arr.push(val[i].taskid);
+                arr.push(val[i].model.taskid);
             }
 
             app.selectedItems = arr;
@@ -114,7 +114,7 @@
 
                 $.ajax({
                     type: "post",
-                    url: contextRoot + "Customer/removeCustomer",
+                    url: contextRoot + "task/removeTask",
                     data: { ids : app.selectedItems.join(",") },
                     async: true,
                     success: function (result) {
