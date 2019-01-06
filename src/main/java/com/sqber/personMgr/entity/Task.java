@@ -2,6 +2,8 @@ package com.sqber.personMgr.entity;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class Task {
     private Integer taskid;
 
@@ -23,10 +25,13 @@ public class Task {
 
     private String content;
 
+    @JsonFormat(pattern="yyyy-MM-dd", timezone = "GMT+8")
     private Date puttime;
 
+    @JsonFormat(pattern="yyyy-MM-dd", timezone = "GMT+8")
     private Date scheduledstart;
 
+    @JsonFormat(pattern="yyyy-MM-dd", timezone = "GMT+8")
     private Date scheduledend;
 
     private Integer status;

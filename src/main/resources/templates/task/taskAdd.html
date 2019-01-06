@@ -11,42 +11,73 @@
 <div layout:fragment="mangercontent">
     <el-scrollbar  class="contain">
         <div class="con-box" >
-            <h2 v-if="isEdit">编辑项目</h2>
-            <h2 v-if="!isEdit">新增项目</h2>
+            <h2 v-if="isEdit">编辑任务</h2>
+            <h2 v-if="!isEdit">新增任务</h2>
 
             <p style="margin:20px 0;"></p>
 
-            <el-form :model="ruleForm" style="width:630px;"  label-position="left" :rules="rules" ref="ruleForm" label-width="80px" class="demo-ruleForm"
+            <el-form :model="ruleForm" style="width:690px;"  label-position="left" :rules="rules" 
+            	ref="ruleForm" label-width="100px" class="demo-ruleForm"
                      size="small">
-
-                <el-form-item label="编码" prop="code">
-                    <el-input v-model="ruleForm.code" :disabled="isEdit"></el-input>
-                    <span style="color: gray;display:inline-block;width:145px;">编码保存后不可更改</span>
+                <el-form-item label="标题" prop="title">
+                    <el-input v-model="ruleForm.title"></el-input>
                 </el-form-item>
-
-
-                <el-form-item label="名称" prop="name">
-                    <el-input v-model="ruleForm.name"></el-input>
+                <el-form-item label="项目" prop="projectcode">     
+                    <el-select v-model="ruleForm.projectcode" placeholder="请选择">
+					    <el-option
+					      v-for="item in projectList" :key="item.code" :label="item.name" :value="item.code">
+					    </el-option>
+					</el-select>                   
                 </el-form-item>
-                <el-form-item label="开始时间" prop="starttime">
+                <el-form-item label="提出人" prop="demandor">
+                    <el-input v-model="ruleForm.demandor"></el-input>
+                </el-form-item>
+                <el-form-item label="类型" prop="tasktype">
+                    <el-select v-model="ruleForm.tasktype" placeholder="请选择">
+					    <el-option
+					      v-for="item in taskTypeList" :key="item.code" :label="item.name" :value="item.code">
+					    </el-option>
+					</el-select> 
+                </el-form-item>
+                <el-form-item label="状态" prop="taskstatus">                    
+                    <el-select v-model="ruleForm.taskstatus" placeholder="请选择">
+					    <el-option
+					      v-for="item in taskStatusList" :key="item.code" :label="item.name" :value="item.code">
+					    </el-option>
+					</el-select> 
+                </el-form-item>
+                <el-form-item label="提出时间" prop="puttime">
                     <div class="block">
                         <el-date-picker
-                                v-model="ruleForm.starttime"
+                                v-model="ruleForm.puttime"
                                 type="date"
                                 value-format="yyyy-MM-dd"
                                 placeholder="选择日期">
                         </el-date-picker>
                     </div>
                 </el-form-item>
-                <el-form-item label="结束时间" prop="endtime">
+                <el-form-item label="计划开始时间" prop="scheduledstart">
                     <div class="block">
                         <el-date-picker
-                                v-model="ruleForm.endtime"
+                                v-model="ruleForm.scheduledstart"
                                 type="date"
                                 value-format="yyyy-MM-dd"
                                 placeholder="选择日期">
                         </el-date-picker>
                     </div>
+                </el-form-item>
+                <el-form-item label="计划结束时间" prop="scheduledend">
+                    <div class="block">
+                        <el-date-picker
+                                v-model="ruleForm.scheduledend"
+                                type="date"
+                                value-format="yyyy-MM-dd"
+                                placeholder="选择日期">
+                        </el-date-picker>
+                    </div>
+                </el-form-item>
+                <el-form-item label="内容" prop="content">
+                    <el-input type="textarea" :autosize="{ minRows: 5, maxRows: 10}" v-model="ruleForm.content"></el-input>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="goback">返回</el-button>
@@ -61,6 +92,61 @@
 <div layout:fragment="jscontent">
 
     <script>
+    	
+    	var loadProjectList = function(val){
+    		$.ajax({
+                type: "get",
+                url: contextRoot + "project/getDDLItem",          
+                success: function (result) {
+                    if (result.code == 200) {
+                    	app.projectList = result.data;
+                    }else {
+                        showError(result.msg);
+                    }
+                },
+                error: function () {
+                	showError("项目列表失败");
+                }
+            });
+    	}
+    	loadProjectList();
+    	
+    	var loadTaskTypeList = function(val){
+    		$.ajax({
+                type: "get",
+                url: contextRoot + "task/tasktypes",          
+                success: function (result) {
+                    if (result.code == 200) {
+                    	app.taskTypeList = result.data;
+                    }else {
+                        showError(result.msg);
+                    }
+                },
+                error: function () {
+                	showError("进度列表失败");
+                }
+            });
+    	}
+    	loadTaskTypeList();
+    	
+    	var loadTaskStatusList = function(val){
+    		$.ajax({
+                type: "get",
+                url: contextRoot + "task/taskstatuss",          
+                success: function (result) {
+                    if (result.code == 200) {
+                    	app.taskStatusList = result.data;
+                    }else {
+                        showError(result.msg);
+                    }
+                },
+                error: function () {
+                	showError("类型列表失败");
+                }
+            });
+    	}
+    	loadTaskStatusList();
+    
         var save = function () {
 
             // if(!app.ruleForm.starttime)
@@ -72,10 +158,9 @@
 
             $.ajax({
                 type: "post",
-                url: contextRoot + "project/saveProject",
+                url: contextRoot + "task/saveTask",
                 data: JSON.stringify(app.ruleForm),
                 contentType: 'application/json',
-
                 async: true,
                 success: function (result) {
                     console.log(result);
@@ -85,7 +170,7 @@
                         }else{
                             showMsg("保存成功");
                             //app.$refs['ruleForm'].resetFields();
-                            window.location.href = contextRoot + "project/projectList";
+                            window.location.href = contextRoot + "task/taskList";
                         }
                     }else {
                         showError(result.msg);
@@ -103,25 +188,33 @@
             data: {
                 isEdit: false,
                 ruleForm:{
-                    code: '',
-                    name:'',
-                    starttime:'',
-                    endtime:''
+                	title:'',
+                    projectcode:'',
+                    demandor:'',
+                    tasktype:1,
+                    taskstatus:0,
+                    puttime:new Date(),
+                    scheduledstart:'',
+                    scheduledend:'',
+                    content:''
                 },
+                projectList:[],
+                taskTypeList:[],
+                taskStatusList:[],
                 rules:{
-                    name: [
+                    title: [
                         { required: true, message: '请输入名称', trigger: 'blur' },
                         { min: 1, max: 50, message: '长度请在 1 到 50 个字符', trigger: 'blur' }
                     ],
-                    code:[
-                        { required: true, message: '请输入编码', trigger: 'blur' },
-                        { max: 50, message: '请不要超过50字符', trigger: 'blur' }
+                    content:[
+                        { required: true, message: '请输入内容', trigger: 'blur' },
+                        { max: 4000, message: '请不要超过4000字符', trigger: 'blur' }
                     ]
                 }
             },
             methods: {
                 goback(){
-                    window.location.href = contextRoot + "project/projectList";
+                    window.location.href = contextRoot + "task/taskList";
                 },
                 handleCurrentChange(val){
                     app.currentPage = val;
@@ -146,7 +239,7 @@
 
             $.ajax({
                 type: "get",
-                url: contextRoot + "project/getById",
+                url: contextRoot + "task/getById",
                 data: { id:id },
                 async: true,
                 success: function (result) {
@@ -162,7 +255,9 @@
                     showMsg("编辑获取信息失败");
                 }
             });
-        }
+        }        
+        
+        
 
     </script>
 </div>

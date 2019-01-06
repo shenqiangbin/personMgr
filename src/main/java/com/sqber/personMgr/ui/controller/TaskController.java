@@ -2,11 +2,15 @@ package com.sqber.personMgr.ui.controller;
 
 import com.github.pagehelper.PageHelper;
 import com.sqber.personMgr.base.BaseResponse;
+import com.sqber.personMgr.base.DDLItem;
 import com.sqber.personMgr.base.PagedResponse;
 import com.sqber.personMgr.bll.ITaskService;
 import com.sqber.personMgr.entity.Task;
 import com.sqber.personMgr.entity.TaskListItem;
 import com.sqber.personMgr.entity.query.TaskQuery;
+import com.sqber.personMgr.enums.TaskStatusEnum;
+import com.sqber.personMgr.enums.TaskTypeEnum;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,6 +71,36 @@ public class TaskController {
     }
     
     @ResponseBody
+    @GetMapping("task/tasktypes")
+    public BaseResponse<List<DDLItem>> getTaskTypes() {
+    	BaseResponse<List<DDLItem>> result = new BaseResponse<List<DDLItem>>();
+    	try {
+    		result.setData(TaskTypeEnum.toDDLItems());
+    	}catch (Exception e) {
+            result.setCode(500);
+            result.setMsg("服务器错误");
+
+            log.error(e.getMessage() + e.getStackTrace());
+        }
+    	return result;
+    }
+    
+    @ResponseBody
+    @GetMapping("task/taskstatuss")
+    public BaseResponse<List<DDLItem>> getTaskStatuss() {
+    	BaseResponse<List<DDLItem>> result = new BaseResponse<List<DDLItem>>();
+    	try {
+    		result.setData(TaskStatusEnum.toDDLItems());
+    	}catch (Exception e) {
+            result.setCode(500);
+            result.setMsg("服务器错误");
+
+            log.error(e.getMessage() + e.getStackTrace());
+        }
+    	return result;
+    }
+    
+    @ResponseBody
     @PostMapping("task/saveTask")
     public BaseResponse<String> saveTask(@RequestBody Task model){
 
@@ -76,13 +110,17 @@ public class TaskController {
             System.out.println(model.getTaskid());
             if(model.getTaskid()!=null && model.getTaskid()!=0){
                 Task dbModel = taskService.getByID(model.getTaskid());
-
-                //编码不能修改
-                //dbModel.setCode();
-//                dbModel.setName(model.getName());
-//                dbModel.setStarttime(model.getStarttime());
-//                dbModel.setEndtime(model.getEndtime());
-
+                
+                dbModel.setTitle(model.getTitle());
+                dbModel.setProjectcode(model.getProjectcode());
+                dbModel.setDemandor(model.getDemandor());
+                dbModel.setPuttime(model.getPuttime());
+                dbModel.setTaskstatus(model.getTaskstatus());
+                dbModel.setTasktype(model.getTasktype());
+                dbModel.setScheduledstart(model.getScheduledstart());
+                dbModel.setScheduledend(model.getScheduledend());
+                dbModel.setContent(model.getContent());
+                
                 taskService.updateById(dbModel);
             }else{
 

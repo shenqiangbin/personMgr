@@ -17,6 +17,7 @@ import com.sqber.personMgr.base.BaseResponse;
 import com.sqber.personMgr.base.PagedResponse;
 import com.sqber.personMgr.bll.IProjectService;
 import com.sqber.personMgr.entity.Project;
+import com.sqber.personMgr.entity.ProjectDDLItem;
 import com.sqber.personMgr.entity.Project;
 import com.sqber.personMgr.entity.query.ProjectQuery;
 
@@ -60,6 +61,25 @@ public class ProjectController {
         }
 
         return result;
+    }
+    
+    @ResponseBody
+    @GetMapping("project/getDDLItem")
+    public BaseResponse<List<ProjectDDLItem>> getDDLItem(){
+    	 BaseResponse<List<ProjectDDLItem>> result = new BaseResponse<>();
+
+         try {
+             List<ProjectDDLItem> list = projectService.getDDlItem();
+             result.setData(list);
+             
+         } catch (Exception e) {
+             result.setCode(500);
+             result.setMsg("服务器错误");
+
+             log.error(e.getMessage() + e.getStackTrace());
+         }
+
+         return result;
     }
     
     @GetMapping("project/projectAdd")

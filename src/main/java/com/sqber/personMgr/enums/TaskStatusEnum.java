@@ -1,5 +1,10 @@
 package com.sqber.personMgr.enums;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.sqber.personMgr.base.DDLItem;
+
 public enum TaskStatusEnum {
 	None("未开始",0),Processing("进行中",1),Done("已完成",2),NoIdea("无法处理",3);
 	
@@ -40,5 +45,17 @@ public enum TaskStatusEnum {
         default:
             return null;
         }
+    }
+    
+    public DDLItem toDDLItem() {
+    	return new DDLItem(this.getValue(),this.getName());
+    }
+    
+    public static List<DDLItem> toDDLItems() {
+    	List<DDLItem> list =  new ArrayList<DDLItem>();
+    	for(TaskStatusEnum t : TaskStatusEnum.values()) {
+    		list.add(t.toDDLItem());
+    	}
+    	return list;
     }
 }
