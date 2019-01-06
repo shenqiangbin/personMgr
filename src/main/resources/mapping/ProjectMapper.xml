@@ -40,16 +40,35 @@
       ModifyTime = #{modifytime,jdbcType=TIMESTAMP}
     where ProjectId = #{projectid,jdbcType=INTEGER}
   </update>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select ProjectId, Code, Name, StartTime, EndTime, Status, CreateUser, CreateTime, 
     ModifyUser, ModifyTime
     from project
-    where ProjectId = #{projectid,jdbcType=INTEGER}
+    where Status = 1 and ProjectId = #{projectid,jdbcType=INTEGER}
   </select>
+
+  <select id="getByCode" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select ProjectId, Code, Name, StartTime, EndTime, Status, CreateUser, CreateTime,
+    ModifyUser, ModifyTime
+    from project
+    where Status = 1 and Code = #{code,jdbcType=VARCHAR}
+  </select>
+
+   <select id="getByCodes" resultMap="BaseResultMap">
+    select ProjectId, Code, Name, StartTime, EndTime, Status, CreateUser, CreateTime,
+    ModifyUser, ModifyTime
+    from project
+    where Status = 1 and Code in
+       <foreach collection="codes" item="id" index="index" open="(" close=")" separator=",">
+           #{id}
+       </foreach>
+  </select>
+
   <select id="selectAll" resultMap="BaseResultMap" >
     select ProjectId, Code, Name, StartTime, EndTime, Status, CreateUser, CreateTime, 
     ModifyUser, ModifyTime
-    from project
+    from project where Status = 1
   </select>
   
   	<select id="getList" resultMap="BaseResultMap" parameterType="com.sqber.personMgr.entity.query.ProjectQuery">
@@ -57,7 +76,7 @@
 		ProjectId, Code, Name, StartTime, EndTime, Status, CreateUser, CreateTime, ModifyUser, ModifyTime
 		FROM Project
 		where status = 1
-			<if test="projectName">
+			<if test="projectName!=null and projectName!=''">
 				and Name like '%${projectName}%'
 			</if>
 		<choose>

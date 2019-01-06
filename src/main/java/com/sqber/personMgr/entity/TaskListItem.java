@@ -7,6 +7,7 @@ public class TaskListItem {
 
     private Task model;
 
+    private String projectName;
     private String tasktypeDesc;
     private String taskstatusDesc;
 
@@ -38,6 +39,13 @@ public class TaskListItem {
         return "";
     }
 
+    public String getProjectName() {
+        return projectName;
+    }
+
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
+    }
 
     public void setTaskstatusDesc(String taskstatusDesc) {
         this.taskstatusDesc = taskstatusDesc;

@@ -49,6 +49,11 @@ public class ProjectService implements IProjectService {
     }
 
     @Override
+    public Project getByCode(String code) {
+        return projectRepository.getByCode(code);
+    }
+
+    @Override
     public List<Project> getList(ProjectQuery query) {
         return projectRepository.getList(query);
     }

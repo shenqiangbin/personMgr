@@ -1,8 +1,11 @@
 package com.sqber.personMgr.bll.impl;
 
 import com.sqber.personMgr.base.SessionHelper;
+import com.sqber.personMgr.base.StringUtil;
 import com.sqber.personMgr.bll.ITaskService;
+import com.sqber.personMgr.dal.ProjectMapper;
 import com.sqber.personMgr.dal.TaskMapper;
+import com.sqber.personMgr.entity.Project;
 import com.sqber.personMgr.entity.Task;
 import com.sqber.personMgr.entity.TaskListItem;
 import com.sqber.personMgr.entity.query.TaskQuery;
@@ -18,6 +21,8 @@ public class TaskService implements ITaskService {
 
     @Autowired
     private TaskMapper taskRepository;
+    @Autowired
+    private ProjectMapper projectRepository;
 
     @Override
     public int addTask(Task model) {
@@ -64,10 +69,37 @@ public class TaskService implements ITaskService {
 
     private List<TaskListItem> converToListItem(List<Task> list) {
         List<TaskListItem> result = new ArrayList<>();
+
+        List<Project> projects = getProjects(list);
+
         for (Task t : list) {
-            result.add(new TaskListItem(t));
+            String projectName = getProjectName(t.getProjectcode(),projects);
+
+            TaskListItem newItem =new TaskListItem(t);
+            newItem.setProjectName(projectName);
+
+            result.add(newItem);
         }
+
+
         return result;
+    }
+
+    private String getProjectName(String code,List<Project> projects){
+        for(Project p : projects){
+            if(p.getCode().equals(code))
+                return p.getName();
+        }
+        return "";
+    }
+
+    private List<Project> getProjects(List<Task> list){
+        List<String> projectCodes = new ArrayList<>();
+        for (Task t : list) {
+            if(StringUtil.isNotBlank(t.getProjectcode()) && !projectCodes.contains(t.getProjectcode())) //注意去重
+                projectCodes.add(t.getProjectcode());
+        }
+        return projectRepository.getByCodes(projectCodes);
     }
 
     public void removeTask(String ids){

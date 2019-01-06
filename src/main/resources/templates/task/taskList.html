@@ -37,7 +37,7 @@
                     </template>
                 </el-table-column>
                 <el-table-column  label="项目">
-                    <template slot-scope="scope">{{scope.row.model.projectcode}}</template>
+                    <template slot-scope="scope">{{scope.row.projectName}}</template>
                 </el-table-column>
                 <el-table-column  label="名称">
                     <template slot-scope="scope" >{{scope.row.model.title}}</template>
@@ -82,7 +82,7 @@
                 </el-row>
                 <el-row>
                     <el-col :span="5">所属项目：</el-col>
-                    <el-col :span="19">{{dialogModel.model.projectcode}}</el-col>
+                    <el-col :span="19">{{dialogModel.projectName}}</el-col>
                 </el-row>
                 <el-row>
                     <el-col :span="5">提出人：</el-col>

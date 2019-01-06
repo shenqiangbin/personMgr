@@ -14,6 +14,8 @@ public interface IProjectService {
 
     Project getByID(int id);
 
+    Project getByCode(String code);
+
     List<Project> getList(ProjectQuery query);
     
     List<ProjectDDLItem> getDDlItem();
