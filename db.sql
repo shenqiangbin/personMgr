@@ -102,8 +102,8 @@ CREATE TABLE `menu` (
 -- ----------------------------
 -- Records of menu
 -- ----------------------------
-INSERT INTO `personmgr`.`menu` (`menuName`, `menuURL`, `roles`, `Status`, `CreateUser`, `CreateTime`) VALUES ('任务', '/task/taskList', '1,', '1', 'sqb', '2019-1-3');
-INSERT INTO `personmgr`.`menu` (`menuName`, `menuURL`, `roles`, `Status`, `CreateUser`, `CreateTime`) VALUES ('项目', '/project/projectList', '1,', '1', 'sqb', '2019-1-2');
+INSERT INTO `personmgr`.`menu` (`menuName`, `menuURL`, `roles`, `Status`, `CreateUser`, `CreateTime`) VALUES ('任务', 'task/taskList', '1,', '1', 'sqb', '2019-1-3');
+INSERT INTO `personmgr`.`menu` (`menuName`, `menuURL`, `roles`, `Status`, `CreateUser`, `CreateTime`) VALUES ('项目', 'project/projectList', '1,', '1', 'sqb', '2019-1-2');
 
 
 -- ----------------------------

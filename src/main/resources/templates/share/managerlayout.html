@@ -27,7 +27,7 @@
                         "</li>";
                     result.data.forEach(function (item) {
                         var li = str.replace("{0}",item.icon)
-                            .replace("{1}",item.menuURL)
+                            .replace("{1}",contextRoot + item.menuURL)
                             .replace("{2}",item.menuName);
                         $('.nav-left ul').append(li);
                     })
@@ -61,6 +61,8 @@
                 $('.nav-left ul li').click(function() {
                     var _this=$(this);
                     _this.addClass('cur').siblings('li').removeClass('cur');
+
+                    debugger
 
                     var href = $(this).find("a").attr("href");
                     window.location.href = href;

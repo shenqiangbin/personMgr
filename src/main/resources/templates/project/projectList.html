@@ -28,8 +28,7 @@
                 <el-table-column  label="序号" width="60">
                     <template slot-scope="scope">
                         {{((pageModel.currentPage-1) * pageModel.pageSize) + scope.$index+1}}
-                    </template>
-                </el-table-column>
+                    </template></el-table-column>
                 <el-table-column  label="名称">
                     <template slot-scope="scope" >{{scope.row.name}}</template>
                 </el-table-column>
@@ -44,7 +43,7 @@
                 </el-table-column>
                 <el-table-column  label="操作" width="100px">
                     <template slot-scope="scope" >
-                        <a v-bind:href="'/project/projectAdd?id='+scope.row.projectid" class="svg-a" title="编辑">
+                        <a v-bind:href="contextRoot+'project/projectAdd?id='+scope.row.projectid" class="svg-a" title="编辑">
                             <svg class="icon" aria-hidden="true">
                                 <use xlink:href="#icon-edtor"></use>
                             </svg>
@@ -140,6 +139,7 @@
         var app = new Vue({
             el: '#app',
             data: {
+                contextRoot:contextRoot,
                 pageModel:[],
                 searchName:'', /*查询参数：用户单位名称*/
                 currentPage:1,

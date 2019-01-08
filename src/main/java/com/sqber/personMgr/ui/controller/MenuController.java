@@ -30,8 +30,8 @@ public class MenuController {
             result.setData(list);
 
         } catch (Exception e) {
-            result.setCode(500);       result.setMsg("服务器错误");
-
+            result.setCode(500);
+            result.setMsg("服务器错误");
             log.error(e.getMessage() + e.getStackTrace());
         }
 
@@ -44,7 +44,7 @@ public class MenuController {
         List<Menu> list = menuService.getFilterList();
         if(list!=null && list.size()>0)
         {
-            return "redirect:" + list.get(0).getMenuURL();
+            return "redirect:/" + list.get(0).getMenuURL();
         }
         return "redirect:/nothing";
     }
