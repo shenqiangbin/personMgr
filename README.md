@@ -17,8 +17,8 @@
  - [x] 任务编辑  
    - [x] 编辑页面文本框位置调整，上面部分右侧太空
    - [ ] ediot.md的图片上传
-- [ ] tomcat开启压缩css,js
-- [ ] 尽量使用cdn
+- [x] tomcat开启压缩css,js
+- [x] 尽量使用cdn
 
 >使用editor.md展示时，要注意清空html元素内容，多次展示，防止重复添加
 
