@@ -24,30 +24,73 @@ import com.sqber.personMgr.entity.ImageCaptchaDTO;
 @Service
 public class CodeService implements ICodeService {
 
+//	@Override
+//	public String getCode(int codeLength) {
+//
+//		Random randomer = new Random();
+//		StringBuilder builder = new StringBuilder();
+//
+//		char[] elements = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
+//				'S', 'T', 'V', 'U', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+//				'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '1', '2', '3', '4', '5', '6', '7', '8',
+//				'9' };
+//
+//		for (int i = 0; i < codeLength; i++) {
+//			int index = randomer.nextInt(elements.length);
+//			builder.append(elements[index]);
+//		}
+//
+//		return builder.toString();
+//	}
+
+
+	private int calResult;
+
 	@Override
 	public String getCode(int codeLength) {
 
 		Random randomer = new Random();
 		StringBuilder builder = new StringBuilder();
 
-		char[] elements = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
-				'S', 'T', 'V', 'U', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
-				'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '1', '2', '3', '4', '5', '6', '7', '8',
-				'9' };
+		int[] elements = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+		char[] operates = { '+', '-', 'x' };
 
-		for (int i = 0; i < codeLength; i++) {
-			int index = randomer.nextInt(elements.length);
-			builder.append(elements[index]);
-		}
+		int index = randomer.nextInt(elements.length);
+		int oneNum = elements[index];
+
+		index = randomer.nextInt(elements.length);
+		int anotherNum = elements[index];
+
+		index = randomer.nextInt(operates.length);
+		char operate = operates[index];
+
+		calResult = calResult(oneNum,anotherNum,operate);
+
+		builder.append(oneNum).append(operate).append(anotherNum).append("=?");
 
 		return builder.toString();
+	}
+
+	private int calResult(int oneNum,int anotherNum,char operate){
+		if(operate == '+'){
+			return  oneNum + anotherNum;
+		}
+		if(operate == '-'){
+			return  oneNum - anotherNum;
+		}
+		if(operate == 'x'){
+			return  oneNum * anotherNum;
+		}
+		return 0;
 	}
 
 	public ImageCaptchaDTO getImageCaptcha() throws IOException {
 		String code = getCode(4);
 		String img = darwImg(code, 113, 45);
 		String time = new SimpleDateFormat("yyyyMMdd HH:mm:ss").format(new Date());
-		String md5 = md5Cal(code, time);
+
+		//String md5 = md5Cal(code, time);
+		String md5 = md5Cal(String.valueOf(calResult), time);
 
 		return new ImageCaptchaDTO(img, md5, time);
 	}
