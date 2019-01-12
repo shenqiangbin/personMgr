@@ -6,6 +6,7 @@ import com.sqber.personMgr.dal.ProjectMapper;
 import com.sqber.personMgr.entity.Project;
 import com.sqber.personMgr.entity.ProjectDDLItem;
 import com.sqber.personMgr.entity.query.ProjectQuery;
+import com.sqber.personMgr.myException.ProjectCodeExistException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +21,10 @@ public class ProjectService implements IProjectService {
     private ProjectMapper projectRepository;
 
     @Override
-    public int addProject(Project model) {
+    public int addProject(Project model) throws Exception {
+
+        if(existModelCode(model))
+            throw new ProjectCodeExistException("编码已存在:"+model.getCode());
 
         model.setStatus(1);
         model.setCreatetime(new Date());
@@ -32,6 +36,19 @@ public class ProjectService implements IProjectService {
         }
 
         return projectRepository.insert(model);
+    }
+
+    private boolean existModelCode(Project model){
+        Project dbModel = this.getByCode(model.getCode());
+        if(dbModel!=null){
+            if(dbModel.getProjectid() != model.getProjectid())
+                return  true;
+            else
+                return  false;
+        }
+        else{
+            return false;
+        }
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.sqber.personMgr.ui.controller;
 import java.util.Date;
 import java.util.List;
 
+import com.sqber.personMgr.myException.ProjectCodeExistException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,6 +106,10 @@ public class ProjectController {
                 dbModel.setName(model.getName());
                 dbModel.setStarttime(model.getStarttime());
                 dbModel.setEndtime(model.getEndtime());
+                dbModel.setTesturl(model.getTesturl());
+                dbModel.setDemourl(model.getDemourl());
+                dbModel.setOnlineurl(model.getOnlineurl());
+                dbModel.setNote(model.getNote());
 
                 projectService.updateById(dbModel);
             }else{
@@ -113,7 +118,12 @@ public class ProjectController {
                 result.setData(String.valueOf(model.getProjectid()));
             }
 
-        }catch (Exception e) {
+        }
+        catch (ProjectCodeExistException e){
+            result.setCode(501);
+            result.setMsg(e.getMessage());
+        }
+        catch (Exception e) {
             result.setCode(500);
             result.setMsg("服务器错误");
 
@@ -151,7 +161,11 @@ public class ProjectController {
         p.setName("a");
         p.setStarttime(new Date());
         p.setCreatetime(new Date());
-        projectService.addProject(p);
+        try {
+            projectService.addProject(p);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
     

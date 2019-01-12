@@ -16,7 +16,7 @@
 
             <p style="margin:20px 0;"></p>
 
-            <el-form :model="ruleForm" style="width:630px;"  label-position="left" :rules="rules" ref="ruleForm" label-width="80px" class="demo-ruleForm"
+            <el-form :model="ruleForm" style="width:630px;"  label-position="left" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm"
                      size="small">
 
                 <el-form-item label="编码" prop="code">
@@ -24,10 +24,19 @@
                     <span style="color: gray;display:inline-block;width:145px;">编码保存后不可更改</span>
                 </el-form-item>
 
-
                 <el-form-item label="名称" prop="name">
                     <el-input v-model="ruleForm.name"></el-input>
                 </el-form-item>
+                <el-form-item label="项目测试地址" prop="testurl">
+                    <el-input v-model="ruleForm.testurl"></el-input>
+                </el-form-item>
+                <el-form-item label="项目演示地址" prop="demourl">
+                    <el-input v-model="ruleForm.demourl"></el-input>
+                </el-form-item>
+                <el-form-item label="项目线上地址" prop="onlineurl">
+                    <el-input v-model="ruleForm.onlineurl"></el-input>
+                </el-form-item>
+
                 <el-form-item label="开始时间" prop="starttime">
                     <div class="block">
                         <el-date-picker
@@ -48,6 +57,11 @@
                         </el-date-picker>
                     </div>
                 </el-form-item>
+
+                <el-form-item label="备注" prop="note">
+                    <el-input type="textarea" :autosize="{ minRows: 5, maxRows: 8}" v-model="ruleForm.note"></el-input>
+                </el-form-item>
+
                 <el-form-item>
                     <el-button type="primary" @click="goback">返回</el-button>
                     <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
@@ -106,7 +120,11 @@
                     code: '',
                     name:'',
                     starttime:'',
-                    endtime:''
+                    endtime:'',
+                    testurl:'',
+                    demourl:'',
+                    onlineurl:'',
+                    note:'',
                 },
                 rules:{
                     name: [

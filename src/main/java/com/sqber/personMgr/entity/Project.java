@@ -14,6 +14,14 @@ public class Project {
 
     private String name;
 
+    private String testurl;
+
+    private String demourl;
+
+    private String onlineurl;
+
+    private String note;
+
     @JsonFormat(pattern="yyyy-MM-dd", timezone = "GMT+8")
     private Date starttime;
 
@@ -108,5 +116,37 @@ public class Project {
 
     public void setModifytime(Date modifytime) {
         this.modifytime = modifytime;
+    }
+
+    public String getTesturl() {
+        return testurl;
+    }
+
+    public void setTesturl(String testurl) {
+        this.testurl = testurl;
+    }
+
+    public String getDemourl() {
+        return demourl;
+    }
+
+    public void setDemourl(String demourl) {
+        this.demourl = demourl;
+    }
+
+    public String getOnlineurl() {
+        return onlineurl;
+    }
+
+    public void setOnlineurl(String onlineurl) {
+        this.onlineurl = onlineurl;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 }

@@ -280,3 +280,10 @@ create table persistent_logins (
 ALTER TABLE `personmgr`.`task`
 ADD COLUMN `RealStart` DATETIME NULL COMMENT '实际开始时间' AFTER `ModifyTime`,
 ADD COLUMN `RealEnd` DATETIME NULL COMMENT '实际结束时间' AFTER `RealStart`;
+
+
+ALTER TABLE `personmgr`.`project`
+ADD COLUMN `TestUrl` varchar(64) NULL COMMENT '项目测试地址' AFTER `Name`,
+ADD COLUMN `DemoUrl` varchar(64) NULL COMMENT '项目演示地址' AFTER `TestUrl`,
+ADD COLUMN `OnlineUrl` varchar(64) NULL COMMENT '项目线上地址' AFTER `DemoUrl`,
+ADD COLUMN `Note` varchar(3000) NULL COMMENT '注释' AFTER `OnlineUrl`;

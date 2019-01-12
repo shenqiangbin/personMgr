@@ -5,6 +5,9 @@
     <id column="ProjectId" property="projectid" jdbcType="INTEGER" />
     <result column="Code" property="code" jdbcType="VARCHAR" />
     <result column="Name" property="name" jdbcType="VARCHAR" />
+    <result column="TestUrl" property="testurl" jdbcType="VARCHAR" />
+    <result column="DemoUrl" property="demourl" jdbcType="VARCHAR" />
+    <result column="OnlineUrl" property="onlineurl" jdbcType="VARCHAR" />
     <result column="StartTime" property="starttime" jdbcType="TIMESTAMP" />
     <result column="EndTime" property="endtime" jdbcType="TIMESTAMP" />
     <result column="Status" property="status" jdbcType="INTEGER" />
@@ -12,6 +15,7 @@
     <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="ModifyUser" property="modifyuser" jdbcType="VARCHAR" />
     <result column="ModifyTime" property="modifytime" jdbcType="TIMESTAMP" />
+    <result column="Note" property="note" jdbcType="VARCHAR" />
   </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     update project set status = 0
@@ -19,13 +23,17 @@
   </delete>
   <insert id="insert" parameterType="com.sqber.personMgr.entity.Project"  useGeneratedKeys="true" keyProperty="ProjectId" keyColumn="ProjectId">
     insert into project (ProjectId, Code, Name, 
-      StartTime, EndTime, Status, 
+      StartTime, EndTime, Status,
       CreateUser, CreateTime, ModifyUser, 
-      ModifyTime)
+      ModifyTime,TestUrl, DemoUrl, OnlineUrl, Note)
     values (#{projectid,jdbcType=INTEGER}, #{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
       #{starttime,jdbcType=TIMESTAMP}, #{endtime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, 
       #{createuser,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, #{modifyuser,jdbcType=VARCHAR}, 
-      #{modifytime,jdbcType=TIMESTAMP})
+      #{modifytime,jdbcType=TIMESTAMP},#{testurl,jdbcType=VARCHAR},
+      #{demourl,jdbcType=VARCHAR},
+      #{onlineurl,jdbcType=VARCHAR},
+      #{note,jdbcType=VARCHAR}
+      )
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.sqber.personMgr.entity.Project" >
     update project
@@ -37,27 +45,32 @@
       CreateUser = #{createuser,jdbcType=VARCHAR},
       CreateTime = #{createtime,jdbcType=TIMESTAMP},
       ModifyUser = #{modifyuser,jdbcType=VARCHAR},
-      ModifyTime = #{modifytime,jdbcType=TIMESTAMP}
+      ModifyTime = #{modifytime,jdbcType=TIMESTAMP},
+      TestUrl = #{testurl,jdbcType=VARCHAR},
+      DemoUrl = #{demourl,jdbcType=VARCHAR},
+      OnlineUrl = #{onlineurl,jdbcType=VARCHAR},
+      Note = #{note,jdbcType=VARCHAR}
+
     where ProjectId = #{projectid,jdbcType=INTEGER}
   </update>
 
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select ProjectId, Code, Name, StartTime, EndTime, Status, CreateUser, CreateTime, 
-    ModifyUser, ModifyTime
+    ModifyUser, ModifyTime, TestUrl, DemoUrl, OnlineUrl, Note
     from project
     where Status = 1 and ProjectId = #{projectid,jdbcType=INTEGER}
   </select>
 
   <select id="getByCode" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select ProjectId, Code, Name, StartTime, EndTime, Status, CreateUser, CreateTime,
-    ModifyUser, ModifyTime
+    ModifyUser, ModifyTime, TestUrl, DemoUrl, OnlineUrl, Note
     from project
     where Status = 1 and Code = #{code,jdbcType=VARCHAR}
   </select>
 
    <select id="getByCodes" resultMap="BaseResultMap">
     select ProjectId, Code, Name, StartTime, EndTime, Status, CreateUser, CreateTime,
-    ModifyUser, ModifyTime
+    ModifyUser, ModifyTime, TestUrl, DemoUrl, OnlineUrl, Note
     from project
     where Status = 1 and Code in
        <foreach collection="codes" item="id" index="index" open="(" close=")" separator=",">
@@ -67,13 +80,13 @@
 
   <select id="selectAll" resultMap="BaseResultMap" >
     select ProjectId, Code, Name, StartTime, EndTime, Status, CreateUser, CreateTime, 
-    ModifyUser, ModifyTime
+    ModifyUser, ModifyTime, TestUrl, DemoUrl, OnlineUrl, Note
     from project where Status = 1
   </select>
   
   	<select id="getList" resultMap="BaseResultMap" parameterType="com.sqber.personMgr.entity.query.ProjectQuery">
 		SELECT
-		ProjectId, Code, Name, StartTime, EndTime, Status, CreateUser, CreateTime, ModifyUser, ModifyTime
+		ProjectId, Code, Name, StartTime, EndTime, Status, CreateUser, CreateTime, ModifyUser, ModifyTime, TestUrl, DemoUrl, OnlineUrl, Note
 		FROM Project
 		where status = 1
 			<if test="projectName!=null and projectName!=''">

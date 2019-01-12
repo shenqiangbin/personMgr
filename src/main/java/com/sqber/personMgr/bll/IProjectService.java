@@ -8,7 +8,7 @@ import com.sqber.personMgr.entity.query.ProjectQuery;
 
 public interface IProjectService {
 
-    int addProject(Project model);
+    int addProject(Project model) throws Exception;
 
     void updateById(Project model);
 
