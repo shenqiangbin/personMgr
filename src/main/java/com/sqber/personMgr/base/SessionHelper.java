@@ -37,7 +37,9 @@ public class SessionHelper {
             if (IsUserInfoExsit())
             {
                 Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-                result = auth.getName(); // 主体名，即登录用户名
+                //result = auth.get(); // 主体名，即登录用户名
+                LoginUserInfo userInfo = (LoginUserInfo)auth.getPrincipal();
+                return  userInfo.getDisplayName();
             }
         } catch (Exception e) {
             // TODO Auto-generated catch block

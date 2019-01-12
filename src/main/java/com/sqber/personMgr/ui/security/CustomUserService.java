@@ -60,10 +60,12 @@ public class CustomUserService implements UserDetailsService {
 				
 			}
 
-			LoginUserInfo user = new LoginUserInfo(userinfo.getUserName(), userinfo.getPassword() == null ? "" : userinfo.getPassword(),
+			LoginUserInfo user = new LoginUserInfo(userinfo.getUserCode(), userinfo.getPassword() == null ? "" : userinfo.getPassword(),
 					grantedAuthorities);
 			user.setUserID(userinfo.getUserId());
 			user.setUserCode(userinfo.getUserCode());
+			user.setDisplayName(userinfo.getUserName());
+
 			/*user.setSsoUserID(userinfo.getSsoUserID());*/
 			if(userRoleList.size()==0)
 				throw new ValidateCodeException("没有角色权限");

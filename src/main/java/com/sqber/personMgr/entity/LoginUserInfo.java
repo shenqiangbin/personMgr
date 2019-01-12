@@ -16,6 +16,8 @@ public class LoginUserInfo extends User{
 	private int userID;
 	
 	private String userCode;
+
+	private String displayName;
 	
 	private String ssoUserID;
 	
@@ -50,6 +52,14 @@ public class LoginUserInfo extends User{
 
 	public void setUserCode(String userCode) {
 		this.userCode = userCode;
+	}
+
+	public String getDisplayName() {
+		return displayName;
+	}
+
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
 	}
 
 	public String getSsoUserID() {
