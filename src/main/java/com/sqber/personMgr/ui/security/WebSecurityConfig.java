@@ -66,6 +66,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         // //允许iframe 加载
         // http.formLogin().loginPage("/login").failureUrl("/login?error=true");
 
+        http.formLogin().loginPage("/login").failureUrl("/login?error=true");
+
         http.authorizeRequests().antMatchers("/barsearch").permitAll()
                 .and().headers()
                     .frameOptions().disable() // 允许iframe
@@ -81,10 +83,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         .tokenRepository(persistentTokenRepository())
                 .and()
                     .logout()
-                    .deleteCookies("JSESSIONID")
+                    .deleteCookies("JSESSIONID","javasampleapproach-remember-me")
                     .permitAll();
 
-        http.formLogin().loginPage("/login").failureUrl("/login?error=true");
+
 
         // http.csrf().disable();//关闭csrf
         http.addFilterBefore(myFilterSecurityInterceptor, FilterSecurityInterceptor.class);

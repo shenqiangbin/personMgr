@@ -1,6 +1,7 @@
 package com.sqber.personMgr.ui.controller;
 
 import com.sqber.personMgr.base.BaseResponse;
+import com.sqber.personMgr.base.SessionHelper;
 import com.sqber.personMgr.bll.ICodeService;
 import com.sqber.personMgr.entity.ImageCaptchaDTO;
 import org.slf4j.Logger;
@@ -8,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.CookieClearingLogoutHandler;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -38,6 +40,12 @@ public class HomeController {
     @GetMapping("login")
     public String login(HttpServletRequest request, HttpServletResponse response, Model model) {
 
+        boolean isExist = SessionHelper.IsUserInfoExsit();
+        System.out.println(isExist);
+        if(isExist){
+            return   "redirect:menu/first";
+        }
+
         String[] returnurl = request.getParameterValues("return");
         if (returnurl != null && returnurl.length > 0) {
             model.addAttribute("returnurl", returnurl[0]);
@@ -53,8 +61,9 @@ public class HomeController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null) {
             new SecurityContextLogoutHandler().logout(request, response, auth);
+            new CookieClearingLogoutHandler("JSESSIONID","javasampleapproach-remember-me").logout(request, response, auth);
         }
-        return "redirect:/login?logout";
+       return "redirect:/login?logout";
     }
 
     @ResponseBody
