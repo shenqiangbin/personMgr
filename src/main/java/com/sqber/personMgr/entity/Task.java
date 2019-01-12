@@ -34,6 +34,12 @@ public class Task {
     @JsonFormat(pattern="yyyy-MM-dd", timezone = "GMT+8")
     private Date scheduledend;
 
+    @JsonFormat(pattern="yyyy-MM-dd", timezone = "GMT+8")
+    private Date realstart;
+
+    @JsonFormat(pattern="yyyy-MM-dd", timezone = "GMT+8")
+    private Date realend;
+
     private Integer status;
 
     private String createuser;
@@ -186,5 +192,21 @@ public class Task {
 
     public void setModifytime(Date modifytime) {
         this.modifytime = modifytime;
+    }
+
+    public Date getRealstart() {
+        return realstart;
+    }
+
+    public void setRealstart(Date realstart) {
+        this.realstart = realstart;
+    }
+
+    public Date getRealend() {
+        return realend;
+    }
+
+    public void setRealend(Date realend) {
+        this.realend = realend;
     }
 }

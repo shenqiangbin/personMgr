@@ -120,6 +120,8 @@ public class TaskController {
                 dbModel.setScheduledstart(model.getScheduledstart());
                 dbModel.setScheduledend(model.getScheduledend());
                 dbModel.setContent(model.getContent());
+                dbModel.setRealstart(model.getRealstart());
+                dbModel.setRealend(model.getRealend());
                 
                 taskService.updateById(dbModel);
             }else{

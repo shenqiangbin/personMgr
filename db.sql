@@ -268,3 +268,15 @@ CREATE TABLE `userrole` (
 
 
 INSERT INTO `personmgr`.`userrole` (`RoleID`, `UserID`, `Status`, `CreateUser`, `CreateTime`) VALUES ('1', '17', '1', 'sqb', '2018/12/17');
+
+/*记住我功能所需*/
+create table persistent_logins (
+	username varchar(64) not null,
+	series varchar(64) primary key,
+	token varchar(64) not null,
+	last_used timestamp not null
+)
+
+ALTER TABLE `personmgr`.`task`
+ADD COLUMN `RealStart` DATETIME NULL COMMENT '实际开始时间' AFTER `ModifyTime`,
+ADD COLUMN `RealEnd` DATETIME NULL COMMENT '实际结束时间' AFTER `RealStart`;

@@ -125,6 +125,53 @@
                 </el-row>
 
 
+                <el-row :gutter="40">
+                    <el-col :span="8">
+
+                        <el-form-item label="实际开始时间" prop="puttime">
+                            <div class="block">
+                                <el-date-picker
+                                        v-model="ruleForm.realstart"
+                                        type="date"
+                                        value-format="yyyy-MM-dd"
+                                        placeholder="选择日期">
+                                </el-date-picker>
+                            </div>
+                        </el-form-item>
+
+                    </el-col>
+                    <el-col :span="6">
+
+                        <el-form-item label="实际结束时间" prop="scheduledstart">
+                            <div class="block">
+                                <el-date-picker
+                                        v-model="ruleForm.realend"
+                                        type="date"
+                                        value-format="yyyy-MM-dd"
+                                        placeholder="选择日期">
+                                </el-date-picker>
+                            </div>
+                        </el-form-item>
+
+                    </el-col>
+
+                    <el-col :span="8">
+
+                        <!--<el-form-item label="计划结束时间" prop="scheduledend">-->
+                            <!--<div class="block">-->
+                                <!--<el-date-picker-->
+                                        <!--v-model="ruleForm.scheduledend"-->
+                                        <!--type="date"-->
+                                        <!--value-format="yyyy-MM-dd"-->
+                                        <!--placeholder="选择日期">-->
+                                <!--</el-date-picker>-->
+                            <!--</div>-->
+                        <!--</el-form-item>-->
+
+                    </el-col>
+
+                </el-row>
+
                 <el-form-item label="内容" prop="content">
                     <div id="test-editormd" style="margin:0;">
                         <textarea style="display:none;"></textarea>
@@ -275,7 +322,10 @@
                     puttime:new Date(),
                     scheduledstart:'',
                     scheduledend:'',
-                    content:''
+                    content:'',
+                    realstart:'',
+                    realend:'',
+
                 },
                 projectList:[],
                 taskTypeList:[],

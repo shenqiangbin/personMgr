@@ -20,6 +20,8 @@
     <result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="ModifyUser" property="modifyuser" jdbcType="VARCHAR" />
     <result column="ModifyTime" property="modifytime" jdbcType="TIMESTAMP" />
+    <result column="RealStart" property="realstart" jdbcType="TIMESTAMP" />
+    <result column="RealEnd" property="realend" jdbcType="TIMESTAMP" />
   </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from task
@@ -31,14 +33,15 @@
       Demandor, AssignTo, Solver, 
       Content, PutTime, ScheduledStart, 
       ScheduledEnd, Status, CreateUser, 
-      CreateTime, ModifyUser, ModifyTime
+      CreateTime, ModifyUser, ModifyTime, RealStart, RealEnd
       )
     values (#{taskid,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{tasktype,jdbcType=INTEGER}, 
       #{taskstatus,jdbcType=INTEGER}, #{projectcode,jdbcType=VARCHAR}, #{moduleid,jdbcType=INTEGER}, 
       #{demandor,jdbcType=VARCHAR}, #{assignto,jdbcType=VARCHAR}, #{solver,jdbcType=VARCHAR}, 
       #{content,jdbcType=VARCHAR}, #{puttime,jdbcType=TIMESTAMP}, #{scheduledstart,jdbcType=TIMESTAMP}, 
       #{scheduledend,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, #{createuser,jdbcType=VARCHAR}, 
-      #{createtime,jdbcType=TIMESTAMP}, #{modifyuser,jdbcType=VARCHAR}, #{modifytime,jdbcType=TIMESTAMP}
+      #{createtime,jdbcType=TIMESTAMP}, #{modifyuser,jdbcType=VARCHAR}, #{modifytime,jdbcType=TIMESTAMP},
+      #{realstart,jdbcType=TIMESTAMP}, #{realend,jdbcType=TIMESTAMP}
       )
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.sqber.personMgr.entity.Task" >
@@ -59,20 +62,22 @@
       CreateUser = #{createuser,jdbcType=VARCHAR},
       CreateTime = #{createtime,jdbcType=TIMESTAMP},
       ModifyUser = #{modifyuser,jdbcType=VARCHAR},
-      ModifyTime = #{modifytime,jdbcType=TIMESTAMP}
+      ModifyTime = #{modifytime,jdbcType=TIMESTAMP},
+      RealStart = #{realstart,jdbcType=TIMESTAMP},
+      RealEnd = #{realend,jdbcType=TIMESTAMP}
     where TaskId = #{taskid,jdbcType=INTEGER}
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select TaskId, Title, TaskType, TaskStatus, ProjectCode, ModuleId, Demandor, AssignTo, 
     Solver, Content, PutTime, ScheduledStart, ScheduledEnd, Status, CreateUser, CreateTime, 
-    ModifyUser, ModifyTime
+    ModifyUser, ModifyTime, RealStart, RealEnd
     from task
     where Status = 1 and taskId = #{taskid,jdbcType=INTEGER}
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
     select TaskId, Title, TaskType, TaskStatus, ProjectCode, ModuleId, Demandor, AssignTo, 
     Solver, Content, PutTime, ScheduledStart, ScheduledEnd, Status, CreateUser, CreateTime, 
-    ModifyUser, ModifyTime
+    ModifyUser, ModifyTime,  RealStart, RealEnd
     from task where Status = 1
   </select>
 
@@ -80,7 +85,7 @@
     SELECT
     TaskId, Title, TaskType, TaskStatus, ProjectCode, ModuleId, Demandor, AssignTo,
     Solver, Content, PutTime, ScheduledStart, ScheduledEnd, Status, CreateUser, CreateTime,
-    ModifyUser, ModifyTime
+    ModifyUser, ModifyTime, RealStart, RealEnd
     FROM Task
     where status = 1
     <if test="Content!=null and Content!=''">
