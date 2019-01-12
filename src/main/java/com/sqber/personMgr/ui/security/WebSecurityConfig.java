@@ -1,6 +1,7 @@
 package com.sqber.personMgr.ui.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -11,6 +12,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+
+import javax.sql.DataSource;
 
 @SuppressWarnings("deprecation")
 @Configuration
@@ -21,6 +26,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private MyFilterSecurityInterceptor myFilterSecurityInterceptor;
     @Autowired
     private ValidateCodeFilter validateCodeFilter;
+
+    @Autowired
+    @Qualifier("MySQLDS")
+    private DataSource dataSource;
 
     @Bean
     UserDetailsService customUserService() { // 注册UserDetailsService 的bean
@@ -57,11 +66,35 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         // //允许iframe 加载
         // http.formLogin().loginPage("/login").failureUrl("/login?error=true");
 
-        http.authorizeRequests().antMatchers("/barsearch").permitAll().and().headers().frameOptions().disable(); // 允许iframe
+        http.authorizeRequests().antMatchers("/barsearch").permitAll()
+                .and().headers()
+                    .frameOptions().disable() // 允许iframe
+//                .and()
+//                    .rememberMe()
+//                    .key("uniqueAndSecret")
+//                    .rememberMeCookieName("javasampleapproach-remember-me")
+//                    .tokenValiditySeconds(24*60*60); //1天，以秒为单位
+                .and()
+                    .rememberMe()
+                        .rememberMeCookieName("javasampleapproach-remember-me")
+                        .tokenValiditySeconds(24 * 60 * 60) // expired time = 1 day
+                        .tokenRepository(persistentTokenRepository())
+                .and()
+                    .logout()
+                    .deleteCookies("JSESSIONID")
+                    .permitAll();
+
         http.formLogin().loginPage("/login").failureUrl("/login?error=true");
 
         // http.csrf().disable();//关闭csrf
         http.addFilterBefore(myFilterSecurityInterceptor, FilterSecurityInterceptor.class);
         http.addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class);
+    }
+
+    @Bean
+    public PersistentTokenRepository persistentTokenRepository() {
+        JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
+        tokenRepository.setDataSource(dataSource);
+        return tokenRepository;
     }
 }
