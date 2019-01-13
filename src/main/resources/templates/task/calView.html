@@ -50,7 +50,7 @@
                 <!--cal.next();-->
                 <!--break;-->
                 <!--case 'move-today':-->
-                <!--cal.today();-->
+                <!--cal.today(); -->
                 <el-date-picker
                         v-model="selectedMonth"
                         type="month"
@@ -60,7 +60,7 @@
                 </el-date-picker>
                 <!--下一月-->
             </div>
-            <div id="calendar" style="height: 700px;border:1px solid #e5e5e5;border-top:none;"></div>
+            <div id="calendar" style="height: 1500px;border:1px solid #e5e5e5;border-top:none;"></div>
         </div>
 
 
@@ -180,6 +180,11 @@
                 lastClickSchedule = schedule;
 
                 rowClick(schedule.raw);
+            });
+
+            calendar.on('beforeCreateSchedule', function(event) {
+                var guide = event.guide;
+                guide.clearGuideElement();
             });
 
         });
