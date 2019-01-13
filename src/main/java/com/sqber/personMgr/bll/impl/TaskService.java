@@ -114,6 +114,9 @@ public class TaskService implements ITaskService {
             if(StringUtil.isNotBlank(t.getProjectcode()) && !projectCodes.contains(t.getProjectcode())) //注意去重
                 projectCodes.add(t.getProjectcode());
         }
+        if(projectCodes.size() == 0)
+            return new ArrayList<Project>();
+
         return projectRepository.getByCodes(projectCodes);
     }
 

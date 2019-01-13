@@ -20,6 +20,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -33,6 +36,11 @@ public class TaskController {
     @GetMapping("task/taskList")
     public String taskList(){
         return "task/taskList";
+    }
+
+    @GetMapping("task/calview")
+    public String calview(){
+        return "task/calView";
     }
     
     @ResponseBody
@@ -49,6 +57,48 @@ public class TaskController {
             query.setCurrentPage(currentPage);
             query.setPageSize(pageSize);
             query.setContent(content);
+
+            PagedResponse<TaskListItem> list = taskService.getItemList(query);
+            result.setData(list);
+
+        } catch (Exception e) {
+            result.setCode(500);
+            result.setMsg("服务器错误");
+
+            log.error(e.getMessage() + e.getStackTrace());
+        }
+
+        return result;
+    }
+
+    @ResponseBody
+    @GetMapping("task/getCalList")
+    public BaseResponse<PagedResponse<TaskListItem>> getCalList(String content,String month) {
+
+        BaseResponse<PagedResponse<TaskListItem>> result = new BaseResponse<>();
+
+        try {
+
+            int pageSize = Integer.MAX_VALUE;
+            int currentPage = 1;
+
+            TaskQuery query = new TaskQuery();
+            query.setCurrentPage(currentPage);
+            query.setPageSize(pageSize);
+            query.setContent(content);
+
+            Date theDate = new SimpleDateFormat("yyyy-MM").parse(month);
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(theDate);
+
+            cal.add(Calendar.MONTH,1);
+            Date theDate2 = cal.getTime();
+            String endDate = new SimpleDateFormat("yyyy-MM").format(theDate2)+"-01";
+
+            String startDate = new SimpleDateFormat("yyyy-MM").format(theDate)+"-01";
+
+            query.setStartDate(startDate);
+            query.setEndDate(endDate);
 
             PagedResponse<TaskListItem> list = taskService.getItemList(query);
             result.setData(list);

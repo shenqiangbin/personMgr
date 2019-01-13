@@ -91,6 +91,12 @@
     <if test="Content!=null and Content!=''">
       and (Title like '%${Content}%' or Content like '%${Content}%')
     </if>
+    <if test="startDate!=null and startDate!=''">
+      and <![CDATA[ ScheduledStart >= '${startDate}' ]]>
+    </if>
+    <if test="endDate!=null and endDate!=''">
+      and <![CDATA[ ScheduledEnd < '${endDate}' ]]>
+    </if>
     <choose>
       <when test="sortStr != null" >
         order by ${sortStr}

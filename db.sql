@@ -287,3 +287,7 @@ ADD COLUMN `TestUrl` varchar(64) NULL COMMENT '项目测试地址' AFTER `Name`,
 ADD COLUMN `DemoUrl` varchar(64) NULL COMMENT '项目演示地址' AFTER `TestUrl`,
 ADD COLUMN `OnlineUrl` varchar(64) NULL COMMENT '项目线上地址' AFTER `DemoUrl`,
 ADD COLUMN `Note` varchar(3000) NULL COMMENT '注释' AFTER `OnlineUrl`;
+
+
+INSERT INTO `personmgr`.`menu` (`menuID`, `menuName`, `menuURL`, `roles`, `Status`, `CreateUser`, `CreateTime`) VALUES ('3', '日历', 'task/calview', '1,', '1', 'sqb', '2019-01-02 01:00:00');
+

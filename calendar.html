@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test</title>
+
+    <!--https://github.com/nhnent/tui.calendar-->
+    <!--https://nhnent.github.io/tui.calendar/latest/tutorials/example01-basic.html-->
+
+    <script src="https://uicdn.toast.com/tui.code-snippet/latest/tui-code-snippet.js"></script>
+    <script src="https://uicdn.toast.com/tui-calendar/latest/tui-calendar.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://uicdn.toast.com/tui-calendar/latest/tui-calendar.css" />
+
+    <style>
+        .important{
+            color: red;
+        }
+        .tui-full-calendar-month-week-item .tui-full-calendar-today .tui-full-calendar-weekday-grid-date {
+            display: inline-block;
+            width: 27px;
+            height: 27px;
+            line-height: 27px;
+            text-align: center;
+            background: #135de6;
+            border-radius: 50%;
+            color: #fff;
+            font-weight: bold;
+            margin-left: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+       <div id="calendar" style="height: 800px;"></div>
+    </div>
+    <script>
+        var Calendar = tui.Calendar;
+        var calendar = new Calendar('#calendar', {
+          defaultView: 'month',
+          //useCreationPopup: true,
+          //useDetailPopup: true,
+          taskView: true,
+          template: {
+            monthGridHeader: function(model) {
+              var date = new Date(model.date);
+              var template = '<span class="tui-full-calendar-weekday-grid-date">' + date.getDate() + '</span>';
+              return template;
+            }
+          }
+        });
+
+        calendar.createSchedules([
+            {
+                id: '1',
+                calendarId: '1',
+                title: 'my schedule',
+                body:"asdff",
+                bgColor:'red',
+                category: 'allday',
+                dueDateClass: '',
+                start: '2019-01-13',
+                end: '2019-01-14'
+            },
+            {
+                id: '2',
+                calendarId: '1',
+                title: 'second schedule',
+                 body:"asdff",
+                category: 'allday',
+                start: '2019-01-14',
+                end: '2019-01-16',
+                isReadOnly: true    // schedule is read-only
+            }
+        ]);
+
+        calendar.updateSchedule('1', '1', {
+            start: '2019-01-15',
+            end: '2019-01-16'
+        });
+
+        var lastClickSchedule = null;
+        calendar.on('clickSchedule', function(event) {
+            var schedule = event.schedule;
+
+            // focus the schedule
+            if (lastClickSchedule) {
+                calendar.updateSchedule(lastClickSchedule.id, lastClickSchedule.calendarId, {
+                    isFocused: false
+                });
+            }
+            calendar.updateSchedule(schedule.id, schedule.calendarId, {
+                isFocused: true
+            });
+
+            lastClickSchedule = schedule;
+
+            // open detail view
+        });
+
+        calendar.on('beforeCreateSchedule', function(event) {
+            var startTime = event.start;
+            var endTime = event.end;
+            var isAllDay = event.isAllDay;
+            var guide = event.guide;
+            guide.clearGuideElement();
+
+            var triggerEventName = event.triggerEventName;
+            var schedule;
+
+            if (triggerEventName === 'click') {
+                // open writing simple schedule popup
+               
+            } else if (triggerEventName === 'dblclick') {
+                // open writing detail schedule popup
+               
+            }
+
+            calendar.createSchedules([schedule]);
+        });
+
+        calendar.on('beforeUpdateSchedule', function(event) {
+            var schedule = event.schedule;
+            var startTime = event.start;
+            var endTime = event.end;
+
+            calendar.updateSchedule(schedule.id, schedule.calendarId, {
+                start: startTime,
+                end: endTime
+            });
+        });
+
+    </script>
+</body>
+</html>

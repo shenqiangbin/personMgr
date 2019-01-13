@@ -1,0 +1,386 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorator="share/managerlayout">
+
+<head>
+    <style>
+        .tui-full-calendar-month-week-item .tui-full-calendar-today .tui-full-calendar-weekday-grid-date {
+            display: inline-block;
+            width: 27px;
+            height: 27px;
+            line-height: 27px;
+            text-align: center;
+            background: #135de6;
+            border-radius: 50%;
+            color: #fff;
+            font-weight: bold;
+            margin-left: 2px;
+        }
+    </style>
+
+
+    <link rel="stylesheet" type="text/css" href="https://uicdn.toast.com/tui-calendar/latest/tui-calendar.css" />
+
+    <link rel="stylesheet" th:href="@{/third/editor.md/css/editormd.preview.min.css}" />
+    <!--<link rel="stylesheet" href="http://pandao.github.io/editor.md/css/editormd.preview.css" />-->
+
+</head>
+<body>
+
+<div layout:fragment="mangercontent">
+    <el-scrollbar  class="contain">
+        <div class="con-box">
+            <el-input style="width:400px;" placeholder="标题或内容 检索" size="small" v-model="searchContent" @keyup.enter.native="query"></el-input>
+            <el-button type="primary" size="small" v-on:click="query">查找</el-button>
+
+            <p style="margin:10px 0;"></p>
+
+            <div class="btn-group">
+                <el-button type="primary" size="small" v-on:click="add">新增</el-button>
+                <el-button type="primary" size="small" v-on:click="remove">删除</el-button>
+            </div>
+
+        </div>
+
+        <div style="border: 0px solid blue;padding: 10px 54px;margin-top:-36px;">
+            <div style="margin-bottom:5px;" size="small">
+                <!--上一月-->
+                <!--cal.prev();-->
+                <!--break;-->
+                <!--case 'move-next':-->
+                <!--cal.next();-->
+                <!--break;-->
+                <!--case 'move-today':-->
+                <!--cal.today();-->
+                <el-date-picker
+                        v-model="selectedMonth"
+                        type="month"
+                        placeholder="选择月"
+                        value-format="yyyy-MM-dd"
+                        @change = "monthChange">
+                </el-date-picker>
+                <!--下一月-->
+            </div>
+            <div id="calendar" style="height: 700px;border:1px solid #e5e5e5;border-top:none;"></div>
+        </div>
+
+
+        <el-dialog
+                :visible.sync="dialogVisible"
+                width="50%">
+            <div v-if="dialogModel">
+                <el-row>
+                    <el-col :span="24">
+                        <h2>{{dialogModel.model.title}}</h2>
+                    </el-col>
+                </el-row>
+                <el-row style="margin:15px 0;">
+                    <el-col>
+                        <el-tag size="small" >{{dialogModel.tasktypeDesc}}</el-tag>
+                        <el-tag size="small" type="success">{{dialogModel.taskstatusDesc}}</el-tag>
+                    </el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="5">所属项目：</el-col>
+                    <el-col :span="19">{{dialogModel.projectName}}</el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="5">提出人：</el-col>
+                    <el-col :span="7">{{dialogModel.model.demandor}}&nbsp;</el-col>
+                    <el-col :span="5">提出时间：</el-col>
+                    <el-col :span="7">{{dialogModel.model.puttime}}</el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="5">计划开始时间：</el-col>
+                    <el-col :span="7">{{dialogModel.model.scheduledstart}}&nbsp;</el-col>
+                    <el-col :span="5">计划结束时间：</el-col>
+                    <el-col :span="7">{{dialogModel.model.scheduledend}}</el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="5">实际开始时间：</el-col>
+                    <el-col :span="7">{{dialogModel.model.realstart}}&nbsp;</el-col>
+                    <el-col :span="5">实际结束时间：</el-col>
+                    <el-col :span="7">{{dialogModel.model.realend}}</el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="24">
+                        <div id="test-editormd-view" style="padding:0;margin-top:20px;">
+                            <textarea style="display:none;" name="test-editormd-markdown-doc">###Hello world!</textarea>
+                        </div>
+                    </el-col>
+                </el-row>
+            </div>
+
+
+            <span slot="footer" class="dialog-footer" />
+        </el-dialog>
+
+</el-scrollbar>
+</div>
+
+
+
+<div layout:fragment="jscontent">
+
+    <script src="https://uicdn.toast.com/tui.code-snippet/latest/tui-code-snippet.js"></script>
+    <script src="https://uicdn.toast.com/tui-calendar/latest/tui-calendar.js"></script>
+
+    <script th:src="@{/third/editor.md/lib/marked.min.js}"></script>
+    <script th:src="@{/third/editor.md/lib/prettify.min.js}"></script>
+    <script th:src="@{/third/editor.md/lib/raphael.min.js}"></script>
+    <script th:src="@{/third/editor.md/lib/underscore.min.js}"></script>
+    <!--<script th:src="@{/third/editor.md/lib/sequence-diagram.min.js}"></script>-->
+    <!--<script th:src="@{/third/editor.md/lib/flowchart.min.js}"></script>-->
+    <!--<script th:src="@{/third/editor.md/lib/jquery.flowchart.min.js}"></script>-->
+
+    <!--<script th:src="@{/third/editor.md/jquery.min.js}"></script>-->
+    <script th:src="@{/third/editor.md/editormd.min.js}"></script>
+
+    <!--<script src="http://pandao.github.io/editor.md/lib/marked.min.js"></script>-->
+    <!--<script src="http://pandao.github.io/editor.md/lib/prettify.min.js"></script>-->
+    <!--<script src="http://pandao.github.io/editor.md/lib/raphael.min.js"></script>-->
+    <!--<script src="http://pandao.github.io/editor.md/lib/underscore.min.js"></script>-->
+    <!--<script src="http://pandao.github.io/editor.md/lib/sequence-diagram.min.js"></script>-->
+    <!--<script src="http://pandao.github.io/editor.md/lib/flowchart.min.js"></script>-->
+    <!--<script src="http://pandao.github.io/editor.md/lib/jquery.flowchart.min.js"></script>-->
+
+
+    <!--<script src="http://pandao.github.io/editor.md/editormd.min.js"></script>-->
+
+    <script>
+
+        var calendar = null;
+        Vue.nextTick(function () {
+            var Calendar = tui.Calendar;
+            calendar = new Calendar('#calendar', {
+                defaultView: 'month',
+                taskView: true,
+                template: {
+                    monthGridHeader: function(model) {
+                        var date = new Date(model.date);
+                        var template = '<span class="tui-full-calendar-weekday-grid-date">' + date.getDate() + '</span>';
+                        return template;
+                    }
+                }
+            });
+
+            var lastClickSchedule = null;
+            calendar.on('clickSchedule', function(event) {
+                var schedule = event.schedule;
+
+                // // focus the schedule
+                // if (lastClickSchedule) {
+                //     calendar.updateSchedule(lastClickSchedule.id, lastClickSchedule.calendarId, {
+                //         isFocused: false
+                //     });
+                // }
+                // calendar.updateSchedule(schedule.id, schedule.calendarId, {
+                //     isFocused: true
+                // });
+
+                lastClickSchedule = schedule;
+
+                rowClick(schedule.raw);
+            });
+
+        });
+
+        function addSchedules(modelList){
+
+            for(var i=0; i<modelList.length; i++){
+                var item = modelList[i];
+
+                if(item.model.scheduledstart && item.model.scheduledend){
+                    calendar.createSchedules([
+                        {
+                            id: (i+1)+"",
+                            calendarId: '1',
+                            title: item.model.projectcode + " - " + item.taskstatusDesc + " - " + item.model.title,
+                            //body:"asdff",
+                            color:'white',
+                            bgColor:'#03bd9e',
+                            borderColor:'#03bd9e',
+                            category: 'allday',
+                            start: item.model.scheduledstart,
+                            end: item.model.scheduledend,
+                            isReadOnly: true,    // schedule is read-only
+                            raw:item,
+                        }
+                    ]);
+                }
+                if(item.model.realstart && item.model.realend){
+                    calendar.createSchedules([
+                        {
+                            id: (i+1)+"",
+                            calendarId: '2',
+                            title: item.model.projectcode + " - " + item.taskstatusDesc + " - " +item.model.title,
+                            //body:"asdff",
+                            color:'white',
+                            bgColor:'#00a9ff',
+                            borderColor:'#00a9ff',
+                            category: 'allday',
+                            start: item.model.realstart,
+                            end: item.model.realend,
+                            isReadOnly: true,   // schedule is read-only
+                            raw:item,
+                        }
+                    ]);
+                }
+
+            }
+        }
+
+        function clearCal() {
+            calendar.clear();
+        }
+
+        var loadData = function () {
+
+
+            $.ajax({
+                type: "get",
+                url: contextRoot + "task/getCalList",
+                data: {currentPage: app.currentPage, content: app.searchContent, month: app.selectedMonth},
+                async: true,
+                success: function (result) {
+                    console.log(result);
+                    if (result.code == 200) {
+                        app.pageModel = result.data;
+                        //debugger
+                        clearCal();
+                        addSchedules(result.data.list);
+
+                    }else if(result.code == 403){
+                        window.location.href = contextRoot + "login";
+                    }else {
+                        showError(result.msg);
+                    }
+                },
+                error: function () {
+                    showMsg("信息获取失败");
+                }
+            });
+        };
+
+        var query = function () {
+            app.currentPage = 1;
+            loadData();
+        }
+        
+        var handleSelectionChange = function (val) {
+            var arr = [];
+
+            for(var i=0; i<val.length; i++){
+                arr.push(val[i].model.taskid);
+            }
+
+            app.selectedItems = arr;
+        }
+
+        var rowClick = function(val){
+            app.dialogVisible = true;
+            app.dialogModel = val;
+
+            var markdown = app.dialogModel.model.content;
+            Vue.nextTick(function () {
+                $("#test-editormd-view").html("");
+                var testEditormdView = editormd.markdownToHTML("test-editormd-view", {
+                    markdown: markdown,
+                    htmlDecode: "style,script,iframe",
+                    emoji: false,
+                    taskList: true,
+                    tocm: true,
+                    tex: true,
+                    flowChart: true,
+                    sequenceDiagram: true,
+                });
+            });
+        }
+        
+        var tableRowClassName = function (item) {
+            if(item.row.taskstatusDesc == "未开始") return "NoneRow";
+            if(item.row.taskstatusDesc == "进行中") return "ProcessingRow";
+            if(item.row.taskstatusDesc == "已完成") return "DoneRow";
+            if(item.row.taskstatusDesc == "无法处理") return "NoIdeaRow";
+        }
+
+        var remove = function () {
+
+            if(app.selectedItems.length == 0){
+                showError("请勾选");
+                return;
+            }
+
+            showCofirm(function () {
+
+                $.ajax({
+                    type: "post",
+                    url: contextRoot + "task/removeTask",
+                    data: { ids : app.selectedItems.join(",") },
+                    async: true,
+                    success: function (result) {
+                        console.log(result);
+                        if (result.code == 200) {
+                            showMsg("删除成功");
+                            app.loadData();
+                        }else {
+                            showError(result.msg);
+                        }
+                    },
+                    error: function () {
+                        showMsg("信息获取失败");
+                    }
+                });
+
+            });
+
+
+
+        }
+
+        var app = new Vue({
+            el: '#app',
+            data: {
+                contextRoot:contextRoot,
+                pageModel:[],
+                searchContent:'', /*查询参数：用户单位名称*/
+                currentPage:1,
+                selectedItems:[],
+                dialogVisible:false,
+                dialogModel:null,
+                selectedMonth:formatDate(new Date(),'yyyy-MM-dd')
+            },
+            methods: {
+                loadData: loadData,
+                query:query,
+                handleSelectionChange:handleSelectionChange,
+                rowClick:rowClick,
+                tableRowClassName:tableRowClassName,
+                remove:remove,
+                add:function(){
+                  window.location.href= contextRoot +"task/taskAdd";
+                },
+                handleSizeChange(val) {
+
+                },
+                handleCurrentChange(val){
+                    app.currentPage = val;
+                    app.loadData();
+                },
+                monthChange(val){
+                    //debugger
+                    //console.log(val);
+                    app.loadData();
+                }
+            }
+        })
+
+        app.loadData();
+
+    </script>
+</div>
+
+
+</body>
+</html>
+
+
