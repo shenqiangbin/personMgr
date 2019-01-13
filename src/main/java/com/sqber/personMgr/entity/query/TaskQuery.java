@@ -1,6 +1,6 @@
 package com.sqber.personMgr.entity.query;
 
-public class TaskQuery {
+public class TaskQuery extends PageQuery {
 
     private String sortStr;
 

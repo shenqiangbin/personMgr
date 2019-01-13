@@ -278,8 +278,8 @@ create table persistent_logins (
 )
 
 ALTER TABLE `personmgr`.`task`
-ADD COLUMN `RealStart` DATETIME NULL COMMENT '实际开始时间' AFTER `ModifyTime`,
-ADD COLUMN `RealEnd` DATETIME NULL COMMENT '实际结束时间' AFTER `RealStart`;
+ADD COLUMN `RealStart` datetime NULL COMMENT '实际开始时间' AFTER `ModifyTime`,
+ADD COLUMN `RealEnd` datetime NULL COMMENT '实际结束时间' AFTER `RealStart`;
 
 
 ALTER TABLE `personmgr`.`project`

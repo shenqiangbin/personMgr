@@ -1,5 +1,8 @@
 package com.sqber.personMgr.bll.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.sqber.personMgr.base.PagedResponse;
 import com.sqber.personMgr.base.SessionHelper;
 import com.sqber.personMgr.base.StringUtil;
 import com.sqber.personMgr.bll.ITaskService;
@@ -59,12 +62,24 @@ public class TaskService implements ITaskService {
     }
 
     @Override
-    public List<TaskListItem> getItemList(TaskQuery query) {
+    public PagedResponse<TaskListItem> getItemList(TaskQuery query) {
+
+        PageHelper.startPage(query.getCurrentPage(), query.getPageSize());
         List<Task> list = taskRepository.getList(query);
-        if (list != null) {
-            return converToListItem(list);
-        }
-        return null;
+        PageInfo<Task> pageInfo = new PageInfo<>(list);
+
+        long total= pageInfo.getTotal();
+        int pages = pageInfo.getPages();
+
+        PagedResponse<TaskListItem> pagedResponse = new PagedResponse<>();
+
+        pagedResponse.setCurrentPage(query.getCurrentPage());
+        pagedResponse.setPageSize(query.getPageSize());
+        pagedResponse.setTotalCount(total);
+        pagedResponse.setTotalPage(pages);
+        pagedResponse.setList(converToListItem(list));
+
+        return pagedResponse;
     }
 
     private List<TaskListItem> converToListItem(List<Task> list) {

@@ -46,14 +46,12 @@ public class TaskController {
             int pageSize = 10;
 
             TaskQuery query = new TaskQuery();
+            query.setCurrentPage(currentPage);
+            query.setPageSize(pageSize);
             query.setContent(content);
 
-            PageHelper.startPage(currentPage, pageSize);
-            List<TaskListItem> list = taskService.getItemList(query);
-
-            PagedResponse<TaskListItem> pagedResponse = new PagedResponse<>(list,currentPage,pageSize);
-
-            result.setData(pagedResponse);
+            PagedResponse<TaskListItem> list = taskService.getItemList(query);
+            result.setData(list);
 
         } catch (Exception e) {
             result.setCode(500);

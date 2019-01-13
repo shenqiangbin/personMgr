@@ -1,5 +1,6 @@
 package com.sqber.personMgr.bll;
 
+import com.sqber.personMgr.base.PagedResponse;
 import com.sqber.personMgr.entity.Task;
 import com.sqber.personMgr.entity.TaskListItem;
 import com.sqber.personMgr.entity.query.TaskQuery;
@@ -16,7 +17,7 @@ public interface ITaskService {
 
     List<Task> getList(TaskQuery query);
 
-    List<TaskListItem> getItemList(TaskQuery query);
+    PagedResponse<TaskListItem> getItemList(TaskQuery query);
 
     void removeTask(String ids);
 }
