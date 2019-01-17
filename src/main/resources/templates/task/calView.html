@@ -179,7 +179,35 @@
 
                 lastClickSchedule = schedule;
 
-                rowClick(schedule.raw);
+                //如果点击的项是已完成的项，则凸显对应的两个项
+                if(schedule.calendarId == "2"){
+
+                    //先把所有的项更新为默认设置
+                    for(var i=0; i<app.pageModel.list.length; i++){
+                        calendar.updateSchedule((i+1)+"", "2", {
+                            borderColor:'#00a9ff',
+                            bgColor:'#00a9ff',
+                        });
+                        calendar.updateSchedule((i+1)+"", "1", {
+                            borderColor:'#03bd9e',
+                            bgColor:'#03bd9e',
+                        });
+                    }
+
+                    //然后更新选中的两个
+                    calendar.updateSchedule(schedule.id, "2", {
+                        borderColor:'#870f9c',
+                        bgColor:'#870f9c',
+                    });
+                    calendar.updateSchedule(schedule.id, "1", {
+                        borderColor:'#AF61BD',
+                        bgColor:'#AF61BD',
+                    });
+
+                }else{
+                    rowClick(schedule.raw);
+                }
+
             });
 
             calendar.on('beforeCreateSchedule', function(event) {

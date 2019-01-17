@@ -78,6 +78,13 @@
             end: '2019-01-16'
         });
 
+        //点击某个项，就更改这个项的背景色
+        /*
+        	calendar.updateSchedule(schedule.id, schedule.calendarId, {
+                bgColor:'yellow',
+            });
+        */
+
         var lastClickSchedule = null;
         calendar.on('clickSchedule', function(event) {
             var schedule = event.schedule;
@@ -89,7 +96,8 @@
                 });
             }
             calendar.updateSchedule(schedule.id, schedule.calendarId, {
-                isFocused: true
+                //isFocused: true,
+                bgColor:'yellow',
             });
 
             lastClickSchedule = schedule;
@@ -98,6 +106,9 @@
         });
 
         calendar.on('beforeCreateSchedule', function(event) {
+
+        	debugger
+
             var startTime = event.start;
             var endTime = event.end;
             var isAllDay = event.isAllDay;
