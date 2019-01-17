@@ -51,13 +51,19 @@
                 <!--break;-->
                 <!--case 'move-today':-->
                 <!--cal.today(); -->
+
+                <el-button type="primary" @click="preMonth" icon="el-icon-arrow-left" circle style="min-width:auto;padding: 7px;"></el-button>
                 <el-date-picker
+                        style="width:129px"
                         v-model="selectedMonth"
                         type="month"
                         placeholder="选择月"
                         value-format="yyyy-MM-dd"
+                        :clearable="false"
                         @change = "monthChange">
                 </el-date-picker>
+                <el-button type="primary" icon="el-icon-arrow-right" circle style="min-width:auto;padding: 7px;" @click="nextMonth"></el-button>
+                <el-button type="primary" round style="min-width:auto;padding: 7px;" @click="today">今天</el-button>
                 <!--下一月-->
             </div>
             <div id="calendar" style="height: 1500px;border:1px solid #e5e5e5;border-top:none;"></div>
@@ -145,6 +151,8 @@
 
 
     <!--<script src="http://pandao.github.io/editor.md/editormd.min.js"></script>-->
+
+    <script src="https://unpkg.com/dayjs"></script>
 
     <script>
 
@@ -400,14 +408,29 @@
                     app.loadData();
                 },
                 monthChange(val){
-                    //debugger
-                    //console.log(val);
+                    calendar.setDate(new Date(app.selectedMonth));
+                    app.loadData();
+                },
+                preMonth(){
+                    app.selectedMonth = dayjs(new Date(app.selectedMonth)).add(-1, 'month').format('YYYY-MM-DD');
+                    calendar.prev();
+                    app.loadData();
+                },
+                nextMonth(){
+                    app.selectedMonth = dayjs(new Date(app.selectedMonth)).add(1, 'month').format('YYYY-MM-DD');
+                    calendar.next();
+                    app.loadData();
+                },
+                today(){
+                    app.selectedMonth = dayjs(new Date()).format('YYYY-MM-DD');
+                    calendar.today();
                     app.loadData();
                 }
             }
         })
 
         app.loadData();
+
 
     </script>
 </div>
