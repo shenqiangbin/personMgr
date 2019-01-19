@@ -13,8 +13,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.List;
 import java.util.Map;
@@ -47,8 +50,8 @@ public class FileController {
             String fileName = file.getOriginalFilename();
             String extName = fileName.substring(fileName.lastIndexOf("."));
 
-            if (!extName.equals(".jpg") && !extName.equals(".png")){
-                return new FileUploadResult(0,"文件类型不对,请上传jpg,png格式的文件","");
+            if (!extName.equals(".jpg") && !extName.equals(".png")) {
+                return new FileUploadResult(0, "文件类型不对,请上传jpg,png格式的文件", "");
             }
 
             String filePath = getFilePath(file);
@@ -57,12 +60,12 @@ public class FileController {
 
             outputStream.close();
 
-            return new FileUploadResult(1,"",getImgPath(filePath));
+            return new FileUploadResult(1, "", getImgPath(filePath));
 
         } catch (Exception e) {
             e.printStackTrace();
             log.error(e.getMessage() + e.getStackTrace());
-            return new FileUploadResult(0,e.getMessage(),"");
+            return new FileUploadResult(0, e.getMessage(), "");
         }
 
     }
@@ -88,7 +91,7 @@ public class FileController {
         File dir = new File(fileUploadConfig.getSavePath());
         if (!dir.exists()) {
             boolean success = dir.mkdirs();
-            if(!success)
+            if (!success)
                 throw new Exception("目录创建失败:" + dir);
         }
 
@@ -96,18 +99,68 @@ public class FileController {
     }
 
     @GetMapping("file/get")
-    public void get(String type,String fileName,HttpServletResponse response) throws IOException {
+    public void get(String type, String fileName, Integer w, Integer h, Integer o, HttpServletResponse response) throws IOException {
         String filePath = fileUploadConfig.getSavePath() + "/" + fileName;
         File image = new File(filePath);
         FileInputStream inputStream = new FileInputStream(image);
-        int length = inputStream.available();
-        byte data[] = new byte[length];
-        inputStream.read(data);
 
-        response.setContentLength(length);
-        response.setHeader("Content-Type", "image/jpeg");
-        OutputStream toClient = response.getOutputStream();
-        toClient.write(data);
-        toClient.flush();
+        //如果不是显示原图
+        if (o == null || o != 1) {
+
+            BufferedImage prevImage = ImageIO.read(inputStream);
+            int width = prevImage.getWidth();
+            int height = prevImage.getHeight();
+
+            int newWidth = width;
+            int newHeight = height;
+
+            /*缩放*/
+            if (w != null) {
+                double percent = w / width;
+                newWidth = (int) (width * percent);
+                newHeight = (int) (height * percent);
+
+                if (h != null)
+                    newHeight = h;
+            }
+
+            Graphics2D oldG = prevImage.createGraphics();
+
+            BufferedImage newimage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_BGR);
+            Graphics2D graphics = newimage.createGraphics();
+
+            graphics.setBackground(oldG.getBackground());
+            graphics.drawImage(prevImage, 0, 0, newWidth, newHeight, null);
+
+            //添加水印
+            addMark(graphics);
+
+            response.setHeader("Content-Type", "image/jpeg");
+            OutputStream toClient = response.getOutputStream();
+            ImageIO.write(newimage, "jpeg", toClient);
+            toClient.flush();
+
+        } else {
+
+            int length = inputStream.available();
+            byte data[] = new byte[length];
+            inputStream.read(data);
+
+            response.setContentLength(length);
+            response.setHeader("Content-Type", "image/jpeg");
+            OutputStream toClient = response.getOutputStream();
+            toClient.write(data);
+            toClient.flush();
+        }
+    }
+
+    private void addMark(Graphics2D g) {
+        int imgHeight = 30;
+        g.setColor(Color.gray);
+        // 画笔字体
+        g.setFont(new Font("宋体", Font.PLAIN, imgHeight - 10));
+        //输入汉字，必须设置字体，且 系统中必须有对应字体，否则会乱码。
+        String content = "www.sqber.com";
+        g.drawString(content, 5, imgHeight - 10);
     }
 }
