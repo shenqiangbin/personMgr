@@ -7,6 +7,34 @@
 - Spring Security
 - Editor.md
 
+### 效果
+
+任务日历模式展示
+
+![](https://github.com/shenqiangbin/personMgr/blob/master/demo/rili.png)
+
+
+登录
+
+![](https://github.com/shenqiangbin/personMgr/blob/master/demo/login.png)
+
+项目列表
+
+![](https://github.com/shenqiangbin/personMgr/blob/master/demo/projectlist.png)
+
+任务列表 （不同颜色代表任务的不同状态）
+
+![](https://github.com/shenqiangbin/personMgr/blob/master/demo/tasklist.png)
+
+任务详情
+
+![](https://github.com/shenqiangbin/personMgr/blob/master/demo/taskdetail.png)
+
+新增任务（支持markdwon语法）
+
+![](https://github.com/shenqiangbin/personMgr/blob/master/demo/addtask.png)
+
+
 ### TODO
 - [x] 任务编辑 - 内容使用富文本编辑器
 - [x] 任务列表 - 可以查看任务详情
