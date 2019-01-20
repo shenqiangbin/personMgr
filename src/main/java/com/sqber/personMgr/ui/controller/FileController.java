@@ -1,5 +1,6 @@
 package com.sqber.personMgr.ui.controller;
 
+import com.sqber.personMgr.base.StringUtil;
 import com.sqber.personMgr.entity.FileUploadResult;
 import com.sqber.personMgr.ui.config.FileUploadConfig;
 import org.slf4j.Logger;
@@ -60,7 +61,7 @@ public class FileController {
 
             outputStream.close();
 
-            return new FileUploadResult(1, "", getImgPath(filePath));
+            return new FileUploadResult(1, "", getImgPath(filePath, request));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -70,10 +71,12 @@ public class FileController {
 
     }
 
-    private String getImgPath(String path) {
+    private String getImgPath(String path, HttpServletRequest request) {
         String ext = path.replaceAll(fileUploadConfig.getSavePath(), "");
         String[] arr = ext.split("/");
-        return String.format("/file/get?fileName=%s", ext);
+
+        String contextRoot = request.getContextPath();
+        return String.format(contextRoot + "/file/get?fileName=%s", ext);
     }
 
     private String getFilePath(MultipartFile file) throws Exception {
