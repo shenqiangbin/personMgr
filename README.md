@@ -7,16 +7,44 @@
 - Spring Security
 - Editor.md
 
+### 效果
+
+任务日历模式展示
+
+![](https://github.com/shenqiangbin/personMgr/blob/master/demo/rili.png)
+
+
+登录
+
+![](https://github.com/shenqiangbin/personMgr/blob/master/demo/login.png)
+
+项目列表
+
+![](https://github.com/shenqiangbin/personMgr/blob/master/demo/projectlist.png)
+
+任务列表 （不同颜色代表任务的不同状态）
+
+![](https://github.com/shenqiangbin/personMgr/blob/master/demo/tasklist.png)
+
+任务详情
+
+![](https://github.com/shenqiangbin/personMgr/blob/master/demo/taskdetail.png)
+
+新增任务（支持markdwon语法）
+
+![](https://github.com/shenqiangbin/personMgr/blob/master/demo/addtask.png)
+
+
 ### TODO
 - [x] 任务编辑 - 内容使用富文本编辑器
 - [x] 任务列表 - 可以查看任务详情
   - [x] 表格每行根据当前任务状态对应上不同颜色
   - [x] 任务列表和任务详情 显示项目名称而不是code
   - [ ] 新增按任务状态查询任务
-  - [ ] 添加 **任务开始时间** **任务结束时间** 两个字段，并在列表中添加 **开始任务** **结束任务** **不处理了** 三个按钮
+  - [x] 添加 **任务开始时间** **任务结束时间** 两个字段
  - [x] 任务编辑  
    - [x] 编辑页面文本框位置调整，上面部分右侧太空
-   - [ ] ediot.md的图片上传
+   - [x] ediot.md的图片上传,且支持水印和改变图片大小
 - [x] tomcat开启压缩css,js
 - [x] 尽量使用cdn
 - [x] 登录记住密码

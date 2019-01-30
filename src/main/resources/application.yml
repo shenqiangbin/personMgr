@@ -38,4 +38,4 @@ logging:
           personMgr:
                   dal: debug
 fileupload:
-  savePath: D:/datamonitor/upload/
+  savePath: c:/personMgr/upload/

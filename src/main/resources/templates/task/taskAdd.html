@@ -5,7 +5,9 @@
 
     <link rel="stylesheet" th:href="@{/third/editor.md/css/editormd.min.css}" />
     <!--<link rel="stylesheet" href="http://pandao.github.io/editor.md/css/editormd.css" />-->
-
+    <style>
+        .editormd-fullscreen{z-index: 10;}
+    </style>
 </head>
 <body>
 
@@ -257,7 +259,7 @@
                 syncScrolling : "single",
                 imageUpload: true,//图片上传功能
                 imageFormats : ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
-                imageUploadURL : "../article/uploadImage",
+                imageUploadURL : contextRoot + "file/upload",
                 path    : "../third/editor.md/lib/",
                 emoji: false,
                 toolbarIcons : function() {
