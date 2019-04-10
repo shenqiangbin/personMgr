@@ -91,6 +91,9 @@ public class TaskController {
             query.setPageSize(pageSize);
             query.setContent(content);
 
+            if(SessionHelper.IsUserInfoExsit())
+                query.setCurrentUser(SessionHelper.GetLoginUserCode());
+
             Date theDate = new SimpleDateFormat("yyyy-MM").parse(month);
             Calendar cal = Calendar.getInstance();
             cal.setTime(theDate);
