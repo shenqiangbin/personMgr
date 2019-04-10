@@ -3,6 +3,7 @@ package com.sqber.personMgr.ui.controller;
 import java.util.Date;
 import java.util.List;
 
+import com.sqber.personMgr.base.SessionHelper;
 import com.sqber.personMgr.myException.ProjectCodeExistException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,6 +47,8 @@ public class ProjectController {
 
             ProjectQuery query = new ProjectQuery();
             query.setProjectName(name);
+            if(SessionHelper.IsUserInfoExsit())
+                query.setCurrentUser(SessionHelper.GetLoginUserCode());
 
             PageHelper.startPage(currentPage, pageSize);
             List<Project> list = projectService.getList(query);

@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.sqber.personMgr.base.BaseResponse;
 import com.sqber.personMgr.base.DDLItem;
 import com.sqber.personMgr.base.PagedResponse;
+import com.sqber.personMgr.base.SessionHelper;
 import com.sqber.personMgr.bll.ITaskService;
 import com.sqber.personMgr.entity.Task;
 import com.sqber.personMgr.entity.TaskListItem;
@@ -57,6 +58,9 @@ public class TaskController {
             query.setCurrentPage(currentPage);
             query.setPageSize(pageSize);
             query.setContent(content);
+
+            if(SessionHelper.IsUserInfoExsit())
+                query.setCurrentUser(SessionHelper.GetLoginUserCode());
 
             PagedResponse<TaskListItem> list = taskService.getItemList(query);
             result.setData(list);

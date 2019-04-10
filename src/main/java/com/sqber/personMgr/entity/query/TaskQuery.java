@@ -10,6 +10,8 @@ public class TaskQuery extends PageQuery {
 
     private String endDate;
 
+    private String currentUser;
+
     public String getSortStr() {
         return sortStr;
     }
@@ -40,5 +42,13 @@ public class TaskQuery extends PageQuery {
 
     public void setEndDate(String endDate) {
         this.endDate = endDate;
+    }
+
+    public String getCurrentUser() {
+        return currentUser;
+    }
+
+    public void setCurrentUser(String currentUser) {
+        this.currentUser = currentUser;
     }
 }

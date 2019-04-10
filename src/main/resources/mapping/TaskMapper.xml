@@ -97,6 +97,9 @@
     <if test="endDate!=null and endDate!=''">
       and <![CDATA[ ScheduledEnd < '${endDate}' ]]>
     </if>
+    <if test="currentUser!=null and currentUser!=''">
+      and <![CDATA[ CreateUser = '${currentUser}' ]]>
+    </if>
     <choose>
       <when test="sortStr != null" >
         order by ${sortStr}
