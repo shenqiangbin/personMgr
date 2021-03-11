@@ -9,4 +9,5 @@
 	<Role url="/logout">ALL</Role>
 	<Role url="/home/captcha">ALL</Role>
 	<Role url="/**">LoginUser</Role>
+	<Role url="/oauth/**">ALL</Role>
 </Roles>

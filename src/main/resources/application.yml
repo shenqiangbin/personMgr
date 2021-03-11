@@ -39,3 +39,31 @@ logging:
                   dal: debug
 fileupload:
   savePath: c:/personMgr/upload/
+
+justauth:
+  enabled: true
+  type:
+    QQ:
+      client-id: 1015***52
+      client-secret: 7ded389d52b****675f291f3489afb
+      redirect-uri: http://39.107.227.57:8006/personMgr/oauth/qq/callback
+      union-id: false
+    GITHUB:
+      client-id: Iv1.9535b67931d50085
+      client-secret: 63057336b4f8a2eddbda1b95f82d4eb8a396a66d
+      redirect-uri: http://39.107.227.57:8006/personMgr/oauth/github/callback
+    WECHAT_OPEN:
+      client-id: 10**********6
+      client-secret: 1f7d08**********5b7**********29e
+      redirect-uri: http://oauth.xkcoding.com/demo/oauth/wechat_open/callback
+    WECHAT_MP:
+      client-id: 10**********6
+      client-secret: 1f7d08**********5b7**********29e
+      redirect-uri: http://oauth.xkcoding.com/demo/oauth/wechat_mp/callback
+    WECHAT_ENTERPRISE:
+      client-id: 10**********6
+      client-secret: 1f7d08**********5b7**********29e
+      redirect-uri: http://oauth.xkcoding.com/demo/oauth/wechat_enterprise/callback
+      agent-id: 1000002
+  cache:
+    type: default

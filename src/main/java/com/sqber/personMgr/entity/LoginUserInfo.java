@@ -32,10 +32,20 @@ public class LoginUserInfo extends User{
 	private Integer roleId;
 	
 	private Integer customerId;
+
+	private String loginType;
 	
 	public LoginUserInfo(String username, String password, Collection<? extends GrantedAuthority> authorities) {
 		super(username, password, authorities);
 		// TODO Auto-generated constructor stub
+	}
+
+	public String getLoginType() {
+		return loginType;
+	}
+
+	public void setLoginType(String loginType) {
+		this.loginType = loginType;
 	}
 
 	public int getUserID() {
