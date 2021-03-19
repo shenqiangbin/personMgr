@@ -1,0 +1,116 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorator="share/layout">
+<head>
+    <style>
+        .el-input{width:70%;}
+    </style>
+</head>
+<body>
+
+<div layout:fragment="content">
+    <el-scrollbar  class="contain">
+        <div class="con-box" >
+
+            <p style="margin:20px 0;"></p>
+
+            支付测试
+
+            <img :src="src" style="width:200px;height: 200px;">
+
+        </div>
+    </el-scrollbar>
+</div>
+
+<div layout:fragment="jscontent">
+
+    <script>
+        var save = function () {
+
+            // if(!app.ruleForm.starttime)
+            //     app.ruleForm.starttime = "";
+            // if(!app.ruleForm.endtime)
+            //     app.ruleForm.endtime = "";
+
+            debugger
+
+            $.ajax({
+                type: "post",
+                url: contextRoot + "project/saveProject",
+                data: JSON.stringify(app.ruleForm),
+                contentType: 'application/json',
+
+                async: true,
+                success: function (result) {
+                    console.log(result);
+                    if (result.code == 200) {
+                        if(app.isEdit){
+                            showMsg("保存成功");
+                        }else{
+                            showMsg("保存成功");
+                            //app.$refs['ruleForm'].resetFields();
+                            window.location.href = contextRoot + "project/projectList";
+                        }
+                    }else {
+                        showError(result.msg);
+                    }
+                },
+                error: function () {
+                    showMsg("保存失败");
+                }
+            });
+        }
+
+        
+        var app = new Vue({
+            el: '#app',
+            data: {
+                src: 'http://blog.sqber.com/Images/logo.png'
+            },
+            methods: {
+                goback(){
+                },
+                handleCurrentChange(val){
+                    app.currentPage = val;
+                    app.loadData();
+                },
+                submitForm(formName) {
+                    this.$refs[formName].validate((valid) => {
+                        if (valid) {
+                            save();
+                        }else{
+                            return false;
+                        }
+                    });
+                }
+            }
+        })
+
+            $.ajax({
+                type: "get",
+                url: contextRoot + "wxPay/setRole",
+                data: {  },
+                async: true,
+                success: function (result) {
+                    console.log("getInfo");
+                    console.log(result);
+                    if (result.code == 200) {
+                        app.src = result.data;
+                    }else {
+                        showError(result.msg);
+                    }
+                },
+                error: function () {
+                    showMsg("编辑获取信息失败");
+                }
+            });
+
+    </script>
+</div>
+
+
+</body>
+</html>
+
+

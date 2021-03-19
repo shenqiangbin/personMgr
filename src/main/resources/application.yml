@@ -67,3 +67,22 @@ justauth:
       agent-id: 1000002
   cache:
     type: default
+
+
+pay:
+  weixin:
+    appId: 应用编号
+    appSecret: appSecret 是 appId 对应的接口密码，微信公众号授权获取用户 openId 时使用
+    mchId: 微信支付商户号
+    partnerKey: API 密钥
+    certPath: apiclient_cert.p1 证书路径，在微信商户后台下载
+    domain: 外网访问项目的域名，支付通知中会使用
+  ali:
+    appId: 应用编号
+    privateKey: 应用私钥
+    publicKey: 支付宝公钥，通过应用公钥上传到支付宝开放平台换取支付宝公钥(如果是证书模式，公钥与私钥在CSR目录)。
+    appCertPath: 应用公钥证书
+    aliPayCertPath: 支付宝公钥证书
+    aliPayRootCertPath: 支付宝根证书
+    serverUrl: 支付宝支付网关，沙箱环境时设置为 http://openapi.ev.com/gateway.do 使用正式环境时设置为 http://openapi.com/gateway.do
+    domain: 外网访问项目的域名，支付通知中会使用

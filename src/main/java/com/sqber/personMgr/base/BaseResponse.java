@@ -10,6 +10,13 @@ public class BaseResponse<T> {
         this.code = 200;
     }
 
+    public static BaseResponse fail(String msg) {
+        BaseResponse b = new BaseResponse();
+        b.setCode(401);
+        b.setMsg(msg);
+        return b;
+    }
+
     public int getCode() {
         return code;
     }

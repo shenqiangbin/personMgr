@@ -36,6 +36,11 @@ public class HomeController {
         return "redirect:menu/first";
     }
 
+    @GetMapping("/payTest")
+    public String payTest(HttpServletRequest request, HttpServletResponse response, Model model) {
+        return "home/payTest";
+    }
+
     @ResponseBody
     @GetMapping("nothing")
     public String nothing(){return "没有权限";}

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sqber.personMgr.dal.IPayOrderRepository">
+    <resultMap id="BaseResultMap" type="com.sqber.personMgr.entity.PayOrder">
+        <result column="id" property="id" jdbcType="INTEGER"/>
+        <result column="orderNo" property="orderNo" jdbcType="VARCHAR"/>
+        <result column="amount" property="amount" jdbcType="INTEGER"/>
+        <result column="userId" property="userId" jdbcType="INTEGER"/>
+        <result column="orderState" property="orderState" jdbcType="INTEGER"/>
+        <result column="product" property="product" jdbcType="VARCHAR"/>
+        <result column="content" property="content" jdbcType="VARCHAR"/>
+        <result column="createUser" property="createUser" jdbcType="VARCHAR"/>
+        <result column="createTime" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="modifyUser" property="modifyUser" jdbcType="VARCHAR"/>
+        <result column="modifyTime" property="modifyTime" jdbcType="TIMESTAMP"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+
+    </resultMap>
+
+    <insert id="insert" parameterType="com.sqber.personMgr.entity.PayOrder" useGeneratedKeys="true" keyProperty="id"
+            keyColumn="id">
+        insert into payOrder(orderNo,amount,userId,orderState,product,content,createUser,createTime,modifyUser,modifyTime,status)
+        values (
+                #{orderNo,jdbcType=VARCHAR},
+                #{amount,jdbcType=INTEGER},
+                #{userId,jdbcType=INTEGER},
+                #{orderState,jdbcType=INTEGER},
+                #{product,jdbcType=VARCHAR},
+                #{content,jdbcType=VARCHAR},
+                #{createUser,jdbcType=VARCHAR},
+                #{createTime,jdbcType=TIMESTAMP},
+                #{modifyUser,jdbcType=VARCHAR},
+                #{modifyTime,jdbcType=TIMESTAMP},
+                #{status,jdbcType=INTEGER}
+              )
+    </insert>
+    <update id="updateById" parameterType="com.sqber.personMgr.entity.PayOrder">
+        update payOrder set
+                orderNo = #{orderNo,jdbcType=VARCHAR},
+                amount = #{amount,jdbcType=INTEGER},
+                userId = #{userId,jdbcType=INTEGER},
+                orderState = #{orderState,jdbcType=INTEGER},
+                product = #{product,jdbcType=VARCHAR},
+                content = #{content,jdbcType=VARCHAR},
+                createUser = #{createUser,jdbcType=VARCHAR},
+                createTime = #{createTime,jdbcType=TIMESTAMP},
+                modifyUser = #{modifyUser,jdbcType=VARCHAR},
+                modifyTime = #{modifyTime,jdbcType=TIMESTAMP},
+                status = #{status,jdbcType=INTEGER}
+         where
+                id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <update id="updateState">
+        update payOrder set orderState = #{state},modifyTime = now() where id = #{id}
+    </update>
+
+    <update id="updateStateByOrderNo">
+        update payOrder set orderState = #{state},modifyTime = now() where orderNo = #{orderNo}
+    </update>
+
+    <select id="getByOrderNo" resultType="com.sqber.personMgr.entity.PayOrder">
+        select * from payOrder where orderNo = #{orderNo}
+    </select>
+
+</mapper>
