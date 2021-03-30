@@ -1,15 +1,21 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
-      layout:decorator="share/layout">
+      >
 <head>
     <style>
         .el-input{width:70%;}
     </style>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <!-- default header name is X-CSRF-TOKEN spring security 避免ajax请求403-->
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <script type="text/javascript">
+        var contextRoot = "[[@{/}]]";
+    </script>
 </head>
 <body>
 
-<div layout:fragment="content">
+<div id="app">
     <el-scrollbar  class="contain">
         <div class="con-box" >
 
@@ -23,8 +29,13 @@
     </el-scrollbar>
 </div>
 
-<div layout:fragment="jscontent">
+<div>
 
+    <script th:src="@{/js/jquery.min.js}"></script>
+    <script th:src="@{/js/iconfont.js}"></script>
+    <script th:src="@{/js/vue.js}"></script>
+    <script th:src="@{/js/index.js}"></script>
+    <script th:src="@{/js/base.js}"></script>
     <script>
         var save = function () {
 

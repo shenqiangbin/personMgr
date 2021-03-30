@@ -63,6 +63,12 @@ public class WxController {
     }
 
 
+
+    @GetMapping("/test")
+    public String test(){
+        return "test";
+    }
+
     /**
      * 扫码支付模式二
      */
@@ -105,6 +111,8 @@ public class WxController {
                 .build()
                 .createSign(wxPayApiConfig.getPartnerKey(), SignType.HMACSHA256);
 
+        log.info("parmas:" + params);
+        log.info("notifyUrl:" + notifyUrl);
         String xmlResult = WxPayApi.pushOrder(false, params);
         log.info("统一下单:" + xmlResult);
 
@@ -173,6 +181,7 @@ public class WxController {
     @RequestMapping(value = "/payNotify", method = {RequestMethod.POST, RequestMethod.GET})
     @ResponseBody
     public String payNotify(HttpServletRequest request) {
+        log.info("异步通知来了");
         String xmlMsg = HttpKit.readData(request);
         log.info("支付通知=" + xmlMsg);
         Map<String, String> params = WxPayKit.xmlToMap(xmlMsg);
@@ -183,8 +192,8 @@ public class WxController {
         String out_trade_no = params.get("out_trade_no"); // 商户订单号
         String attach = params.get("attach"); // 附加数据
 
-        log.info("微信订单号：" + transactionId);
-        log.info("订单号：" + out_trade_no);
+        log.info("微信订单号（交易单号）：" + transactionId);
+        log.info("订单号（商户单号）：" + out_trade_no);
 
         // 注意重复通知的情况，同一订单号可能收到多次通知，请注意一定先判断订单状态
         // 注意此处签名方式需与统一下单的签名类型一致

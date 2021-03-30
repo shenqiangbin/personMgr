@@ -10,4 +10,7 @@
 	<Role url="/home/captcha">ALL</Role>
 	<Role url="/**">LoginUser</Role>
 	<Role url="/oauth/**">ALL</Role>
+	<Role url="/wxPay/**">ALL</Role>
+	<Role url="/payTest">ALL</Role>
+
 </Roles>

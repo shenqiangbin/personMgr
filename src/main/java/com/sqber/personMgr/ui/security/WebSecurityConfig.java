@@ -68,7 +68,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.formLogin().loginPage("/login").failureUrl("/login?error=true");
 
-        http.authorizeRequests().antMatchers("/barsearch","/oauth/**").permitAll()
+        http.authorizeRequests().antMatchers("/wxPay/**", "/payTest", "/oauth/**").permitAll()
                 .and().headers()
                     .frameOptions().disable() // 允许iframe
 //                .and()
@@ -89,7 +89,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 
         // http.csrf().disable();//关闭csrf
-        //http.csrf().ignoringAntMatchers("/oauth/**","/oauth");
+        http.csrf().ignoringAntMatchers("/wxPay/**","/oauth");
         http.addFilterBefore(myFilterSecurityInterceptor, FilterSecurityInterceptor.class);
         http.addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class);
     }
